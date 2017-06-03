@@ -1,10 +1,31 @@
 (function () {'use strict';
 
 const {app, BrowserWindow} = require('electron');
+const { ipcSend, ipcReceive } = require('electron-simple-ipc');
+const needle = require('needle');
 const path = require('path');
 const url = require('url');
 
+var accessToken = null;
 let win;
+
+ipcReceive('LOGIN', (payload) => {
+	console.log("Requesting access token for credentials: ", payload);
+	needle.post('https://dev.intercraftmc.com/auth/login', {
+		'email': payload.email,
+		'password': payload.password
+	},
+	function(err, resp, result) {
+		if (result.status == 200) {
+			accessToken = result.access_token;
+			win.loadURL(url.format({
+				pathname: path.join(__dirname, 'views/index.htm'),
+				protocol: 'file:',
+				slashes: true
+			}));
+		}
+	});
+});
 
 function createWindow () {
 	

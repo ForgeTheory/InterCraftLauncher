@@ -1,8 +1,21 @@
 const {app, BrowserWindow} = require('electron');
+const { ipcSend, ipcReceive } = require('electron-simple-ipc');
+const needle = require('needle');
 const path = require('path');
 const url = require('url');
 
 let win;
+
+ipcReceive('LOGIN', (payload) => {
+	console.log("Requesting access token for credentials: ", payload);
+	needle.post('https://dev.intercraftmc.com/auth/login', {
+		'email': payload.email,
+		'password': payload.password
+	},
+	function(err, resp, body) {
+		console.log("Result: ", err, body);
+	});
+});
 
 function createWindow () {
 	

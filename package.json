@@ -28,7 +28,9 @@
     "gulp-size": "^2.1.0",
     "gulp-watch": "^4.3.11",
     "minimist": "^1.2.0",
+    "needle": "^1.6.0",
     "object-keys": "^1.0.11",
+    "requestify": "^0.2.5",
     "rollup": "^0.41.6"
   }
 }
