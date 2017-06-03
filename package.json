@@ -1,0 +1,32 @@
+{
+  "name": "intercraft-launcher",
+  "version": "0.1.0",
+  "description": "Official launcher for the InterCraft server",
+  "main": "app/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.cloostefis.top:SirDavid/InterCraftLauncher.git"
+  },
+  "author": "David Ludwig",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^1.6.10"
+  },
+  "devDependencies": {
+    "fs-jetpack": "^1.0.0",
+    "gulp": "^3.9.1",
+    "gulp-batch": "^1.0.5",
+    "gulp-clean-css": "^3.4.1",
+    "gulp-imagemin": "^3.3.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-sass": "^3.1.0",
+    "gulp-size": "^2.1.0",
+    "gulp-watch": "^4.3.11",
+    "minimist": "^1.2.0",
+    "object-keys": "^1.0.11",
+    "rollup": "^0.41.6"
+  }
+}
