@@ -1,4 +1,5 @@
 const gulp = require('gulp');
+const gulpcopy = require('gulp-copy');
 const sass = require('gulp-sass');
 const watch = require('gulp-watch');
 const batch = require('gulp-batch');
@@ -40,6 +41,11 @@ gulp.task('environment', () => {
   projectDir.copy(configFile, destDir.path('env.json'), { overwrite: true });
 });
 
+gulp.task('javascript', () => {
+  return gulp.src(srcDir.path('javascript/*.js'))
+            .pipe(gulp.dest(destDir.path('js')));
+});
+
 gulp.task('watch', () => {
   const beepOnError = (done) => {
     return (err) => {
@@ -50,8 +56,11 @@ gulp.task('watch', () => {
     };
   };
 
-  watch('src/**/*.js', batch((events, done) => {
+  watch('src/*.js', batch((events, done) => {
     gulp.start('bundle', beepOnError(done));
+  }));
+  watch('src/javascript/*.js', batch((events, done) => {
+    gulp.start('javascript', beepOnError(done));
   }));
   watch('src/stylesheets/*.scss', batch((events, done) => {
     gulp.start('sass', beepOnError(done));
