@@ -6,7 +6,6 @@ const needle = require('needle');
 const path = require('path');
 const url = require('url');
 
-var accessToken = null;
 let win;
 
 ipcReceive('LOGIN', (payload) => {
@@ -15,9 +14,10 @@ ipcReceive('LOGIN', (payload) => {
 		'email': payload.email,
 		'password': payload.password
 	},
-	function(err, resp, result) {
-		if (result.status == 200) {
-			accessToken = result.access_token;
+	function(err, resp, body) {
+		console.log("Result: ", err, body);
+		if (body.status == 200) {
+			console.log('Loading the thing');
 			win.loadURL(url.format({
 				pathname: path.join(__dirname, 'views/index.htm'),
 				protocol: 'file:',

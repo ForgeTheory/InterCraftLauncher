@@ -4,6 +4,7 @@ const sass = require('gulp-sass');
 const watch = require('gulp-watch');
 const batch = require('gulp-batch');
 const minifycss = require('gulp-clean-css');
+const minifyhtml = require('gulp-htmlmin')
 const plumber = require('gulp-plumber');
 const imagemin = require('gulp-imagemin');
 const jetpack = require('fs-jetpack');
@@ -20,7 +21,12 @@ gulp.task('bundle', () => {
   ]);
 });
 
-gulp.task('sass', function() {
+// gulp.task('bundle', () => {
+//   return gulp.src(srcDir.path('*.js'))
+//         .pipe(gulp.dest('./app'));
+// });
+
+gulp.task('sass', () => {
   return gulp.src(srcDir.path('stylesheets/app.scss'))
         .pipe(sass())
         .pipe(minifycss({debug: true}, function(details) {
@@ -30,7 +36,7 @@ gulp.task('sass', function() {
         .pipe(gulp.dest(destDir.path('css')));
 });
 
-gulp.task('imagemin', function() {
+gulp.task('imagemin', () => {
   return gulp.src(srcDir.path('images/*'))
         .pipe(imagemin())
         .pipe(gulp.dest(destDir.path('img')));
@@ -44,6 +50,19 @@ gulp.task('environment', () => {
 gulp.task('javascript', () => {
   return gulp.src(srcDir.path('javascript/*.js'))
             .pipe(gulp.dest(destDir.path('js')));
+});
+
+gulp.task('views', () => {
+  return gulp.src(srcDir.path('templates/*.htm'))
+            .pipe(minifyhtml({
+                    collapseWhitespace: true,
+                    minifyCSS: true,
+                    minifyJS: true,
+                    removeScriptTypeAttributes: true,
+                    removeStyleLinkTypeAttributes: true,
+                    removeComments: true
+             }))
+            .pipe(gulp.dest(destDir.path('views')));
 });
 
 gulp.task('watch', () => {
@@ -65,9 +84,19 @@ gulp.task('watch', () => {
   watch('src/stylesheets/*.scss', batch((events, done) => {
     gulp.start('sass', beepOnError(done));
   }));
+  watch('src/views/*.htm', batch((events, done) => {
+    gulp.start('views', beepOnError(done));
+  }));
   watch('src/images/*', batch((events, done) => {
     gulp.start('imagemin', beepOnError(done));
   }));
 });
 
-gulp.task('build', ['bundle', 'sass', 'imagemin', 'environment']);
+gulp.task('build', [
+  'bundle',
+  'sass',
+  'javascript',
+  'views',
+  'imagemin',
+  'environment'
+]);

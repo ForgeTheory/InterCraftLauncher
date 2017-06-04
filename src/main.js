@@ -14,6 +14,14 @@ ipcReceive('LOGIN', (payload) => {
 	},
 	function(err, resp, body) {
 		console.log("Result: ", err, body);
+		if (body.status == 200) {
+			console.log('Loading the thing');
+			win.loadURL(url.format({
+				pathname: path.join(__dirname, 'views/index.htm'),
+				protocol: 'file:',
+				slashes: true
+			}));
+		}
 	});
 });
 
