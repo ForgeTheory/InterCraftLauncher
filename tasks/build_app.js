@@ -16,87 +16,91 @@ const srcDir = jetpack.cwd('./src');
 const destDir = jetpack.cwd('./app');
 
 gulp.task('bundle', () => {
-  return Promise.all([
-    bundle(srcDir.path('main.js'), destDir.path('main.js')),
-  ]);
+	return Promise.all([
+		bundle(srcDir.path('config.js'), destDir.path('config.js')),
+		bundle(srcDir.path('intercraft.js'), destDir.path('intercraft.js')),
+		bundle(srcDir.path('intercraft_auth.js'), destDir.path('intercraft_auth.js')),
+		bundle(srcDir.path('main.js'), destDir.path('main.js'))
+		// bundle(srcDir.path('mojang.js'), destDir.path('mojang.js'))
+	]);
 });
 
 // gulp.task('bundle', () => {
-//   return gulp.src(srcDir.path('*.js'))
-//         .pipe(gulp.dest('./app'));
+//	 return gulp.src(srcDir.path('*.js'))
+//				 .pipe(gulp.dest('./app'));
 // });
 
 gulp.task('sass', () => {
-  return gulp.src(srcDir.path('stylesheets/app.scss'))
-        .pipe(sass())
-        .pipe(minifycss({debug: true}, function(details) {
-          console.log(details.name + ': ' + details.stats.originalSize);
-          console.log(details.name + ': ' + details.stats.minifiedSize);
-        }))
-        .pipe(gulp.dest(destDir.path('css')));
+	return gulp.src(srcDir.path('stylesheets/app.scss'))
+	           .pipe(sass())
+	           .pipe(minifycss({debug: true}, function(details) {
+		           console.log(details.name + ': ' + details.stats.originalSize);
+		           console.log(details.name + ': ' + details.stats.minifiedSize);
+	           }))
+	           .pipe(gulp.dest(destDir.path('css')));
 });
 
 gulp.task('imagemin', () => {
-  return gulp.src(srcDir.path('images/*'))
-        .pipe(imagemin())
-        .pipe(gulp.dest(destDir.path('img')));
+	return gulp.src(srcDir.path('images/*'))
+	           .pipe(imagemin())
+	           .pipe(gulp.dest(destDir.path('img')));
 });
 
 gulp.task('environment', () => {
-  const configFile = `config/env_${utils.getEnvName()}.json`;
-  projectDir.copy(configFile, destDir.path('env.json'), { overwrite: true });
+	const configFile = `config/env_${utils.getEnvName()}.json`;
+	projectDir.copy(configFile, destDir.path('env.json'), { overwrite: true });
 });
 
 gulp.task('javascript', () => {
-  return gulp.src(srcDir.path('javascript/*.js'))
-            .pipe(gulp.dest(destDir.path('js')));
+	return gulp.src(srcDir.path('javascript/*.js'))
+	                      .pipe(gulp.dest(destDir.path('js')));
 });
 
 gulp.task('views', () => {
-  return gulp.src(srcDir.path('templates/*.htm'))
-            .pipe(minifyhtml({
-                    collapseWhitespace: true,
-                    minifyCSS: true,
-                    minifyJS: true,
-                    removeScriptTypeAttributes: true,
-                    removeStyleLinkTypeAttributes: true,
-                    removeComments: true
-             }))
-            .pipe(gulp.dest(destDir.path('views')));
+	return gulp.src(srcDir.path('templates/*.htm'))
+	           .pipe(minifyhtml({
+	                     collapseWhitespace: true,
+	                     minifyCSS: true,
+	                     minifyJS: true,
+	                     removeScriptTypeAttributes: true,
+	                     removeStyleLinkTypeAttributes: true,
+	                     removeComments: true
+	             }))
+	            .pipe(gulp.dest(destDir.path('views')));
 });
 
 gulp.task('watch', () => {
-  const beepOnError = (done) => {
-    return (err) => {
-      if (err) {
-        utils.beepSound();
-      }
-      done(err);
-    };
-  };
+	const beepOnError = (done) => {
+		return (err) => {
+			if (err) {
+				utils.beepSound();
+			}
+			done(err);
+		};
+	};
 
-  watch('src/*.js', batch((events, done) => {
-    gulp.start('bundle', beepOnError(done));
-  }));
-  watch('src/javascript/*.js', batch((events, done) => {
-    gulp.start('javascript', beepOnError(done));
-  }));
-  watch('src/stylesheets/*.scss', batch((events, done) => {
-    gulp.start('sass', beepOnError(done));
-  }));
-  watch('src/views/*.htm', batch((events, done) => {
-    gulp.start('views', beepOnError(done));
-  }));
-  watch('src/images/*', batch((events, done) => {
-    gulp.start('imagemin', beepOnError(done));
-  }));
+	watch('src/*.js', batch((events, done) => {
+		gulp.start('bundle', beepOnError(done));
+	}));
+	watch('src/javascript/*.js', batch((events, done) => {
+		gulp.start('javascript', beepOnError(done));
+	}));
+	watch('src/stylesheets/*.scss', batch((events, done) => {
+		gulp.start('sass', beepOnError(done));
+	}));
+	watch('src/views/*.htm', batch((events, done) => {
+		gulp.start('views', beepOnError(done));
+	}));
+	watch('src/images/*', batch((events, done) => {
+		gulp.start('imagemin', beepOnError(done));
+	}));
 });
 
 gulp.task('build', [
-  'bundle',
-  'sass',
-  'javascript',
-  'views',
-  'imagemin',
-  'environment'
+	'bundle',
+	'sass',
+	'javascript',
+	'views',
+	'imagemin',
+	'environment'
 ]);

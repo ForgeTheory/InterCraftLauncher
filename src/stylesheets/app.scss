@@ -7,8 +7,72 @@
 @import "variables";
 
 // Views
+@import "config-wizard";
 @import "login";
 
 body {
-	
+	padding: 0;
+	background: rgb(244, 244, 244);
+}
+
+.main-container {
+	display: flex;
+	flex-direction: row;
+}
+
+.sidebar {
+	height: 100vh;
+	box-sizing: border-box;
+	background: white;
+	flex: 0;
+}
+
+.sidebar #play-button {
+	position: relative;
+	min-width: 250px;
+	text-transform: none !important;
+	letter-spacing: 1px;
+	z-index: 999;
+}
+
+.content {
+	position: relative;
+	box-sizing: border-box;
+	height: 100vh;
+	flex: 1;
+	z-index: 998;
+}
+
+.content nav {
+	z-index: 997;
+}
+
+nav {
+	-webkit-app-region: drag;
+	display: inline-block;
+	background: white;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+nav ul {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	text-align: right;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+}
+
+nav ul li {
+	font-size: 1.5em;
+	margin: 0;
+	padding: 0;
+	-webkit-app-region: no-drag;
+}
+
+nav ul li a {
+	display: block;
+	padding: 10px 10px;
 }

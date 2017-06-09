@@ -1,0 +1,1 @@
+{"version":3,"file":"mojang.js","sources":["src/mojang.js"],"sourcesContent":["const needle = require('needle');\r\n\r\n"],"names":[],"mappings":";;AAAA,MAAM,MAAM,GAAG,OAAO,CAAC,QAAQ,CAAC,CAAC"}
