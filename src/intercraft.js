@@ -56,11 +56,17 @@ exports.init = function() {
 };
 
 exports.initWindow = function() {
-	win = new BrowserWindow({width: 1280, height: 720, frame: false});
+	win = new BrowserWindow({
+		width: 1280,
+		height: 720,
+		frame: false,
+		minWidth: 992,
+		minHeight: 500
+	});
 	win.on('closed', () => {
 		win = null;
 	});
-	win.openDevTools();
+	// win.openDevTools();
 	win.setMenu(null);
 
 	win.setView = (view) => {

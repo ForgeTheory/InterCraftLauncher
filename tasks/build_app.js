@@ -88,7 +88,7 @@ gulp.task('watch', () => {
 	watch('src/stylesheets/*.scss', batch((events, done) => {
 		gulp.start('sass', beepOnError(done));
 	}));
-	watch('src/views/*.htm', batch((events, done) => {
+	watch('src/templates/*.htm', batch((events, done) => {
 		gulp.start('views', beepOnError(done));
 	}));
 	watch('src/images/*', batch((events, done) => {
