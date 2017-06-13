@@ -6,6 +6,7 @@ const config = require('./config');
 const DOMAIN = "https://dev.intercraftmc.com/auth";
 
 exports.isOnline = function(callback) {
+	console.log("Checking if the server is online...");
 	needle.get(DOMAIN + '/status', (error, response) => {
 		callback(response && response.statusCode == 200);
 	}); 
@@ -26,6 +27,7 @@ exports.login = function(email, password, callback) {
 };
 
 exports.fetchProfile = function(callback) {
+	console.log("Getting the profile from the access token");
 	needle.post(DOMAIN + '/profile', {
 		'access_token': config.accessToken()
 	}, (err, resp, body) => {

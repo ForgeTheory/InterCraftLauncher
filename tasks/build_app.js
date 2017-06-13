@@ -20,7 +20,9 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('config.js'), destDir.path('config.js')),
 		bundle(srcDir.path('intercraft.js'), destDir.path('intercraft.js')),
 		bundle(srcDir.path('intercraft_auth.js'), destDir.path('intercraft_auth.js')),
-		bundle(srcDir.path('main.js'), destDir.path('main.js'))
+		bundle(srcDir.path('main.js'), destDir.path('main.js')),
+		bundle(srcDir.path('minecraft.js'), destDir.path('minecraft.js')),
+		bundle(srcDir.path('window_manager.js'), destDir.path('window_manager.js'))
 		// bundle(srcDir.path('mojang.js'), destDir.path('mojang.js'))
 	]);
 });

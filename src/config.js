@@ -28,24 +28,24 @@ exports.init = function() {
 		exports.save();
 	}
 	return config['configured'];
-}
+};
 
 exports.save = function() {
 	jsonfile.writeFile(rootPath.path('./config.json'), config);
-}
+};
 
 exports.minecraftPath = function() {
 	return config['minecraft_path'];
-}
+};
 
 exports.accessToken = function() {
 	return config['access_token'];
-}
+};
 
 exports.setAccessToken = function(token) {
 	config['access_token'] = token;
 	exports.save();
-}
+};
 
 exports.uuid = function() {
 	return config['uuid'];

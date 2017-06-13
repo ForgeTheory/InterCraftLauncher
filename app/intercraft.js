@@ -1,14 +1,15 @@
 (function () {'use strict';
 
-const {BrowserWindow} = require('electron');
+const { BrowserWindow } = require('electron');
 const { ipcSend, ipcReceive } = require('electron-simple-ipc');
 const path = require('path');
 const url = require('url');
 
 const config = require('./config');
 const intercraftAuth = require('./intercraft_auth');
+const minecraft = require('./minecraft');
+const windowManager = require('./window_manager');
 
-let win;
 let profile;
 profile = { // Temporary profile for SirDavidLudwig
 	'privilege': 2,
@@ -46,41 +47,25 @@ exports.init = function() {
 	// Initialize the configuration
 	config.init();
 
-	// Initilialize the window
-	exports.initWindow();
+	// Initialize the window manager
+	windowManager.init();
 
 	// Setup the events
 	initEvents();
 
-	// Set the initializing screen
-	// win.setView('control');
-	exports.controlPanel();
+	// Display the splash, and boot once shown
+	windowManager.splash(initMinecraft);
 };
 
-exports.initWindow = function() {
-	win = new BrowserWindow({
-		width: 1280,
-		height: 720,
-		frame: false,
-		minWidth: 992,
-		minHeight: 500
-	});
-	win.on('closed', () => {
-		win = null;
-	});
-	// win.openDevTools();
-	win.setMenu(null);
-
-	win.setView = (view) => {
-		win.loadURL(url.format({
-			pathname: path.join(__dirname, 'views/' + view + '.htm'),
-			protocol: 'file:',
-			slashes: true
-		}));
-	};
+var initMinecraft = function() {
+	var nextStep = parseInterCraftSession;
+	if (!minecraft.init())
+		exports.configureMinecraft(nextStep);
+	else
+		nextStep();
 };
 
-exports.getInterCraftSession = function() {
+var parseInterCraftSession = function() {
 	intercraftAuth.isOnline((isOnline) => {
 		if (isOnline)
 			if (config.accessToken() == null)
@@ -104,19 +89,23 @@ exports.getInterCraftSession = function() {
 	});
 };
 
+exports.configureMinecraft = function(callback) {
+	console.log("Configuring Minecraft...");
+};
+
 exports.login = function() {
 	console.log("Loading login form");
-	win.setView('login');
+	windowManager.loginWindow().show();
 };
 
 exports.controlPanel = function() {
 	console.log("Loading control panel");
-	win.setView('index');
+	windowManager.controlPanel().showWhenReady();
 };
 
 exports.offlinePanel = function() {
 	console.log("Loading offline control panel");
-	win.setView('offline');
+	windowManager.offlinePanel().show();
 };
 
 exports.activate = function() {
@@ -130,7 +119,7 @@ exports.emitEvent = function(name) {
 };
 
 exports.quit = function() {
-	win = null;
+	windowManager.quit();
 	exports.emitEvent('quit');
 };
 

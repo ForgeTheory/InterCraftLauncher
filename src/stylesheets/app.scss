@@ -55,6 +55,7 @@ html, body {
 .navbar {
 	padding: 0;
 	padding-right: 20px;
+	z-index: 9999;
 
 	& .container {
 		padding: 0;
@@ -113,6 +114,7 @@ html, body {
 	flex: 0;
 	width: 300px;
 	min-width: 300px;
+	z-index: 9998;
 	
 
 	& .profile-block {
@@ -150,6 +152,9 @@ html, body {
 		& button:first-of-type {
 			width: 80%;
 			text-transform: none !important;
+			font-size: 1em;
+			padding-top: 10px;
+			padding-bottom: 10px;
 		}
 
 		& button:last-of-type {
@@ -205,8 +210,74 @@ html, body {
 						vertical-align: middle;
 						margin-left: 38px;
 					}
+
+					& .sidenav-number {
+						color: white;
+						display: inline-block;
+						font-size: 0.8em;
+						width: 24px;
+						height: 24px;
+						vertical-align: top;
+						margin-left: 15px;
+						padding-top: 4px;
+						border-radius: 100%;
+						text-align: center;
+					}
+				}
+
+				& .sidenav-dropdown-tab + .sidenav-dropdown {
+					display: none;
+				}
+
+				& .toggled + .sidenav-dropdown {
+					display: block;
+				}
+
+				& .sidenav-dropdown {
+					list-style: none;
+					margin: 0;
+					padding: 7px 0;
+					background: rgb(230, 230, 230);
+
+					& .sidenav-dropdown-link {
+						position: relative;
+						background: rgb(230, 230, 230);
+						color: #444 !important;
+						display: block;
+						padding-left: 60px;
+						height: 32px;
+						
+						&:hover {
+							background: rgb(220, 220, 220);
+						}
+
+						& span:first-of-type {
+							display: inline-block;
+							margin-top: 4px;
+						}
+
+						& .sidenav-subnav-number {
+							color: white;
+							display: inline-block;
+							font-size: 0.6em;
+							width: 18px;
+							height: 18px;
+							vertical-align: top;
+							margin-top: 7px;
+							padding-top: 3px;
+							border-radius: 100%;
+							text-align: center;
+						}
+					}
 				}
 			}
 		}
 	}
 }
+
+.content {
+	& #content {
+		z-index: 1;
+	}
+}
+

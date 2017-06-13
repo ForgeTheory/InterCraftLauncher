@@ -12,6 +12,7 @@ app.on('activate', intercraft.activate);
 // Exit when all windows are closed
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
+		console.log("All windows are closed");
 		intercraft.quit();
 	}
 });
