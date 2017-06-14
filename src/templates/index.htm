@@ -62,14 +62,14 @@
 					</div>
 				</div>
 				<div class="play-button btn-group dropdown">
-					<button class="btn btn-block btn-primary">InterCraft</button>
+					<button class="btn btn-block btn-primary" id="launcher-profile-button">InterCraft</button>
 					<button class="btn btn-block btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						<span class="sr-only">Toggle Dropdown</span>
 					</button>
-					<div class="dropdown-menu">
-						<a href="#" class="dropdown-item">InterCraft</a>
-						<a href="#" class="dropdown-item">forge</a>
-						<a href="#" class="dropdown-item">Vanilla</a>
+					<div class="dropdown-menu" id="launcher-profile-dropdown">
+						<a href="#" class="dropdown-item launcher-profile-link">InterCraft</a>
+						<a href="#" class="dropdown-item launcher-profile-link">forge</a>
+						<a href="#" class="dropdown-item launcher-profile-link">Vanilla</a>
 						<div class="dropdown-divider"></div>
 						<a href="#" class="dropdown-item">Manage Profiles</a>
 					</div>
@@ -148,6 +148,7 @@
 	
 	<!-- Insert this line above script imports  -->
 	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+	<script>const { ipcSend, ipcReceive } = require('electron-simple-ipc');</script>
 	<script>window.$ = window.jQuery = require('../js/jquery.min.js');</script> <!-- JQuery -->
 	<script type="text/javascript" src="../js/tether.min.js"></script>
 	<script type="text/javascript" src="../js/bootstrap.min.js"></script>

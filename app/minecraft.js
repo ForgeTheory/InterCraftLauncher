@@ -2,15 +2,21 @@
 
 const jetpack = require('fs-jetpack');
 const jsonfile = require('jsonfile');
+const path = require('path');
 
 const config = require('./config');
 
 let minecraftDir;
 let launcherProfiles;
+let installedVersions;
+
+exports.minecraftPath = function() {
+	return minecraftDir;
+};
 
 exports.init = function() {
 	var result = true;
-	minecraftDir = jetpack.cwd(config.minecraftPath());
+	minecraftDir = config.minecraftPath();
 	result = result && directoryExists();
 	result = result && filesExist();
 	result = result && loadLauncherProfiles();
@@ -43,7 +49,18 @@ var initLauncherProfiles = function() {
 };
 
 var loadInstalledVersions = function() {
-	
+	installedVersions = {};
+	var versionsDir = minecraftDir.cwd('versions');
+	var folders = versionsDir.list();
+	var file;
+	for (var i = 0; i < folders.length; i++) {
+		file = versionsDir.cwd(folders[i]).path(folders[i] + '.json');
+		installedVersions[folders[i]] = jsonfile.readFileSync(file);
+	}
+};
+
+exports.installedVersions = function() {
+	return installedVersions;
 };
 
 exports.settings = function() {
@@ -81,15 +98,19 @@ exports.setProfiles = function(profiles) {
 	launcherProfiles.profiles = profiles;
 };
 
+exports.account = function(accountId) {
+	return launcherProfiles.authenticationDatabase[accountId];
+};
+
 exports.accounts = function() {
 	return launcherProfiles.authenticationDatabase;
 };
 
-exports.setProfile = function(id, value) {
+exports.setAccount = function(id, data) {
 	launcherProfiles.authenticationDatabase[id] = value;
 };
 
-exports.addProfile = function(id, accessToken, email, uuid, username) {
+exports.addAccount = function(id, accessToken, email, uuid, username) {
 	var profile = {
 		"accessToken": accessToken,
 		"username": email,
@@ -100,6 +121,22 @@ exports.addProfile = function(id, accessToken, email, uuid, username) {
 		"displayName": username
 	};
 	launcherProfiles.authenticationDatabase[id] = profile;
+};
+
+exports.selectedAccount = function() {
+	return launcherProfiles.selectedUser;
+};
+
+exports.accountUsername = function(accountId) {
+	return exports.account(accountId).profiles[exports.accountUuid(accountId)].displayName;
+};
+
+exports.accountUuid = function(accountId) {
+	return Object.keys(exports.account(accountId).profiles)[0];
+};
+
+exports.accountAccessToken = function(accountId) {
+	return exports.account(accountId).accessToken;
 };
 
 exports.save = function() {

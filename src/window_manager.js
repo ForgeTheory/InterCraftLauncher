@@ -21,7 +21,7 @@ var createWindow = function(name, properties) {
 	var win = new BrowserWindow(properties);
 	win.name = name;
 	win.isReadyToShow = false;
-	win.showWhenReady = false;
+	win.showWhenReadyEnabled = false;
 	win.setMenu(null);
 
 	win.on('closed', () => {
@@ -49,16 +49,16 @@ var createWindow = function(name, properties) {
 
 	win.on('ready-to-show', () => {
 		win.isReadyToShow = true;
-		if (win.showWhenReady)
+		if (win.showWhenReadyEnabled)
 			win.show();
-		win.showWhenReady = false;
+		win.showWhenReadyEnabled = false;
 	});
 
 	win.showWhenReady = () => {
 		if (win.isReadyToShow)
 			win.show();
 		else
-			win.showWhenReady = true;
+			win.showWhenReadyEnabled = true;
 	};
 
 	// Add the window to the list and return

@@ -5,16 +5,24 @@ const jetpack = require('fs-jetpack');
 const jsonfile = require('jsonfile');
 const os = require('os');
 
-let config;
+var config;
 
-let rootPath = jetpack;
-let dataPath = jetpack.cwd(os.homedir());
+var javaHome;
+var rootPath = jetpack;
+var dataPath = function() {
+	var path = jetpack.cwd(os.homedir());
+	if (process.platform == 'win32')
+		path = path.cwd('./AppData/Roaming');
+	return path;
+}();
 
-if (process.platform == 'win32') {
-	dataPath = dataPath.cwd('./AppData/Roaming');
-}
+require('find-java-home')((err, home) => {
+	if (err)
+		return console.err("Could not find java installation!");
+	javaHome = jetpack.cwd(home);
+});
 
-let generate = function() {
+var generate = function() {
 	config = {
 		"configured": false,
 		"minecraft_path": dataPath.path('.minecraft'),
@@ -37,7 +45,24 @@ exports.save = function() {
 };
 
 exports.minecraftPath = function() {
-	return config['minecraft_path'];
+	return jetpack.cwd(config['minecraft_path']);
+};
+
+exports.setMinecraftPath = function(path) {
+	config['minecraft_path'] = path;
+};
+
+exports.tempPath = function() {
+	var path;
+	if (process.platform == 'win32')
+		path = dataPath.cwd('../Local/Temp');
+	else
+		path = jetpack.cwd('/tmp');
+	return path;
+};
+
+exports.javaPath = function() {
+	return javaHome.cwd('bin/java.exe');
 };
 
 exports.accessToken = function() {

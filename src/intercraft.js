@@ -6,6 +6,7 @@ const url = require('url');
 const config = require('./config');
 const intercraftAuth = require('./intercraft_auth');
 const minecraft = require('./minecraft');
+const minecraftLauncher = require('./minecraft_launcher');
 const windowManager = require('./window_manager');
 
 let profile;
@@ -37,6 +38,15 @@ let initEvents = function() {
 	ipcReceive('initialized', (payload) => {
 		console.log("Initialized");
 		exports.getInterCraftSession();
+	});
+
+	ipcReceive('control_panel_done', (payload) => {
+		console.log("Control panel finished loading, ready to show...");
+		windowManager.controlPanel().showWhenReady();
+	});
+
+	ipcReceive('control_panel_launch_minecraft', (payload) => {
+		minecraftLauncher.preLaunch(payload.profile, () => {});
 	});
 };
 
@@ -97,8 +107,12 @@ exports.login = function() {
 };
 
 exports.controlPanel = function() {
-	console.log("Loading control panel");
-	windowManager.controlPanel().showWhenReady();
+	windowManager.initControlPanel();
+	windowManager.controlPanel().once('ready-to-show', () => {
+		ipcSend('control_panel_preload_launcher_profiles', minecraft.profiles());
+		console.log("Control panel thingy.");
+		ipcSend('control_panel_preload_done', true);
+	});
 };
 
 exports.offlinePanel = function() {
