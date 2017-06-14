@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const unzip = require('unzip');
 const {spawn} = require('child_process');
+const isRunning = require('is-running');
 
 const config = require('./config');
 const minecraft = require('./minecraft');
@@ -32,10 +33,10 @@ var generateSession = function() {
 			id += chars[Math.floor(Math.random()*16)];
 
 	// Create the path
-	path = config.tempPath().cwd(id);
+	path = config.tempPath().path(id);
 	
 	// Create the temp directory
-	jetpack.dir(path.path());
+	jetpack.dir(path);
 
 	sessions[id] = {
 		'launcherProfile': undefined,
@@ -46,13 +47,62 @@ var generateSession = function() {
 		'ready': false,
 		'launched': false,
 		'javaDir': config.javaPath().path(),
-		'tempPath': path.path(),
+		'tempPath': path,
 		'gameDir': config.minecraftPath().path(),
 		'jarPath': '',
 		'jvmArgs': '',
-		'minecraftAccount': minecraft.selectedAccount()
+		'minecraftAccount': minecraft.selectedAccount().account,
+		'pid': null
 	};
+
+	exports.saveSessions();
+
 	return id;
+};
+
+exports.saveSessions = function() {
+	var sess = JSON.parse(JSON.stringify(sessions));
+	var keys = Object.keys(sess);
+
+	for (var i = 0; i < keys.length; i++) {
+		delete sess[keys[i]].profile;
+		delete sess[keys[i]].version;
+	}
+
+	console.log(sess);
+
+	jsonfile.writeFile('./sessions.json', sess, {spaces: 2}, (err) => {
+		if (err)
+			console.error("Error saving sessions:", err);
+	});
+};
+
+exports.init = function() {
+	console.log("Loading launcher sessions...");
+	if (jetpack.exists('./sessions.json')) {
+		sessions = jsonfile.readFileSync('./sessions.json');
+		var keys = Object.keys(sessions);
+		for (var i = 0; i < keys.length; i++) {
+			loadLauncherProfile(sessions[keys[i]].launcherProfile, keys[i]);
+			loadVersionInfo(sessions[keys[i]].profile, keys[i]);
+		}
+		exports.clean();
+	} else
+		sessions = {};
+};
+
+exports.clean = function() {
+	var keys = Object.keys(sessions);
+	console.log("The keys are", keys, sessions);
+	for (var i = 0; i < keys.length; i++) {
+		if (isRunning(sessions[keys[i]].pid)) {
+			console.log("Found running MC");
+		} else {
+			jetpack.remove(config.tempPath().path(keys[i]));
+			delete sessions[keys[i]];
+		}
+	}
+	exports.saveSessions();
 };
 
 exports.preLaunch = function(launcherProfile, callback) {
@@ -60,11 +110,8 @@ exports.preLaunch = function(launcherProfile, callback) {
 	console.log("Initiating prelaunch...");
 
 	var sessionId = generateSession();
-	var profile = minecraft.profiles()[launcherProfile];
-
-	// Save the current profile
 	sessions[sessionId].launcherProfile = launcherProfile;
-	sessions[sessionId].profile = profile;
+	var profile = loadLauncherProfile(launcherProfile, sessionId);
 
 	// Set the game directory
 	if (profile.gameDir != undefined)
@@ -85,8 +132,7 @@ exports.preLaunch = function(launcherProfile, callback) {
 		sessions[sessionId].jvmArgs = profile.javaArgs; 
 
 	// Get the selected version from the launcher profile
-	var version = minecraft.installedVersions()[profile.lastVersionId];
-	sessions[sessionId].version = version;
+	var version = loadVersionInfo(profile, sessionId);
 
 	var versionId;
 	if (version.inheritsFrom != undefined) {
@@ -103,6 +149,16 @@ exports.preLaunch = function(launcherProfile, callback) {
 	prepareLibraries(version.libraries, sessionId);
 };
 
+var loadLauncherProfile = function(profile, sessionId) {
+	sessions[sessionId].profile = minecraft.profiles()[profile];
+	return sessions[sessionId].profile;
+};
+
+var loadVersionInfo = function(profile, sessionId) {
+	sessions[sessionId].version = minecraft.installedVersions()[profile.lastVersionId];
+	return sessions[sessionId].version;
+};
+
 var launch = function(sessionId) {
 	console.log("Launching...");
 	var session = sessions[sessionId];
@@ -117,7 +173,7 @@ var launch = function(sessionId) {
 	var gameDir = session.gameDir;
 	var assetsRoot = jetpack.cwd(gameDir).path('assets');
 	var jvmArgs = session.jvmArgs.split(' ');
-	var username = minecraft.accountUsername(session.minecraftAccount.account);
+	var username = minecraft.accountUsername(session.minecraftAccount);
 	var libraries = session.libraries.join(';') + ';' + session.jarPath;
 	var version = session.profile.lastVersionId;
 	var mcArgs = session.version.minecraftArguments.split(" ");
@@ -127,8 +183,8 @@ var launch = function(sessionId) {
 		"${game_directory}": gameDir,
 		"${assets_root}": assetsRoot,
 		"${assets_index_name}": session.version.assets,
-		"${auth_uuid}": session.minecraftAccount.profile,
-		"${auth_access_token}": minecraft.accountAccessToken(session.minecraftAccount.account),
+		"${auth_uuid}": minecraft.accountUuid(session.minecraftAccount),
+		"${auth_access_token}": minecraft.accountAccessToken(session.minecraftAccount),
 		"${user_type}": "mojang",
 		"${version_type}": session.version.type
 	};
@@ -154,15 +210,22 @@ var launch = function(sessionId) {
 	args.push(session.version.mainClass);
 	args = args.concat(mcArgs);
 
-	console.log("The args are", config.javaPath().path() + ' ' + args.join(" "));
-
-	var ls = spawn(config.javaPath().path(), args, {
-		detached: true
+	var mcInstance = spawn(config.javaPath().path(), args, {
+		cwd: session.gameDir,
+		detached: true,
 	});
 
-	ls.stdout.on('data', (data) => {
+	mcInstance.stdout.on('data', (data) => {
 		console.log(`stdout: ${data}`);
 	});
+
+	mcInstance.on('close', (code) => {
+		exports.clean();
+	});
+
+	session.pid = mcInstance.pid;
+
+	exports.saveSessions();
 };
 
 var latestRelease = function(profile, callback) {

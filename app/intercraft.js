@@ -68,11 +68,17 @@ exports.init = function() {
 };
 
 var initMinecraft = function() {
-	var nextStep = parseInterCraftSession;
+	var nextStep = initMinecraftLauncher;
 	if (!minecraft.init())
 		exports.configureMinecraft(nextStep);
 	else
 		nextStep();
+};
+
+var initMinecraftLauncher = function() {
+	var nextStep = parseInterCraftSession;
+	minecraftLauncher.init();
+	nextStep();
 };
 
 var parseInterCraftSession = function() {

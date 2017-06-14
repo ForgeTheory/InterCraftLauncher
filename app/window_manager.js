@@ -100,7 +100,7 @@ exports.initControlPanel = function() {
 	controlWin.on('closed', () => {
 		controlWin = null;
 	});
-	controlWin.openDevTools();
+	// controlWin.openDevTools();
 	controlWin.setView('index');
 };
 

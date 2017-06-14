@@ -19,6 +19,7 @@
     "electron-packager": "^8.7.1",
     "find-java-home": "^0.1.4",
     "fs-jetpack": "^1.0.0",
+    "is-running": "^2.1.0",
     "jquery": "^3.2.1",
     "jsonfile": "^3.0.0",
     "needle": "^1.6.0",
