@@ -2,6 +2,10 @@
 config.json
 sessions.json
 
+# Compiled files
+app/*.js
+app/*.js.map
+
 # Sass
 .sass-cache/
 

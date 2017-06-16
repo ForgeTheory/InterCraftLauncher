@@ -1,1 +1,0 @@
-{"version":3,"file":"event_handler.js","sources":["src/event_handler.js"],"sourcesContent":["const { ipcSend, ipcReceive } = require('electron-simple-ipc');"],"names":[],"mappings":";;AAAA,MAAM,EAAE,OAAO,EAAE,UAAU,EAAE,GAAG,OAAO,CAAC,qBAAqB,CAAC"}

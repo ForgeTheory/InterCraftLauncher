@@ -19,6 +19,8 @@ exports.login = function(email, password, callback) {
 		'email': email,
 		'password': password
 	}, (err, resp, body) => {
+		if (err)
+			console.log("ERROR: Failed handling login request!", err);
 		config.setAccessToken(resp.statusCode == 200 ? body.access_token : null);
 		callback({
 			'isValid': resp.statusCode == 200,
@@ -32,6 +34,8 @@ exports.fetchProfile = function(callback) {
 	needle.post(DOMAIN + '/profile', {
 		'access_token': config.accessToken()
 	}, (err, resp, body) => {
+		if (err)
+			console.log("ERROR: Failed to fetch profile!",err);
 		callback(resp.statusCode == 200 ? body : null);
 	});
 };
