@@ -7,7 +7,7 @@ exports.isOnline = function(callback) {
 	console.log("Checking if the server is online...");
 	got.get(DOMAIN + '/status')
 		.then(response => {
-			callback(resp && resp.statusCode == 200);
+			callback(response.statusCode == 200);
 		}); 
 };
 
@@ -40,7 +40,7 @@ exports.fetchProfile = function(callback) {
 			'access_token': config.accessToken()
 		}
 	}).then(response => {
-		callback(resp.statusCode == 200 ? response.body : null);
+		callback(response.statusCode == 200 ? response.body : null);
 	}).catch(error => {
 		console.log("ERROR: Failed to send fetch profile requset", error);
 	});
