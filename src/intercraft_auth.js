@@ -7,7 +7,7 @@ exports.isOnline = function(callback) {
 	console.log("Checking if the server is online...");
 	needle.get(DOMAIN + '/status', (err, resp) => {
 		if (err)
-			console.log("ERROR checking the server status", err, );
+			console.log("ERROR checking the server status", err);
 		console.log("The server status is", resp.statusCode);
 		callback(resp && resp.statusCode == 200);
 	}); 
