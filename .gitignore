@@ -1,5 +1,6 @@
 # Configs
 config.json
+sessions.json
 
 # Sass
 .sass-cache/

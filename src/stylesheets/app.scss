@@ -6,290 +6,40 @@
 // Variables
 @import "variables";
 
-// Views
-@import "config-wizard";
+// Widgets
+@import 'card';
+@import 'navbar';
+@import 'sidebar';
+
+// Pages
 @import "login";
 
-html, body {
-	padding: 0;
-	background: rgb(244, 244, 244);
-	min-height: 100vh;
-	height: auto;
-	box-sizing: border-box;
-	overflow: auto;
-}
-
 .main-container {
-	position: absolute;
+	height: 100vh;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	box-sizing: border-box;
-}
-
-.top {
-	box-sizing: border-box;
-}
-
-.window-title-bar {
-	-webkit-app-region: drag;
-	text-align: right;
-	width: 100%;
-	background: #222;
-	padding: 3px;
-	box-sizing: border-box;
-}
-
-.window-title-bar a {
-	color: #999;
-	cursor: pointer;
-	font-size: 15px;
-	outline: none;
-	padding: 6px;
-	transition: 0.3s ease;
-	-webkit-app-region: no-drag;
-	&:hover {
-		color: white;
-	}
-	&:focus {
-		outline: none;
-	}
-}
-
-.navbar {
-	padding: 0;
-	padding-right: 20px;
-	z-index: 9999;
-
-	& .container {
-		padding: 0;
-		padding-left: 15px;
-		min-width: 100%;
-		width: 100%;
-
-		& .navbar-brand {
-			display: block !important;
-			height: 100%;
-			padding: 10px;
-			letter-spacing: 2px;
-		}
-
-		& .navbar-brand, & .nav-item {
-			font-size: 1.4em;
-			padding-left: 10px;
-			padding-right: 10px;
-		}
-
-		& .nav-item {
-			& img {
-				vertical-align: top;
-				height: 24px !important;
-				margin: 5px 10px 0 10px;
-			}
-
-			& .nav-link {
-				color: #636c72;
-				padding-top: 3px;
-				padding-bottom: 3px;
-			}
-		}
-	}
 }
 
 .content-container {
-	position: relative;
+	flex: 1;
+	width: 100%;
 	display: flex;
-	flex-direction: row;
+}
+
+.main-content {
 	flex: 1;
-	height: 100%;
-	box-sizing: border-box;
-}
-
-.content {
-	position: relative;
-	box-sizing: border-box;
-	height: 100%;
-	flex: 1;
-	z-index: 998;
 	overflow: auto;
+	padding: 15px !important;
+	background: #f4f4f4;
 }
 
-.sidebar {
-	height: 100%;
-	box-sizing: border-box;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
-	background: white;
-	flex: 0;
-	width: 300px;
-	min-width: 300px;
-	z-index: 9998;
-	overflow: auto;
-
-	& .profile-block {
-		box-sizing: border-box;
-		padding-left: 20px;
-
-		& > div {
-			box-sizing: border-box;
-			display: inline-block;
-			padding: 30px 0px;
-			&:first-of-type {
-				margin-right: 20px;
-			}
-			&:nth-of-type(2) {
-				padding-top: 25px;
-
-				& .sidebar-username {
-					font-size: 18px;
-				}
-
-				& .sidebar-email {
-					font-size: 12px;
-				}
-			} 
-			vertical-align: middle;
-		}
-	} // end profile-block
-
-	& .play-button {
-		margin-bottom: 20px;
-		width: 100%;
-		padding: 0 20px;
-		position: relative;
-
-		& button:first-of-type {
-			width: 80%;
-			text-transform: none !important;
-			font-size: 1em;
-			padding-top: 10px;
-			padding-bottom: 10px;
-		}
-
-		& button:last-of-type {
-			width: 20%;
-			font-size: 1.5em;
-			padding: 0;
-
-			&::after {
-				margin-left: 0 !important;
-			}
-		}
-
-		& .dropdown-menu {
-			left: 20px !important;
-			right: 20px !important;
-		}
-	}
-
-	& .sidenav {
-		& .sidenav-container {
-			list-style: none;
-			margin: 0;
-			padding: 0;
-			margin-bottom: 50px;
-
-			& .sidenav-item {
-				& .sidenav-link {
-					position: relative;
-					display: block;
-					padding: 13px 0px 13px 20px;
-					color: #333;
-					font-size: 15px;
-					transition: background 0.2s ease;
-
-					&:hover, &.active {
-						background: rgb(240, 240, 240);
-					}
-
-					& .sidenav-icon {
-						position: absolute;
-						font-size: 20px;
-						top: 10px;
-					}
-
-					& .sidenav-icon-img {
-						position: absolute;
-						top: 13px;
-						& img {
-							height: 20px;
-						}
-					}
-
-					& .sidenav-name {
-						vertical-align: middle;
-						margin-left: 38px;
-					}
-
-					& .sidenav-number {
-						color: white;
-						display: inline-block;
-						font-size: 0.8em;
-						width: 24px;
-						height: 24px;
-						vertical-align: top;
-						margin-left: 15px;
-						padding-top: 4px;
-						border-radius: 100%;
-						text-align: center;
-					}
-				}
-
-				& .sidenav-dropdown-tab + .sidenav-dropdown {
-					display: none;
-				}
-
-				& .toggled + .sidenav-dropdown {
-					display: block;
-				}
-
-				& .sidenav-dropdown {
-					list-style: none;
-					margin: 0;
-					padding: 7px 0;
-					background: rgb(230, 230, 230);
-
-					& .sidenav-dropdown-link {
-						position: relative;
-						background: rgb(230, 230, 230);
-						color: #444 !important;
-						display: block;
-						padding-left: 60px;
-						height: 32px;
-						
-						&:hover {
-							background: rgb(220, 220, 220);
-						}
-
-						& span:first-of-type {
-							display: inline-block;
-							margin-top: 4px;
-						}
-
-						& .sidenav-subnav-number {
-							color: white;
-							display: inline-block;
-							font-size: 0.6em;
-							width: 18px;
-							height: 18px;
-							vertical-align: top;
-							margin-top: 7px;
-							padding-top: 3px;
-							border-radius: 100%;
-							text-align: center;
-						}
-					}
-				}
-			}
-		}
-	}
+.row-main {
+	opacity: 1;
+	transition: margin 0.5s cubic-bezier(0.0, 0.0, 0.2, 1), opacity 0.5s cubic-bezier(0.0, 0.0, 0.2, 1);
 }
 
-.content {
-	& #content {
-		z-index: 1;
-	}
+.unloaded {
+	margin-top: 20px !important;
+	opacity: 0;
 }
-

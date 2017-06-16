@@ -77,7 +77,10 @@ var initMinecraftLauncher = function() {
 var parseInterCraftSession = function() {
 	intercraftAuth.isOnline((isOnline) => {
 		if (isOnline)
-			if (config.accessToken() == null)
+			if (config.accessToken() == null ||
+				config.accessToken == undefined ||
+				config.accessToken().length != 40)
+				
 				exports.login();
 			else
 				intercraftAuth.fetchProfile((result) => {
@@ -104,7 +107,7 @@ exports.configureMinecraft = function(callback) {
 
 exports.login = function() {
 	console.log("Loading login form");
-	windowManager.loginWindow().show();
+	windowManager.loginWindow().showWhenReady();
 };
 
 exports.controlPanel = function() {
@@ -113,7 +116,11 @@ exports.controlPanel = function() {
 		ipcSend('control_panel_preload_launcher_profiles', minecraft.profiles());
 		console.log("Control panel thingy.");
 		ipcSend('control_panel_preload_done', true);
+		if (windowManager.loginWindow()) {
+			windowManager.closeWindow('login');
+		}
 	});
+	// windowManager.controlPanel().show();
 };
 
 exports.offlinePanel = function() {

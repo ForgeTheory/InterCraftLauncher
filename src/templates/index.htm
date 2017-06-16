@@ -10,15 +10,9 @@
 	<link rel="stylesheet" href="../css/app.css">
 
 </head>
-<body class="login-bg">
-	
+<body>
 	<div class="main-container">
 		<div class="top">
-			<!--<div class="window-title-bar">
-				<a href="" class="waves-effect waves-dark"><i class="mdi mdi-window-minimize"></i></a><!-- 
-			 --><!--<a href="" class="waves-effect waves-dark"><i class="mdi mdi-square-outline"></i></a><!-- 
-			 --><!--<a href="" class="waves-effect waves-dark"><i class="mdi mdi-window-close"></i></a>
-			</div>-->
 			<nav class="navbar navbar-toggleable-md navbar-light white">
 				<div class="container">
 					<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav4" aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,9 +61,6 @@
 						<span class="sr-only">Toggle Dropdown</span>
 					</button>
 					<div class="dropdown-menu" id="launcher-profile-dropdown">
-						<a href="#" class="dropdown-item launcher-profile-link">InterCraft</a>
-						<a href="#" class="dropdown-item launcher-profile-link">forge</a>
-						<a href="#" class="dropdown-item launcher-profile-link">Vanilla</a>
 						<div class="dropdown-divider"></div>
 						<a href="#" class="dropdown-item">Manage Profiles</a>
 					</div>
@@ -139,17 +130,16 @@
 						</li>
 					</ul>
 				</nav>
-			</div>
-			<div class="content" style="padding-top: 15px;" id="viewport">
-				
+			</div><!-- 
+		 --><div class="container main-content" id="viewport">
 			</div>
 		</div>
 	</div>
-	
 	<!-- Insert this line above script imports  -->
 	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 	<script>const { ipcSend, ipcReceive } = require('electron-simple-ipc');</script>
 	<script>window.$ = window.jQuery = require('../js/jquery.min.js');</script> <!-- JQuery -->
+	<script>const reload = require('electron-css-reload');</script>
 	<script type="text/javascript" src="../js/tether.min.js"></script>
 	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="../js/mdb.min.js"></script>

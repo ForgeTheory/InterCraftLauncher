@@ -108,6 +108,33 @@ exports.controlPanel = function() {
 	return windows.control;
 };
 
+exports.initLoginWindow = function() {
+	var loginWindow = createWindow('login', {
+		width: 420,
+		height: 480,
+		frame: true,
+		resizable: false
+	});
+	loginWindow.on('closed', () => {
+		loginWindow = null;
+	});
+	loginWindow.setView('login');
+};
+
+exports.loginWindow = function() {
+	if (windows.login == undefined)
+		exports.initLoginWindow();
+	return windows.login;
+};
+
+exports.closeWindow = function(windowId) {
+	console.log("Closing", windowId);
+	if (windows[windowId] != undefined && windows[windowId] != null) {
+		windows[windowId].close();
+		delete windows[windowId];
+	}
+};
+
 exports.quit = function() {
 	console.log("Closing windows...");
 	var keys = Object.keys(windows);

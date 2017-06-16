@@ -3,6 +3,7 @@ var currentView = 'dashboard';
 
 var init = function() {
 	viewport = $("#viewport");
+	loadView('dashboard');
 };
 
 var setProfiles = function(profiles, defaultIndex = 0) {
@@ -48,8 +49,16 @@ var loadView = function(view) {
 };
 
 var displayView = function(view) {
-	console.log("Displaying view:", view);
-	$('#viewport').html(view);
+	$view = $(view).addClass('unloaded');
+	$('#viewport').html($view);
+	console.log($view);
+	$view.each(function(index) {
+		var $v = $(this);
+		setTimeout(function() {
+			console.log("Adding class");
+			$v.removeClass('unloaded');
+		}, 100*(index+1));
+	});
 };
 
 $(document).ready(function() {
@@ -94,5 +103,5 @@ ipcReceive('control_panel_preload_done', function(payload) {
 ipcReceive('view_result', function(payload) {
 	if (payload.key == "control_panel")
 		if (currentView == payload.view)
-			displayView($(payload.html));
+			displayView(payload.html);
 });
