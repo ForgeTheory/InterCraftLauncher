@@ -24,6 +24,7 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('minecraft.js'), destDir.path('minecraft.js')),
 		bundle(srcDir.path('minecraft_launcher.js'), destDir.path('minecraft_launcher.js')),
 		bundle(srcDir.path('mojang.js'), destDir.path('mojang.js')),
+		bundle(srcDir.path('view_loader.js'), destDir.path('view_loader.js')),
 		bundle(srcDir.path('window_manager.js'), destDir.path('window_manager.js'))
 	]);
 });

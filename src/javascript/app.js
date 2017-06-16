@@ -1,7 +1,8 @@
-var content;
+var viewport;
+var currentView = 'dashboard';
 
 var init = function() {
-	content = $("#content");
+	viewport = $("#viewport");
 };
 
 var setProfiles = function(profiles, defaultIndex = 0) {
@@ -39,22 +40,30 @@ var setProfiles = function(profiles, defaultIndex = 0) {
 	$('.launcher-profile-link').eq(defaultIndex).click();
 };
 
-ipcReceive('control_panel_preload_launcher_profiles', function(payload) {
-	console.log("Preloading launcher profiles");
-	setProfiles(payload);
-});
+var loadView = function(view) {
+	ipcSend('view_load', {
+		'key': 'control_panel',
+		'view': view
+	});
+};
 
-ipcReceive('control_panel_preload_done', function(payload) {
-	console.log("Finished preloading...");
-	ipcSend('control_panel_done', true);
-});
+var displayView = function(view) {
+	console.log("Displaying view:", view);
+	$('#viewport').html(view);
+};
 
 $(document).ready(function() {
 	init();
 	
 	$('.sidenav-tab').click(function(e) {
-		$('.sidenav-item > .active').removeClass('active');
-		$(e.target).addClass('active');
+		console.log("Loading view...");
+		if ($(e.target).attr('view') != currentView) {
+			console.log("View can be loaded");
+			$('.sidenav-item > .active').removeClass('active');
+			$(e.target).addClass('active');
+			currentView = $(e.target).attr('view');
+			loadView($(e.target).attr('view'));
+		}
 	});
 
 	$('.sidenav-dropdown-tab').click(function(e) {
@@ -70,4 +79,20 @@ $(document).ready(function() {
 			'profile': $('input[name=launcher-profile-id]:checked').val()
 		});
 	});
+});
+
+ipcReceive('control_panel_preload_launcher_profiles', function(payload) {
+	console.log("Preloading launcher profiles");
+	setProfiles(payload);
+});
+
+ipcReceive('control_panel_preload_done', function(payload) {
+	console.log("Finished preloading...");
+	ipcSend('control_panel_done', true);
+});
+
+ipcReceive('view_result', function(payload) {
+	if (payload.key == "control_panel")
+		if (currentView == payload.view)
+			displayView($(payload.html));
 });

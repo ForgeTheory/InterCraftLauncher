@@ -7,6 +7,7 @@ const config = require('./config');
 const intercraftAuth = require('./intercraft_auth');
 const minecraft = require('./minecraft');
 const minecraftLauncher = require('./minecraft_launcher');
+const viewLoader = require('./view_loader');
 const windowManager = require('./window_manager');
 
 let profile;
@@ -21,34 +22,31 @@ let eventListeners = {
 	"quit": []
 };
 
-let initEvents = function() {
-
-	// Login Event
-	ipcReceive('login', (payload) => {
-		intercraftAuth.login(payload.email, payload.password, (result) => {
-			if (result.isValid) {
-				console.log("Valid");
-				exports.controlPanel();
-			} else {
-				console.log("Failed to authenticate");
-			}
-		});
+// Login Event
+ipcReceive('login', (payload) => {
+	intercraftAuth.login(payload.email, payload.password, (result) => {
+		if (result.isValid) {
+			console.log("Valid");
+			exports.controlPanel();
+		} else {
+			console.log("Failed to authenticate");
+		}
 	});
+});
 
-	ipcReceive('initialized', (payload) => {
-		console.log("Initialized");
-		exports.getInterCraftSession();
-	});
+ipcReceive('initialized', (payload) => {
+	console.log("Initialized");
+	exports.getInterCraftSession();
+});
 
-	ipcReceive('control_panel_done', (payload) => {
-		console.log("Control panel finished loading, ready to show...");
-		windowManager.controlPanel().showWhenReady();
-	});
+ipcReceive('control_panel_done', (payload) => {
+	console.log("Control panel finished loading, ready to show...");
+	windowManager.controlPanel().showWhenReady();
+});
 
-	ipcReceive('control_panel_launch_minecraft', (payload) => {
-		minecraftLauncher.preLaunch(payload.profile, () => {});
-	});
-};
+ipcReceive('control_panel_launch_minecraft', (payload) => {
+	minecraftLauncher.preLaunch(payload.profile, () => {});
+});
 
 exports.init = function() {
 
@@ -57,9 +55,6 @@ exports.init = function() {
 
 	// Initialize the window manager
 	windowManager.init();
-
-	// Setup the events
-	initEvents();
 
 	// Display the splash, and boot once shown
 	windowManager.splash(initMinecraft);
