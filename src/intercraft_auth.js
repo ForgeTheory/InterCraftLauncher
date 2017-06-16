@@ -1,41 +1,47 @@
-const needle = require('needle');
+const got = require('got');
 const config = require('./config');
 
 const DOMAIN = "https://dev.intercraftmc.com/auth";
 
 exports.isOnline = function(callback) {
 	console.log("Checking if the server is online...");
-	needle.get(DOMAIN + '/status', (err, resp) => {
-		if (err)
-			console.log("ERROR checking the server status", err);
-		console.log("The server status is", resp.statusCode);
-		callback(resp && resp.statusCode == 200);
-	}); 
+	got.get(DOMAIN + '/status')
+		.then(response => {
+			callback(resp && resp.statusCode == 200);
+		}); 
 };
 
 exports.login = function(email, password, callback) {
 	console.log("Requesting access token with the given credentials");
-	needle.post(DOMAIN + '/login', {
-		'email': email,
-		'password': password
-	}, (err, resp, body) => {
-		if (err)
-			console.log("ERROR: Failed handling login request!", err);
-		config.setAccessToken(resp.statusCode == 200 ? body.access_token : null);
+	got.post(DOMAIN + '/login', {
+		form: true,
+		json: true,
+		body: {
+			'email': email,
+			'password': password
+		}
+	}).then(response => {
+		config.setAccessToken(response.statusCode == 200 ? response.body.access_token : null);
 		callback({
-			'isValid': resp.statusCode == 200,
-			'errorCode': body.error_code
+			'isValid': response.statusCode == 200,
+			'errorCode': response.body.error_code
 		});
+	}).catch(error => {
+		console.log("ERROR: Failed to send login request", error);
 	});
 };
 
 exports.fetchProfile = function(callback) {
 	console.log("Getting the profile from the access token");
-	needle.post(DOMAIN + '/profile', {
-		'access_token': config.accessToken()
-	}, (err, resp, body) => {
-		if (err)
-			console.log("ERROR: Failed to fetch profile!",err);
-		callback(resp.statusCode == 200 ? body : null);
+	got.post(DOMAIN + '/profile', {
+		form: true,
+		json: true,
+		body: {
+			'access_token': config.accessToken()
+		}
+	}).then(response => {
+		callback(resp.statusCode == 200 ? response.body : null);
+	}).catch(error => {
+		console.log("ERROR: Failed to send fetch profile requset", error);
 	});
 };
