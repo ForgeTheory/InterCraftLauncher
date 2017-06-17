@@ -16,7 +16,7 @@ var dataPath = function() {
 
 require('find-java-home')((err, home) => {
 	if (err)
-		return console.err("Could not find java installation!");
+		return console.error("Could not find java installation!");
 	javaHome = jetpack.cwd(home);
 });
 
@@ -62,7 +62,7 @@ exports.tempPath = function() {
 exports.javaPath = function() {
 	if (process.platform == 'win32')
 		return javaHome.cwd('bin/java.exe');
-	return javaHome.cwd(bin/java);
+	return javaHome.cwd('bin/java');
 };
 
 exports.accessToken = function() {
