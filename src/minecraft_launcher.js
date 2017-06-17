@@ -75,10 +75,20 @@ exports.saveSessions = function() {
 	});
 };
 
+exports.loadSessions = function() {
+	sessions = jsonfile.readFileSync('./sessions.json');
+	var keys = Object.keys(sessions);
+	for (var i = 0; i < keys.length; i++) {
+		if (sessions[keys[i]].launcherProfile == undefined) {
+			delete sessions[keys[i]];
+		}
+	}
+};
+
 exports.init = function() {
 	console.log("Loading launcher sessions...");
 	if (jetpack.exists('./sessions.json')) {
-		sessions = jsonfile.readFileSync('./sessions.json');
+		exports.loadSessions();
 		var keys = Object.keys(sessions);
 		for (var i = 0; i < keys.length; i++) {
 			loadLauncherProfile(sessions[keys[i]].launcherProfile, keys[i]);
@@ -91,11 +101,8 @@ exports.init = function() {
 
 exports.clean = function() {
 	var keys = Object.keys(sessions);
-	console.log("The keys are", keys, sessions);
 	for (var i = 0; i < keys.length; i++) {
-		if (isRunning(sessions[keys[i]].pid)) {
-			console.log("Found running MC");
-		} else {
+		if (!isRunning(sessions[keys[i]].pid)) {
 			jetpack.remove(config.tempPath().path(keys[i]));
 			delete sessions[keys[i]];
 		}
@@ -143,18 +150,10 @@ exports.preLaunch = function(launcherProfile, callback) {
 		versionId = version.id;
 	sessions[sessionId].jarPath = config.minecraftPath().cwd('versions').cwd(versionId).path(versionId + '.jar');
 
+	console.log("The current session is now", sessions[sessionId]);
+
 	// Parse the libraries
 	prepareLibraries(version.libraries, sessionId);
-};
-
-var loadLauncherProfile = function(profile, sessionId) {
-	sessions[sessionId].profile = minecraft.profiles()[profile];
-	return sessions[sessionId].profile;
-};
-
-var loadVersionInfo = function(profile, sessionId) {
-	sessions[sessionId].version = minecraft.installedVersions()[profile.lastVersionId];
-	return sessions[sessionId].version;
 };
 
 var launch = function(sessionId) {
@@ -226,6 +225,20 @@ var launch = function(sessionId) {
 	exports.saveSessions();
 };
 
+var loadLauncherProfile = function(profile, sessionId) {
+	sessions[sessionId].profile = minecraft.profiles()[profile];
+	return sessions[sessionId].profile;
+};
+
+var loadVersionInfo = function(profile, sessionId) {
+	console.log("Loading", profile);
+	if (profile.lastVersionId) {
+		sessions[sessionId].version = minecraft.installedVersions()[profile.lastVersionId];
+		return sessions[sessionId].version;
+	}
+	return null;
+};
+
 var latestRelease = function(profile, callback) {
 
 };
@@ -247,19 +260,28 @@ var prepareLibraries = function(libraries, sessionId) {
 
 var prepareLibrary = function(library, sessionId) {
 
+	console.log("Preparing library", library.name);
+
 	if (!isLibraryAllowed(library))
 		return;
 
+	console.log("The library is allowed");
+
 	var artifact = undefined;
 	if (library.downloads != undefined) {
+		console.log("Downloads are available");
 		if (library.natives == undefined) {
+			console.log("Natives are available");
 			if (library.downloads.artifact != undefined) {
+				console.log("The artifact exists");
 				artifact = library.downloads.artifact;
 			}
 		} else {
+			console.log("Using natives");
 			artifact = library.downloads.classifiers[library.natives[operatingSystem()]];
 		}
 	} else {
+		console.log("Parsing local dependency");
 		sessions[sessionId].totalLibraries++;
 		parseLocalDependency(library, sessionId);
 		return;
@@ -267,6 +289,7 @@ var prepareLibrary = function(library, sessionId) {
 
 	// Parse the artifact if necessary
 	if (artifact != undefined) {
+		console.log("Parsing artifact");
 		sessions[sessionId].totalLibraries++;
 		parseArtifact(library, artifact, sessionId);
 	}
@@ -296,28 +319,36 @@ var isLibraryAllowed = function(library) {
 	return allowed;
 };
 
-var parseLocalDependency = function(library, sessionId) {
+var generateLibraryPath = function(rootDir, library) {
 	var parts = library.name.split(':');
-	var path = config.minecraftPath()
-	                 .cwd('libraries')
-	                 .cwd(parts[0].replace(/\./g, '/'))
-	                 .cwd(parts[1])
-	                 .cwd(parts[2])
-	                 .cwd(parts[1] + '-' + parts[2] + '.jar');
+	var path =  jetpack.cwd(rootDir)
+		               .cwd(parts[0].replace(/\./g, '/'))
+		               .cwd(parts[1])
+		               .cwd(parts[2])
+		               .path(parts[1] + '-' + parts[2]);
+	if (library.natives != undefined) {
+		path += '-' + library.natives[operatingSystem()];
+	}
+	return path + '.jar';
+};
+
+var parseLocalDependency = function(library, sessionId) {
+	var path = generateLibraryPath(config.minecraftPath().path('libraries'), library);
 	console.log("Parsed local dependency:", path.path());
 	libraryFinished(path.path(), sessionId);
 };
 
 var parseArtifact = function(library, artifact, sessionId) {
-	var artifactPath = minecraft.minecraftPath().cwd('libraries').cwd(artifact.path);
-	console.log("Parsing artifact: ", library.name);
-	if (jetpack.exists(artifactPath.path())) {
+
+	var artifactPath = generateLibraryPath(config.minecraftPath().path('libraries'), library);
+
+	if (jetpack.exists(artifactPath)) {
 		if (library.extract != undefined)
-			extractArtifact(library, artifact, artifactPath.path(), sessionId);
+			extractArtifact(library, artifact, artifactPath, sessionId);
 		else
-			libraryFinished(artifactPath.path(), sessionId);
+			libraryFinished(artifactPath, sessionId);
 	} else {
-		downloadLibrary(library, artifact, artifactPath.path(), sessionId);
+		downloadLibrary(library, artifact, artifactPath, sessionId);
 	}
 };
 
@@ -325,7 +356,7 @@ var downloadLibrary = function(library, artifact, artifactPath, sessionId) {
 	console.log("Downloading library: ", library.name, artifactPath);
 
 	// Download the file
-	var path = jetpack.cwd(sessions[sessionId].gameDir).path(artifact.path);
+	var path = generateLibraryPath(jetpack.cwd(sessions[sessionId].gameDir).path('libraries'), library);
 	download(
 		artifact.url,
 		{'directory':  path},
@@ -340,7 +371,7 @@ var downloadLibrary = function(library, artifact, artifactPath, sessionId) {
 };
 
 var extractArtifact = function(library, artifact, artifactPath, sessionId) {
-	console.log("Extracting", library.name);
+	console.log("Extracting", library.name, artifactPath);
 
 	var exclude;
 	if (library.extract.exclude == undefined)
@@ -348,7 +379,7 @@ var extractArtifact = function(library, artifact, artifactPath, sessionId) {
 	else
 		exclude = library.extract.exclude;
 
-	fs.createReadStream(jetpack.cwd(sessions[sessionId].gameDir).cwd('libraries').path(artifact.path))
+	fs.createReadStream(generateLibraryPath(jetpack.cwd(sessions[sessionId].gameDir).path('libraries'), library))
 		.pipe(unzip.Parse())
 		.on('entry', (entry) => {
 			var fileName = entry.path;
