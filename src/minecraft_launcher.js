@@ -207,7 +207,7 @@ var launch = function(sessionId) {
 	args.push(session.version.mainClass);
 	args = args.concat(mcArgs);
 
-	var mcInstance = spawn(config.javaPath().path(), args, {
+	var mcInstance = spawn(session.javaDir, args, {
 		cwd: session.gameDir,
 		detached: true,
 	});
