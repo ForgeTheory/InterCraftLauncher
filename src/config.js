@@ -60,7 +60,9 @@ exports.tempPath = function() {
 };
 
 exports.javaPath = function() {
-	return javaHome.cwd('bin/java.exe');
+	if (process.platform == 'win32')
+		return javaHome.cwd('bin/java.exe');
+	return javaHome.cwd(bin/java);
 };
 
 exports.accessToken = function() {
