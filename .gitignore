@@ -6,6 +6,9 @@ sessions.json
 app/*.js
 app/*.js.map
 
+# Builds
+dist/
+
 # Sass
 .sass-cache/
 

@@ -334,8 +334,8 @@ var generateLibraryPath = function(rootDir, library) {
 
 var parseLocalDependency = function(library, sessionId) {
 	var path = generateLibraryPath(config.minecraftPath().path('libraries'), library);
-	console.log("Parsed local dependency:", path.path());
-	libraryFinished(path.path(), sessionId);
+	console.log("Parsed local dependency:", path);
+	libraryFinished(path, sessionId);
 };
 
 var parseArtifact = function(library, artifact, sessionId) {

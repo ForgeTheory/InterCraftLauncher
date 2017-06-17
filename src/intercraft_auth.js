@@ -27,11 +27,12 @@ exports.login = function(email, password, callback) {
 			'errorCode': response.body.error_code
 		});
 	}).catch(error => {
-		console.log("ERROR: Failed to send login request", error);
+		callback(null);
 	});
 };
 
 exports.fetchProfile = function(callback) {
+	console.log(config.accessToken());
 	console.log("Getting the profile from the access token");
 	got.post(DOMAIN + '/profile', {
 		form: true,
@@ -42,6 +43,6 @@ exports.fetchProfile = function(callback) {
 	}).then(response => {
 		callback(response.statusCode == 200 ? response.body : null);
 	}).catch(error => {
-		console.log("ERROR: Failed to send fetch profile requset", error);
+		callback(null);
 	});
 };

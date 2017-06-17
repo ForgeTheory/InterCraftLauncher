@@ -2,15 +2,9 @@
   "name": "intercraft-launcher",
   "version": "0.2.0",
   "description": "Official launcher for the InterCraft server",
-  "main": "app/main.js",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "install-app-deps",
-    "start": "electron ./app --enable-logging",
-    "dev": "NODE_ENV='development' npm run start",
-    "dist:win": "build --win",
-    "dist:mac": "build --mac",
-    "dist:linux": "build --linux"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -50,10 +44,5 @@
     "object-keys": "^1.0.11",
     "rollup": "^0.41.6",
     "uglify-js": "^3.0.15"
-  },
-  "build": {
-    "appId": "com.intercraftmc.intercraft.launcher",
-    "win": {
-    }
   }
 }

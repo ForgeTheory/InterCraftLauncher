@@ -13,6 +13,7 @@ const utils = require('./utils');
 
 const projectDir = jetpack;
 const srcDir = jetpack.cwd('./src');
+const resDir = jetpack.cwd('./src/resources');
 const destDir = jetpack.cwd('./app');
 
 gulp.task('bundle', () => {
@@ -25,17 +26,16 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('minecraft_launcher.js'), destDir.path('minecraft_launcher.js')),
 		bundle(srcDir.path('mojang.js'), destDir.path('mojang.js')),
 		bundle(srcDir.path('view_loader.js'), destDir.path('view_loader.js')),
-		bundle(srcDir.path('window_manager.js'), destDir.path('window_manager.js'))
+		bundle(srcDir.path('window_manager.js'), destDir.path('window_manager.js')),
+
+		bundle(srcDir.path('launcher/launcher_account.js'), destDir.path('launcher/launcher_account.js')),
+		bundle(srcDir.path('launcher/launcher_profile.js'), destDir.path('launcher/launcher_profile.js')),
+		bundle(srcDir.path('launcher/launcher_profile_manager.js'), destDir.path('launcher/launcher_profile_manager.js'))
 	]);
 });
 
-// gulp.task('bundle', () => {
-//	 return gulp.src(srcDir.path('*.js'))
-//				 .pipe(gulp.dest('./app'));
-// });
-
 gulp.task('sass', () => {
-	return gulp.src(srcDir.path('stylesheets/app.scss'))
+	return gulp.src(resDir.path('stylesheets/app.scss'))
 	           .pipe(sass())
 	           .pipe(minifycss({debug: true}, function(details) {
 		           console.log(details.name + ': ' + details.stats.originalSize);
@@ -45,7 +45,7 @@ gulp.task('sass', () => {
 });
 
 gulp.task('imagemin', () => {
-	return gulp.src(srcDir.path('images/*'))
+	return gulp.src(resDir.path('images/*'))
 	           .pipe(imagemin())
 	           .pipe(gulp.dest(destDir.path('img')));
 });
@@ -56,12 +56,12 @@ gulp.task('environment', () => {
 });
 
 gulp.task('javascript', () => {
-	return gulp.src(srcDir.path('javascript/*.js'))
+	return gulp.src(resDir.path('javascript/*.js'))
 	                      .pipe(gulp.dest(destDir.path('js')));
 });
 
 gulp.task('views', () => {
-	return gulp.src(srcDir.path('templates/*.htm'))
+	return gulp.src(resDir.path('templates/*.htm'))
 	           .pipe(minifyhtml({
 	                     collapseWhitespace: true,
 	                     minifyCSS: true,

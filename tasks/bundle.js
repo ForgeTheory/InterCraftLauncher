@@ -17,7 +17,6 @@ const electronBuiltInModules = ['electron'];
 const generateExternalModulesList = () => {
   const appManifest = jetpack.read('./package.json', 'json');
 
-  console.log("The manifest is", appManifest.dependencies);
   return [].concat(
     nodeBuiltInModules,
     electronBuiltInModules,
