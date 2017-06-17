@@ -51,10 +51,6 @@ exports.init = function() {
 	windowManager.init();
 
 	windowManager.splash(initMinecraft);
-
-	intercraftAuth.isOnline((isOnline) => {
-		console.log(isOnline);
-	});
 };
 
 var initMinecraft = function() {
