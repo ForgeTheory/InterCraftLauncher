@@ -1,6 +1,6 @@
 {
   "name": "intercraft-launcher",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Official launcher for the InterCraft server",
   "main": "app/main.js",
   "scripts": {
@@ -8,17 +8,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@gitlab.cloostefis.top:SirDavid/InterCraftLauncher.git"
+    "url": "git@github.com:ForgeTheory/InterCraftLauncher.git"
   },
   "author": "David Ludwig",
   "license": "ISC",
   "dependencies": {
     "connectivity": "^1.0.0",
     "download-file": "^0.1.5",
-    "electron": "^1.6.10",
+    "electron": "^1.6.11",
     "electron-packager": "^8.7.1",
     "electron-simple-ipc": "^1.0.2",
     "find-java-home": "^0.1.4",
+    "got": "^7.0.0",
     "fs-jetpack": "^1.0.0",
     "is-running": "^2.1.0",
     "jquery": "^3.2.1",
