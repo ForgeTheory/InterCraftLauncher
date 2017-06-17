@@ -2,6 +2,8 @@ const { ipcSend, ipcReceive } = require('electron-simple-ipc');
 
 const config = require('./config');
 const intercraftAuth = require('./intercraft_auth');
+const minecraft = require('./minecraft');
+const minecraftLauncher = require('./minecraft_launcher');
 const windowManager = require('./window_manager');
 
 let profile;
@@ -47,6 +49,8 @@ exports.init = function() {
 	config.init();
 
 	windowManager.init();
+
+	windowManager.splash(initMinecraft);
 
 	intercraftAuth.isOnline((isOnline) => {
 		console.log(isOnline);
