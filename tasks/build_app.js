@@ -23,14 +23,17 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('intercraft_auth.js'), destDir.path('intercraft_auth.js')),
 		bundle(srcDir.path('main.js'), destDir.path('main.js')),
 		bundle(srcDir.path('minecraft.js'), destDir.path('minecraft.js')),
-		bundle(srcDir.path('minecraft_launcher.js'), destDir.path('minecraft_launcher.js')),
 		bundle(srcDir.path('mojang.js'), destDir.path('mojang.js')),
+		bundle(srcDir.path('utils.js'), destDir.path('utils.js')),
 		bundle(srcDir.path('view_loader.js'), destDir.path('view_loader.js')),
 		bundle(srcDir.path('window_manager.js'), destDir.path('window_manager.js')),
 
-		bundle(srcDir.path('launcher/launcher_account.js'), destDir.path('launcher/launcher_account.js')),
-		bundle(srcDir.path('launcher/launcher_profile.js'), destDir.path('launcher/launcher_profile.js')),
-		bundle(srcDir.path('launcher/launcher_profile_manager.js'), destDir.path('launcher/launcher_profile_manager.js'))
+		bundle(srcDir.path('launcher/account.js'), destDir.path('launcher/account.js')),
+		bundle(srcDir.path('launcher/launcher.js'), destDir.path('launcher/launcher.js')),
+		bundle(srcDir.path('launcher/minecraft_instance.js'), destDir.path('launcher/minecraft_instance.js')),
+		bundle(srcDir.path('launcher/minecraft_instance_manager.js'), destDir.path('launcher/minecraft_instance_manager.js')),
+		bundle(srcDir.path('launcher/profile.js'), destDir.path('launcher/profile.js')),
+		bundle(srcDir.path('launcher/profile_manager.js'), destDir.path('launcher/profile_manager.js'))
 	]);
 });
 
@@ -86,16 +89,19 @@ gulp.task('watch', () => {
 	watch('src/*.js', batch((events, done) => {
 		gulp.start('bundle', beepOnError(done));
 	}));
-	watch('src/javascript/*.js', batch((events, done) => {
+	watch('src/launcher/*.js', batch((events, done) => {
+		gulp.start('bundle', beepOnError(done));
+	}));
+	watch('src/resources/javascript/*.js', batch((events, done) => {
 		gulp.start('javascript', beepOnError(done));
 	}));
-	watch('src/stylesheets/*.scss', batch((events, done) => {
+	watch('src/resources/stylesheets/*.scss', batch((events, done) => {
 		gulp.start('sass', beepOnError(done));
 	}));
-	watch('src/templates/*.htm', batch((events, done) => {
+	watch('src/resources/templates/*.htm', batch((events, done) => {
 		gulp.start('views', beepOnError(done));
 	}));
-	watch('src/images/*', batch((events, done) => {
+	watch('src/resources/images/*', batch((events, done) => {
 		gulp.start('imagemin', beepOnError(done));
 	}));
 });

@@ -3,7 +3,7 @@ const { ipcSend, ipcReceive } = require('electron-simple-ipc');
 const config = require('./config');
 const intercraftAuth = require('./intercraft_auth');
 const minecraft = require('./minecraft');
-const minecraftLauncher = require('./minecraft_launcher');
+const minecraftLauncher = require('./launcher/launcher');
 const windowManager = require('./window_manager');
 
 let profile;
@@ -46,25 +46,22 @@ ipcReceive('control_panel_launch_minecraft', (payload) => {
 
 exports.init = function() {
 
+	// Initialize the configuration
 	config.init();
 
+	// Initialize the window manager
 	windowManager.init();
 
+	// Display the splash during background processes
 	windowManager.splash(initMinecraft);
 };
 
 var initMinecraft = function() {
-	var nextStep = initMinecraftLauncher;
+	var nextStep = parseInterCraftSession;
 	if (!minecraft.init())
 		exports.configureMinecraft(nextStep);
 	else
 		nextStep();
-};
-
-var initMinecraftLauncher = function() {
-	var nextStep = parseInterCraftSession;
-	minecraftLauncher.init();
-	nextStep();
 };
 
 var parseInterCraftSession = function() {
@@ -106,12 +103,14 @@ exports.login = function() {
 exports.controlPanel = function() {
 	windowManager.initControlPanel();
 	windowManager.controlPanel().once('ready-to-show', () => {
-		ipcSend('control_panel_preload_launcher_profiles', minecraft.profiles());
+		console.log("Profiles are", minecraft.profileManager().profilesAvailable());
+		ipcSend('control_panel_preload_launcher_profiles', minecraft.profileManager().profilesAvailable());
 		console.log("Control panel thingy.");
 		ipcSend('control_panel_preload_done', true);
 		if (windowManager.loginWindow()) {
 			windowManager.closeWindow('login');
 		}
+		minecraft.profileManager().save();
 	});
 	// windowManager.controlPanel().show();
 };

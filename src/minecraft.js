@@ -3,10 +3,10 @@ const jsonfile = require('jsonfile');
 const path = require('path');
 
 const config = require('./config');
+const launcher = require('./launcher/launcher');
+const profileManager = require('./launcher/profile_manager');
 
 let minecraftDir;
-let launcherProfiles;
-let installedVersions;
 
 exports.minecraftPath = function() {
 	return minecraftDir;
@@ -17,14 +17,19 @@ exports.init = function() {
 	minecraftDir = config.minecraftPath();
 	result = result && directoryExists();
 	result = result && filesExist();
-	result = result && loadLauncherProfiles();
-
-	// Add missing stuff to prevent any crashing
-	initLauncherProfiles();
-	loadInstalledVersions();
+	result = result && profileManager.init();
+	result = result && launcher.init();
 
 	return result;
 };
+
+exports.launcher = function() {
+	return launcher;
+};
+
+exports.profileManager = function() {
+	return profileManager;
+}
 
 var directoryExists = function() {
 	return jetpack.exists(minecraftDir.path()) == 'dir';

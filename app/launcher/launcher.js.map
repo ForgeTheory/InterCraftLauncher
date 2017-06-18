@@ -1,0 +1,1 @@
+{"version":3,"file":"launcher.js","sources":["src/launcher/launcher.js"],"sourcesContent":["\r\n\r\nexports.init = function() {\r\n\treturn true;\r\n};"],"names":[],"mappings":";;AAEA,OAAO,CAAC,IAAI,GAAG,WAAW;CACzB,OAAO,IAAI,CAAC;CACZ"}

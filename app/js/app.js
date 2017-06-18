@@ -6,31 +6,17 @@ var init = function() {
 	loadView('dashboard');
 };
 
-var setProfiles = function(profiles, defaultIndex = 0) {
-	var profile;
-	var name;
-	var keys = Object.keys(profiles);
+var setProfiles = function(profiles) {
 	var item;
 
 	$('.launcher-profile-link').remove();
 
-	for (var i = 0; i < keys.length; i++) {
-		var name;
-		profile = profiles[keys[i]];
-		if (profile.name == undefined) {
-			if (profile.type == 'latest-release')
-				name = "Latest Release";
-			else if (profile.type == 'latest-snapshot')
-				name = "Latest Snapshot";
-			else
-				continue;
-		} else
-			name = profile.name;
+	for (var i = profiles.length - 1; i > -1; i--) {
 		item = $("<a>", {"class": "dropdown-item launcher-profile-link", "href": "#"});
-		itemRadio = $('<input>', {"type": "radio", "name": "launcher-profile-id", "value": keys[i], "id": keys[i]});
+		itemRadio = $('<input>', {"type": "radio", "name": "launcher-profile-id", "value": profiles[i].key, "id": profiles[i].key});
 		item.attr('index', i);
 		itemRadio.attr('index', i);
-		item.append(name);
+		item.append(profiles[i].displayName);
 		item.append(itemRadio);
 		$('#launcher-profile-dropdown').prepend(item);
 		item.click(function() {
@@ -38,7 +24,7 @@ var setProfiles = function(profiles, defaultIndex = 0) {
 			$('#launcher-profile-button').html($(this).html());
 		});
 	}
-	$('.launcher-profile-link').eq(defaultIndex).click();
+	$('.launcher-profile-link').eq(0).click();
 };
 
 var loadView = function(view) {
