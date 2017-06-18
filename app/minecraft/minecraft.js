@@ -1,11 +1,13 @@
+(function () {'use strict';
+
 const jetpack = require('fs-jetpack');
 const jsonfile = require('jsonfile');
 const path = require('path');
 
-const config = require('./config');
-const launcher = require('./launcher/launcher');
-const profileManager = require('./launcher/profile_manager');
-const versionManager = require('./launcher/version_manager');
+const config = require('../config');
+const launcher = require('./launcher');
+const profileManager = require('./profile_manager');
+const versionManager = require('./version_manager');
 
 let minecraftDir;
 
@@ -31,7 +33,11 @@ exports.launcher = function() {
 
 exports.profileManager = function() {
 	return profileManager;
-}
+};
+
+exports.versionManager = function() {
+	return versionManager;
+};
 
 var directoryExists = function() {
 	return jetpack.exists(minecraftDir.path()) == 'dir';
@@ -41,27 +47,6 @@ var filesExist = function() {
 	var result = true;
 	result = result && jetpack.exists(minecraftDir.path('launcher_profiles.json'));
 	return result;
-};
-
-var loadLauncherProfiles = function() {
-	launcherProfiles = jsonfile.readFileSync(minecraftDir.path('launcher_profiles.json'), {throws: false});
-	return launcherProfiles != null; // This is kinda bad, not telling the user that their launcher_profiles.json is corrupted
-};
-
-var initLauncherProfiles = function() {
-	if (launcherProfiles.authenticationDatabase == undefined)
-		launcherProfiles.authenticationDatabase = {};
-};
-
-var loadInstalledVersions = function() {
-	installedVersions = {};
-	var versionsDir = minecraftDir.cwd('versions');
-	var folders = versionsDir.list();
-	var file;
-	for (var i = 0; i < folders.length; i++) {
-		file = versionsDir.cwd(folders[i]).path(folders[i] + '.json')
-		installedVersions[folders[i]] = jsonfile.readFileSync(file);
-	}
 };
 
 exports.installedVersions = function() {
@@ -138,7 +123,7 @@ exports.accountUsername = function(accountId) {
 
 exports.accountUuid = function(accountId) {
 	return Object.keys(exports.account(accountId).profiles)[0];
-}
+};
 
 exports.accountAccessToken = function(accountId) {
 	return exports.account(accountId).accessToken;
@@ -147,3 +132,6 @@ exports.accountAccessToken = function(accountId) {
 exports.save = function() {
 	jsonfile.writeFileSync(minecraftDir.path('launcher_profiles.json'), launcherProfiles, {spaces: 2});
 };
+
+}());
+//# sourceMappingURL=minecraft.js.map

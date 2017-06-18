@@ -2,8 +2,7 @@ const { ipcSend, ipcReceive } = require('electron-simple-ipc');
 
 const config = require('./config');
 const intercraftAuth = require('./intercraft_auth');
-const minecraft = require('./minecraft');
-const minecraftLauncher = require('./launcher/launcher');
+const minecraft = require('./minecraft/minecraft');
 const windowManager = require('./window_manager');
 
 let profile;
@@ -41,7 +40,7 @@ ipcReceive('control_panel_done', (payload) => {
 });
 
 ipcReceive('control_panel_launch_minecraft', (payload) => {
-	minecraftLauncher.preLaunch(payload.profile, () => {});
+	// minecraftLauncher.preLaunch(payload.profile, () => {});
 });
 
 exports.init = function() {

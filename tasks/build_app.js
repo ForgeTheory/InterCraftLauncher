@@ -22,20 +22,20 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('intercraft.js'), destDir.path('intercraft.js')),
 		bundle(srcDir.path('intercraft_auth.js'), destDir.path('intercraft_auth.js')),
 		bundle(srcDir.path('main.js'), destDir.path('main.js')),
-		bundle(srcDir.path('minecraft.js'), destDir.path('minecraft.js')),
 		bundle(srcDir.path('mojang.js'), destDir.path('mojang.js')),
 		bundle(srcDir.path('utils.js'), destDir.path('utils.js')),
 		bundle(srcDir.path('view_loader.js'), destDir.path('view_loader.js')),
 		bundle(srcDir.path('window_manager.js'), destDir.path('window_manager.js')),
 
-		bundle(srcDir.path('launcher/account.js'), destDir.path('launcher/account.js')),
-		bundle(srcDir.path('launcher/launcher.js'), destDir.path('launcher/launcher.js')),
-		bundle(srcDir.path('launcher/minecraft_instance.js'), destDir.path('launcher/minecraft_instance.js')),
-		bundle(srcDir.path('launcher/minecraft_instance_manager.js'), destDir.path('launcher/minecraft_instance_manager.js')),
-		bundle(srcDir.path('launcher/profile.js'), destDir.path('launcher/profile.js')),
-		bundle(srcDir.path('launcher/profile_manager.js'), destDir.path('launcher/profile_manager.js')),
-		bundle(srcDir.path('launcher/version.js'), destDir.path('launcher/version.js')),
-		bundle(srcDir.path('launcher/version_manager.js'), destDir.path('launcher/version_manager.js'))
+		bundle(srcDir.path('minecraft/minecraft.js'), destDir.path('minecraft/minecraft.js')),
+		bundle(srcDir.path('minecraft/account.js'), destDir.path('minecraft/account.js')),
+		bundle(srcDir.path('minecraft/launcher.js'), destDir.path('minecraft/launcher.js')),
+		bundle(srcDir.path('minecraft/minecraft_instance.js'), destDir.path('minecraft/minecraft_instance.js')),
+		bundle(srcDir.path('minecraft/minecraft_instance_manager.js'), destDir.path('minecraft/minecraft_instance_manager.js')),
+		bundle(srcDir.path('minecraft/profile.js'), destDir.path('minecraft/profile.js')),
+		bundle(srcDir.path('minecraft/profile_manager.js'), destDir.path('minecraft/profile_manager.js')),
+		bundle(srcDir.path('minecraft/version.js'), destDir.path('minecraft/version.js')),
+		bundle(srcDir.path('minecraft/version_manager.js'), destDir.path('minecraft/version_manager.js'))
 	]);
 });
 

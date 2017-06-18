@@ -1,6 +1,6 @@
 (function () {'use strict';
 
-const config = require('./config');
+const config = require('../config');
 
 class Version {
 	constructor() {
