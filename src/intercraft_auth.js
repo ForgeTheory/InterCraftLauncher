@@ -2,13 +2,15 @@ const got = require('got');
 const config = require('./config');
 
 const DOMAIN = "https://dev.intercraftmc.com/auth";
+const TIMEOUT = 10000
 
 exports.isOnline = function(callback) {
 	console.log("Checking if the server is online...");
-	got.get(DOMAIN + '/status')
-		.then(response => {
-			callback(response.statusCode == 200);
-		}); 
+	got.get(DOMAIN + '/status', {
+		'timeout': TIMEOUT
+	}).then(response => {
+		callback(response.statusCode == 200);
+	}); 
 };
 
 exports.login = function(email, password, callback) {
@@ -19,7 +21,8 @@ exports.login = function(email, password, callback) {
 		body: {
 			'email': email,
 			'password': password
-		}
+		},
+		timeout: TIMEOUT
 	}).then(response => {
 		config.setAccessToken(response.statusCode == 200 ? response.body.access_token : null);
 		callback({
@@ -39,7 +42,8 @@ exports.fetchProfile = function(callback) {
 		json: true,
 		body: {
 			'access_token': config.accessToken()
-		}
+		},
+		timeout: TIMEOUT
 	}).then(response => {
 		callback(response.statusCode == 200 ? response.body : null);
 	}).catch(error => {

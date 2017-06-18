@@ -77,15 +77,12 @@ var parseInterCraftSession = function() {
 					if (result) {
 						profile = result;
 						exports.controlPanel();
-						console.log("Got the profile!", profile);
 					}
 					else {
 						exports.login();
-						console.log("Failed to get the profile");
 					}
 				});
 		else {
-			console.log("You are offline, so you don't have to log in");
 			exports.offlinePanel();
 		}
 	});
@@ -101,11 +98,10 @@ exports.login = function() {
 };
 
 exports.controlPanel = function() {
+	console.log("Loading control panel");
 	windowManager.initControlPanel();
 	windowManager.controlPanel().once('ready-to-show', () => {
-		console.log("Profiles are", minecraft.profileManager().profilesAvailable());
 		ipcSend('control_panel_preload_launcher_profiles', minecraft.profileManager().profilesAvailable());
-		console.log("Control panel thingy.");
 		ipcSend('control_panel_preload_done', true);
 		if (windowManager.loginWindow()) {
 			windowManager.closeWindow('login');

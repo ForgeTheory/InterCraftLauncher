@@ -5,6 +5,7 @@ const path = require('path');
 const config = require('./config');
 const launcher = require('./launcher/launcher');
 const profileManager = require('./launcher/profile_manager');
+const versionManager = require('./launcher/version_manager');
 
 let minecraftDir;
 
@@ -19,6 +20,7 @@ exports.init = function() {
 	result = result && filesExist();
 	result = result && profileManager.init();
 	result = result && launcher.init();
+	result = result && versionManager.init();
 
 	return result;
 };
