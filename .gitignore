@@ -7,6 +7,7 @@ app/*.js
 app/*.js.map
 
 # Builds
+app/
 dist/
 
 # Sass

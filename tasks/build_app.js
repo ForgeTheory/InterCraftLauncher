@@ -12,6 +12,8 @@ const bundle = require('./bundle');
 const utils = require('./utils');
 
 const projectDir = jetpack;
+const buildDir = jetpack.cwd('./build');
+const libsDir = jetpack.cwd('./libs');
 const srcDir = jetpack.cwd('./src');
 const resDir = jetpack.cwd('./src/resources');
 const destDir = jetpack.cwd('./app');
@@ -37,6 +39,11 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('minecraft/version.js'), destDir.path('minecraft/version.js')),
 		bundle(srcDir.path('minecraft/version_manager.js'), destDir.path('minecraft/version_manager.js'))
 	]);
+});
+
+gulp.task('libs', () => {
+	return gulp.src(libsDir.path('./**/*'))
+	           .pipe(gulp.dest(destDir.path()));
 });
 
 gulp.task('sass', () => {
@@ -78,6 +85,11 @@ gulp.task('views', () => {
 	            .pipe(gulp.dest(destDir.path('views')));
 });
 
+gulp.task('package_json', () => {
+	return gulp.src(buildDir.path('package.json'))
+	           .pipe(gulp.dest(destDir.path()));
+});
+
 gulp.task('watch', () => {
 	const beepOnError = (done) => {
 		return (err) => {
@@ -88,10 +100,10 @@ gulp.task('watch', () => {
 		};
 	};
 
-	watch('src/*.js', batch((events, done) => {
+	watch('libs/**/*', batch((events, done) => {
 		gulp.start('bundle', beepOnError(done));
 	}));
-	watch('src/launcher/*.js', batch((events, done) => {
+	watch('src/**/*.js', batch((events, done) => {
 		gulp.start('bundle', beepOnError(done));
 	}));
 	watch('src/resources/javascript/*.js', batch((events, done) => {
@@ -110,9 +122,11 @@ gulp.task('watch', () => {
 
 gulp.task('build', [
 	'bundle',
+	'libs',
 	'sass',
 	'javascript',
 	'views',
 	'imagemin',
-	'environment'
+	'environment',
+	'package_json'
 ]);

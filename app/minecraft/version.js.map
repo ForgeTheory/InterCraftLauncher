@@ -1,1 +1,0 @@
-{"version":3,"file":"version.js","sources":["src/minecraft/version.js"],"sourcesContent":["const config = require('../config');\r\n\r\nclass Version {\r\n\tconstructor() {\r\n\r\n\t}\r\n}\r\n\r\nexports.Version = Version;"],"names":[],"mappings":";;AAAA,MAAM,MAAM,GAAG,OAAO,CAAC,WAAW,CAAC,CAAC;;AAEpC,MAAM,OAAO,CAAC;CACb,WAAW,GAAG;;EAEb;CACD;;AAED,OAAO,CAAC,OAAO,GAAG,OAAO"}
