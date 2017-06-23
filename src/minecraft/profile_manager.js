@@ -68,6 +68,9 @@ exports.load = function() {
 };
 
 exports.save = function() {
+
+	console.log("Saving profiles...");
+
 	var i = 0;
 	var keys;
 
@@ -86,6 +89,7 @@ exports.save = function() {
 	result.clientToken = clientToken;
 
 	// Launcher Profiles
+	console.log("Saving", profiles.length, "profile(s)");
 	result.profiles = {};
 	for (i = 0; i < profiles.length; i++)
 		result.profiles[profiles[i].key()] = profiles[i].json();
@@ -251,7 +255,7 @@ exports.sortProfiles = function() {
 			j++
 		utils.arrayInsert(profileList, j, profiles[i]);
 	}
-	profiles = profileList;
+	profiles = profileList.concat(unused);
 };
 
 exports.use = function(profile) {

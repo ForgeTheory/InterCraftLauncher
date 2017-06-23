@@ -1,5 +1,6 @@
 
 class Profile {
+
 	constructor(key, profileJson) {
 		this.profileKey = key;
 		this.profile = profileJson;
@@ -24,8 +25,6 @@ class Profile {
 		var result = {};
 		var keys = Object.keys(this.profile);
 
-		if (keys.length == 0)
-			return undefined;
 
 		for (var i = 0; i < keys.length; i++)
 			if (this.profile[keys[i]] != undefined)
