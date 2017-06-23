@@ -40,7 +40,9 @@ ipcReceive('control_panel_done', (payload) => {
 });
 
 ipcReceive('control_panel_launch_minecraft', (payload) => {
-	// minecraftLauncher.preLaunch(payload.profile, () => {});
+	minecraft.launcher().launch(payload.profile, () => {
+		console.log("Launch finished");
+	});
 });
 
 exports.init = function() {

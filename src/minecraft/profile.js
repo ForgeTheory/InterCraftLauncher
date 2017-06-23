@@ -58,6 +58,12 @@ class Profile {
 		return this;
 	}
 
+	icon() { return this.profile.icon; }
+	setIcon(icon) {
+		this.profile.icon = icon;
+		return this;
+	}
+
 	type() { return this.profile.type; }
 	setType(type) {
 		this.profile.type = type;
@@ -71,8 +77,10 @@ class Profile {
 	}
 
 	lastUsed() { return this.profile.lastUsed; }
-	setLastUsed(lastUsed) {
-		this.profile.lastUsed = lastUsed;
+	setLastUsed(date) {
+		if (date == undefined)
+			date = new Date(Date.now());
+		this.profile.lastUsed = date.toISOString();
 		return this;
 	}
 

@@ -169,6 +169,8 @@ var parseProfiles = function(launcherProfile) {
 	for (i = 0; i < keys.length; i++) {
 		profiles.push(new Profile(keys[i], profs[keys[i]]));
 	}
+
+	exports.sortProfiles();
 };
 
 var parseClientToken = function(launcherProfile) {
@@ -232,6 +234,36 @@ var parseUserAccountsLegacy = function(launcherProfile) {
 
 exports.generateClientToken = function() {
 	clientToken = utils.randomHexStringPartitioned([8, 4, 4, 4, 12]);
+};
+
+exports.sortProfiles = function() {
+	var i, j;
+	var profileList = [];
+	var unused = [];
+
+	for (i = 0; i < profiles.length; i++) {
+		if (profiles[i].lastUsed() == undefined) {
+			unused.push(profiles[i]);
+			continue;
+		}
+		j = 0;
+		while (j < profileList.length && profileList[j].lastUsed() > profiles[i].lastUsed())
+			j++
+		utils.arrayInsert(profileList, j, profiles[i]);
+	}
+	profiles = profileList;
+};
+
+exports.use = function(profile) {
+	profile.setLastUsed();
+	exports.save();
+};
+
+exports.profile = function(key) {
+	for (var i = 0; i < profiles.length; i++)
+		if (profiles[i].key() == key)
+			return profiles[i];
+	return null;
 };
 
 exports.profiles = function() {

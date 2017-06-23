@@ -1,4 +1,8 @@
 
+exports.arrayInsert = function(array, pos, value) {
+	array.splice(pos, 0, value);
+};
+
 exports.strInsert = function(string, toInsert, pos) {
 	return string.slice(0, pos) + toInsert + string.slice(pos, string.length);
 };
