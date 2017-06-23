@@ -1,7 +1,7 @@
 const got = require('got');
 const config = require('./config');
 
-const DOMAIN = "https://dev.intercraftmc.com/auth";
+const DOMAIN = "https://intercraftmc.com/auth";
 const TIMEOUT = 10000
 
 exports.isOnline = function(callback) {
