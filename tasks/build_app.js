@@ -32,9 +32,11 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('minecraft/minecraft.js'), destDir.path('minecraft/minecraft.js')),
 		bundle(srcDir.path('minecraft/account.js'), destDir.path('minecraft/account.js')),
 		bundle(srcDir.path('minecraft/launcher.js'), destDir.path('minecraft/launcher.js')),
+		bundle(srcDir.path('minecraft/library.js'), destDir.path('minecraft/library.js')),
 		bundle(srcDir.path('minecraft/minecraft_instance.js'), destDir.path('minecraft/minecraft_instance.js')),
 		bundle(srcDir.path('minecraft/profile.js'), destDir.path('minecraft/profile.js')),
 		bundle(srcDir.path('minecraft/profile_manager.js'), destDir.path('minecraft/profile_manager.js')),
+		bundle(srcDir.path('minecraft/version.js'), destDir.path('minecraft/version.js')),
 		bundle(srcDir.path('minecraft/version_manager.js'), destDir.path('minecraft/version_manager.js'))
 	]);
 });

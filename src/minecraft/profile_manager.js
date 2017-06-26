@@ -70,6 +70,7 @@ exports.load = function() {
 exports.save = function() {
 
 	console.log("Saving profiles...");
+	return;
 
 	var i = 0;
 	var keys;
@@ -196,6 +197,9 @@ var parseUserAccounts = function(launcherProfile) {
 	accounts = {};
 	if (version.name.startsWith('1'))
 		return parseUserAccountsLegacy(launcherProfile);
+
+	if (launcherProfile.authenticationDatabase == undefined)
+		launcherProfile.authenticationDatabase = {};
 
 	var userIds = Object.keys(launcherProfile.authenticationDatabase);
 	for (var i = 0; i < userIds.length; i++) {

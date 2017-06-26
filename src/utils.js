@@ -1,4 +1,12 @@
 
+exports.os = function() {
+	if (process.platform == 'win32')
+		return 'windows';
+	else if (process.platform == 'darwin')
+		return 'osx';
+	return 'linux';
+};
+
 exports.arrayInsert = function(array, pos, value) {
 	array.splice(pos, 0, value);
 };

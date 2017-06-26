@@ -19,8 +19,8 @@ exports.init = function() {
 	result = result && directoryExists();
 	result = result && filesExist();
 	result = result && profileManager.init();
-	result = result && launcher.init();
 	result = result && versionManager.init();
+	result = result && launcher.init();
 
 	return result;
 };
@@ -45,88 +45,4 @@ var filesExist = function() {
 	var result = true;
 	result = result && jetpack.exists(minecraftDir.path('launcher_profiles.json'));
 	return result;
-};
-
-exports.installedVersions = function() {
-	return installedVersions;
-};
-
-exports.settings = function() {
-	return launcherProfiles.settings;
-};
-
-exports.setSettings = function(settings) {
-	launcherProfiles.settings = settings;
-};
-
-exports.clientToken = function() {
-	return launcherProfiles.clientToken();
-};
-
-exports.generateClientToken = function() {
-	var chars = '0123456789abcdef';
-	var token = '';
-	for (var i = 0; i < 36; i++)
-		if (i>7 && i<24 && (i-8)%5 == 0)
-			token += '-';
-		else
-			token += chars[Math.floor(Math.random()*16)];
-	exports.setClientToken(token);
-};
-
-exports.setClientToken = function(token) {
-	launcherProfiles.clientToken = token;
-};
-
-exports.profiles = function() {
-	return launcherProfiles.profiles;
-};
-
-exports.setProfiles = function(profiles) {
-	launcherProfiles.profiles = profiles;
-};
-
-exports.account = function(accountId) {
-	return launcherProfiles.authenticationDatabase[accountId];
-};
-
-exports.accounts = function() {
-	return launcherProfiles.authenticationDatabase;
-};
-
-exports.setAccount = function(id, data) {
-	launcherProfiles.authenticationDatabase[id] = value;
-};
-
-exports.addAccount = function(id, accessToken, email, uuid, username) {
-	var profile = {
-		"accessToken": accessToken,
-		"username": email,
-		"profiles": {
-		}
-	};
-	profile.profiles[uuid] = {
-		"displayName": username
-	};
-	launcherProfiles.authenticationDatabase[id] = profile;
-};
-
-exports.selectedAccount = function() {
-	return launcherProfiles.selectedUser;
-};
-
-exports.accountUsername = function(accountId) {
-	return exports.account(accountId).profiles[exports.accountUuid(accountId)].displayName;
-};
-
-exports.accountUuid = function(accountId) {
-	return Object.keys(exports.account(accountId).profiles)[0];
-}
-
-exports.accountAccessToken = function(accountId) {
-	return exports.account(accountId).accessToken;
-};
-
-exports.save = function() {
-	jsonfile.writeFileSync(minecraftDir.path('launcher_profiles.json'), launcherProfiles, {spaces: 2});
 };

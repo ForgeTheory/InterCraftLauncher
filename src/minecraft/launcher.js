@@ -1,4 +1,5 @@
 const profileManager = require('./profile_manager');
+const versionManager = require('./version_manager');
 
 exports.init = function() {
 	return true;
@@ -12,4 +13,11 @@ exports.launch = function(profileKey, callback) {
 
 	// Update to the last used profile
 	profileManager.use(profile);
+
+	versionManager.loadVersion(profile.version(), exports.prepare);
+
+};
+
+exports.prepare = function(version) {
+	
 };
