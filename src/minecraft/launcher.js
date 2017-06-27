@@ -20,8 +20,7 @@ exports.launch = function(profileKey, callback) {
 	profileManager.use(profile);
 
 	// Load the version
-	versionManager.loadVersion(profile.version(), createLaunchTask);
-
+	versionManager.loadVersionFromProfile(profile, createLaunchTask);
 };
 
 var createLaunchTask = function(version) {

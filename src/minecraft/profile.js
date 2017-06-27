@@ -48,6 +48,9 @@ class Profile {
 				return "Latest Snapshot";
 		}
 
+		if (this.profile.lastVersionId != undefined)
+			return this.profile.lastVersionId;
+
 		return null;
 	}
 

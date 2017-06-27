@@ -9,7 +9,6 @@ const TIMEOUT = 10000 // 10 seconds
 const Version = require('./version').Version;
 
 var path;
-var versionList;
 var versionsInstalled;
 
 /**
@@ -22,7 +21,6 @@ exports.init = function() {
 	path = config.minecraftPath().path('versions');
 
 	// Download versions
-	exports.downloadVersionList();
 	exports.loadInstalledVersions();
 
 	// Return success
@@ -31,18 +29,45 @@ exports.init = function() {
 
 /**
  * Download the list of versions
- * @return {uUndefined}
+ * @return {Undefined}
  */
 exports.downloadVersionList = function(callback) {
-	versionList = undefined;
 	got.get(URL, {
 		json: true,
 		timeout: TIMEOUT
 	}).then(response => {
-		versionList = response.body;
-		if (callback)
-			callback(versionList);
+		callback(response.body);
 	}); 
+};
+
+/**
+ * Load the latest release
+ * @param {Function} callback
+ * @return {Undefined}
+ */
+exports.latestRelease = function(callback) {
+	exports.downloadVersionList((versionList) => {
+		var release = versionList.latest.release;
+		for (var i = 0; i < versionList.versions.length; i++)
+			if (versionList.versions[i].id == release && versionList.versions[i].type == 'release')
+				return exports.loadVersion(release, callback, versionList.versions[i]);
+		callback(null);
+	});
+};
+
+/**
+ * Load the latest snapshot
+ * @param {Function} callback
+ * @return {Undefined}
+ */
+exports.latestSnapshot = function(callback) {
+	exports.downloadVersionList((versionList) => {
+		var snapshot = versionList.latest.snapshot;
+		for (var i = 0; i < versionList.versions.length; i++)
+			if (versionList.versions[i].id == snapshot)
+				return exports.loadVersion(snapshot, callback, versionList.versions[i]);
+		callback(null);
+	});
 };
 
 /**
@@ -59,15 +84,6 @@ exports.loadInstalledVersions = function() {
 		if (file)
 			versionsInstalled.push(folders[i]);
 	}
-};
-
-/**
- * Get the list of versions
- * @param  {Json Object} options
- * @return {Array}
- */
-exports.versions = function(options) {
-	return versionList;
 };
 
 /**
@@ -107,24 +123,52 @@ exports.versionDirectory = function(version) {
 }
 
 /**
- * Load a Minecraft version, install it if it doesn't exist
- * @param  {String}   version
+ * Load a version from a given profile
+ * @param  {Profile} profile
  * @param  {Function} callback
  * @return {Undefined}
  */
-exports.loadVersion = function(version, callback) {
+exports.loadVersionFromProfile = function(profile, callback) {
+	if (profile.type() == 'latest-snapshot')
+		return exports.latestSnapshot(callback);
+
+	if (profile.type() == 'latest-release')
+		return exports.latestRelease(callback);
+
+	if (profile.version() != undefined)
+		return exports.loadVersion(profile.version(), callback);
+
+	return exports.latestRelease(callback);
+};
+
+/**
+ * Load a Minecraft version, install it if it doesn't exist
+ * @param  {String}   version
+ * @param  {Function} callback
+ * @param  {Json Object} versionObj  (Leave blank please)
+ * @return {Undefined}
+ */
+exports.loadVersion = function(version, callback, versionObj) {
 
 	// Check if the version is not installed
 	if (!exports.isVersionInstalled(version)) {
-		for (var i = 0; i < versionList.versions.length; i++) {
-			if (versionList.versions[i].id == version) {
-				exports.installVersion(versionList.versions[i], callback);
-				return;
-			}
+		if (versionObj)
+			exports.installVersion(versionObj, callback);
+		else {
+			exports.downloadVersionList((versionList) => {
+				for (var i = 0; i < versionList.versions.length; i++) {
+					if (versionList.versions[i].id == version) {
+						exports.installVersion(versionList.versions[i], callback);
+						return;
+					}
+				}
+				callback(null);
+			});
 		}
-		callback(null);
 		return;
 	}
+
+	// Open the version.json
 	jsonfile.readFile(exports.versionPath(version), (err, result) => {
 		if (err)
 			console.log("ERROR: Failed to load version", version);
