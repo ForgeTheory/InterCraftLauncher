@@ -7,7 +7,7 @@ var path = require('path');
  * @param  {Function}      callback
  * @return {Undefined}
  */
-exports.download = function(files, callback) {
+exports.downloadList = function(files, callback) {
 	var nextFile = (files) => {
 		var urls = Object.keys(files);
 
@@ -28,4 +28,16 @@ exports.download = function(files, callback) {
 		});
 	};
 	nextFile(files);
+};
+
+exports.download = function(url, location, callback) {
+	var options = {
+		directory: path.dirname(location),
+		filename: path.basename(location)
+	}
+	download(url, options, (err) => {
+		if (err !== false)
+			return callback(false);
+		callback(true);
+	});
 };

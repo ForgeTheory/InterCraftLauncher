@@ -1,7 +1,9 @@
 const jetpack = require('fs-jetpack');
+const jsonfile = require('jsonfile');
 
 const config = require('../config');
 const downloadManager = require('../download_manager')
+const minecraft = require('./minecraft');
 const versionManager = require('./version_manager');
 
 class LaunchTask {
@@ -74,21 +76,47 @@ class LaunchTask {
 
 		if (Object.keys(toInstall).length > 0) {
 			console.log("Installing", Object.keys(toInstall).length, "dependencies");
-			return downloadManager.download(toInstall, (result) => {
-				if (result)
-					this.installAssets();
+			return downloadManager.downloadList(toInstall, (result) => {
+				if (result) {
+					this.version.loadAssetIndex((assetIndex) => {
+						this.installAssets(assetIndex);
+					});
+				}
 				else
 					this.cleanAndFinish(false);
 			});
 		}
 		else {
 			console.log("No dependencies to install");
-			this.installAssets();
+			this.version.loadAssetIndex((assetIndex) => {
+				this.installAssets(assetIndex);
+			});
 		}
 	}
 
-	installAssets() {
-		this.cleanAndFinish(true);
+	/**
+	 * Install the assets from the asset index
+	 * @return {[type]} [description]
+	 */
+	installAssets(assetIndex) {
+		var assets = assetIndex.assets();
+		var toInstall = {};
+
+		for (var i = 0; i < assets.length; i++) {
+			if (!assets[i].isInstalled())
+				toInstall[assets[i].url()] = assets[i].path();
+		}
+
+		console.log("Downloading assets...");
+		downloadManager.downloadList(toInstall, (result) => {
+			if (result) {
+				console.log("Assets installed successfully!");
+				this.cleanAndFinish(true);
+			} else {
+				console.error("Assets failed to install");
+				this.cleanAndFinish(false);
+			}
+		});
 	}
 
 	/**

@@ -1,13 +1,15 @@
 const jetpack = require('fs-jetpack');
+const jsonfile = require('jsonfile');
 
 const config = require('../config');
+const downloadManager = require('../download_manager');
 const versionManager = require('./version_manager');
 
+const AssetIndex = require('./asset_index').AssetIndex;
 const Library = require('./library').Library;
 
 class Version {
 	constructor(versionJson) {
-
 		this.id = versionJson.id;
 		this.jar = versionJson.jar;
 		this.parent = null;
@@ -70,6 +72,66 @@ class Version {
 			return this.parent.resolveLibraries(callback, libraries);
 
 		callback(libraries);
+	}
+
+	/**
+	 * Load an asset index
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	loadAssetIndex(callback) {
+
+		// Download the asset if it doesn't exist
+		if (!jetpack.exists(this.assetIndexPath())) {
+			downloadManager.download(this.assetIndexUrl(), this.assetIndexPath(), () => {
+				jsonfile.readFile(this.assetIndexPath(), (err, obj) => {
+					if (err) {
+						console.log("ERROR: Failed to load asset index");
+						return callback(null);
+					}
+					callback(new AssetIndex(obj));
+				});
+			});
+		}
+
+		// Open the asset file
+		jsonfile.readFile(this.assetIndexPath(), (err, obj) => {
+			if (err) {
+				console.log("ERROR: Failed to load asset index");
+				return callback(null);
+			}
+			callback(new AssetIndex(obj));
+		});
+	}
+
+	/**
+	 * Get the url of the asset index
+	 * @return {String}
+	 */
+	assetIndexUrl() {
+		if (this.assetIndex != undefined)
+			return this.assetIndex.url;
+		
+		if (this.parent)
+			return this.parent.assetIndexUrl();
+
+		console.error("ERROR: Failed to find asset index");
+		return null;
+	}
+
+	/**
+	 * Get the path of the asset index
+	 * @return {String}
+	 */
+	assetIndexPath() {
+		if (this.assetIndex != undefined)
+			return config.minecraftPath().path('assets/indexes/' + this.assetIndex.id + '.json');
+
+		if (this.parent)
+			return this.parent.assetIndexPath();
+
+		console.error("ERROR: Failed to find asset path");
+		return null;
 	}
 
 	/**

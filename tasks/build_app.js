@@ -32,6 +32,8 @@ gulp.task('bundle', () => {
 
 		bundle(srcDir.path('minecraft/minecraft.js'), destDir.path('minecraft/minecraft.js')),
 		bundle(srcDir.path('minecraft/account.js'), destDir.path('minecraft/account.js')),
+		bundle(srcDir.path('minecraft/asset.js'), destDir.path('minecraft/asset.js')),
+		bundle(srcDir.path('minecraft/asset_index.js'), destDir.path('minecraft/asset_index.js')),
 		bundle(srcDir.path('minecraft/launch_task.js'), destDir.path('minecraft/launch_task.js')),
 		bundle(srcDir.path('minecraft/launcher.js'), destDir.path('minecraft/launcher.js')),
 		bundle(srcDir.path('minecraft/library.js'), destDir.path('minecraft/library.js')),

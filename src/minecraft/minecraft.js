@@ -8,6 +8,7 @@ const profileManager = require('./profile_manager');
 const versionManager = require('./version_manager');
 
 let minecraftDir;
+let RESOURCE_URL = "http://resources.download.minecraft.net";
 
 exports.minecraftPath = function() {
 	return minecraftDir;
@@ -35,6 +36,10 @@ exports.profileManager = function() {
 
 exports.versionManager = function() {
 	return versionManager;
+};
+
+exports.loadAssetIndex = function(version) {
+
 };
 
 var directoryExists = function() {
