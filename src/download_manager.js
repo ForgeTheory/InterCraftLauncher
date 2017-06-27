@@ -1,5 +1,31 @@
-var http = require('http-get');
+var download = require('download-file');
+var path = require('path');
 
-exports.downloadFiles = function(files, callback) {
-	
-}
+/**
+ * Download a given list of files formatted as: {'url': 'save-location'}
+ * @param  {Json Object}   files
+ * @param  {Function}      callback
+ * @return {Undefined}
+ */
+exports.download = function(files, callback) {
+	var nextFile = (files) => {
+		var urls = Object.keys(files);
+
+		if (urls.length == 0)
+			return callback(true);
+
+		var url = urls[0];
+		var options = {
+			directory: path.dirname(files[url]),
+			filename: path.basename(files[url])
+		}
+
+		download(url, options, (err) => {
+			if (err !== false)
+				return callback(false);
+			delete files[url];
+			nextFile(files);
+		});
+	};
+	nextFile(files);
+};

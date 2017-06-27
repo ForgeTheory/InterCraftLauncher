@@ -53,7 +53,7 @@ class Library {
 
 	parseUrl(downloads) {
 		if (downloads == undefined) {
-			this.libUrl = null;
+			this.libUrl = undefined;
 			return;
 		}
 
@@ -63,9 +63,9 @@ class Library {
 					this.libUrl = downloads.artifact.url;
 		} else {
 			if (downloads.classifiers != undefined)
-				if (downloads.classifiers[utils.os()] != undefined)
-					if (downloads.classifiers[utils.os()].url != undefined)
-						this.libUrl = downloads.classifiers[utils.os()].url;
+				if (downloads.classifiers[this.libNatives] != undefined)
+					if (downloads.classifiers[this.libNatives].url != undefined)
+						this.libUrl = downloads.classifiers[this.libNatives].url;
 		}
 	}
 
@@ -78,7 +78,7 @@ class Library {
 	}
 
 	downloadUrl() {
-
+		return this.libUrl;
 	}
 
 	name() {

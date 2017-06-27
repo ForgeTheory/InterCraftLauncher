@@ -21,6 +21,7 @@ const destDir = jetpack.cwd('./app');
 gulp.task('bundle', () => {
 	return Promise.all([
 		bundle(srcDir.path('config.js'), destDir.path('config.js')),
+		bundle(srcDir.path('download_manager.js'), destDir.path('download_manager.js')),
 		bundle(srcDir.path('intercraft.js'), destDir.path('intercraft.js')),
 		bundle(srcDir.path('intercraft_auth.js'), destDir.path('intercraft_auth.js')),
 		bundle(srcDir.path('main.js'), destDir.path('main.js')),
@@ -31,6 +32,7 @@ gulp.task('bundle', () => {
 
 		bundle(srcDir.path('minecraft/minecraft.js'), destDir.path('minecraft/minecraft.js')),
 		bundle(srcDir.path('minecraft/account.js'), destDir.path('minecraft/account.js')),
+		bundle(srcDir.path('minecraft/launch_task.js'), destDir.path('minecraft/launch_task.js')),
 		bundle(srcDir.path('minecraft/launcher.js'), destDir.path('minecraft/launcher.js')),
 		bundle(srcDir.path('minecraft/library.js'), destDir.path('minecraft/library.js')),
 		bundle(srcDir.path('minecraft/minecraft_instance.js'), destDir.path('minecraft/minecraft_instance.js')),

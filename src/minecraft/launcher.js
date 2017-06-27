@@ -1,6 +1,11 @@
 const profileManager = require('./profile_manager');
 const versionManager = require('./version_manager');
 
+const LaunchTask = require('./launch_task').LaunchTask;
+
+var launchTasks = [];
+var instances = [];
+
 exports.init = function() {
 	return true;
 };
@@ -14,10 +19,16 @@ exports.launch = function(profileKey, callback) {
 	// Update to the last used profile
 	profileManager.use(profile);
 
-	versionManager.loadVersion(profile.version(), exports.prepare);
+	// Load the version
+	versionManager.loadVersion(profile.version(), createLaunchTask);
 
 };
 
-exports.prepare = function(version) {
-	
+var createLaunchTask = function(version) {
+	var launchTask = new LaunchTask(version);
+	launchTask.start(launchTaskFinished);
+};
+
+var launchTaskFinished = function(launchTask, result) {
+	console.log('Launch task finished with result of', result);
 };

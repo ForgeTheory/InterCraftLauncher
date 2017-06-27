@@ -98,6 +98,15 @@ exports.versionPath = function(version) {
 };
 
 /**
+ * Get the directory path of a version
+ * @param  {String} version
+ * @return {String}
+ */
+exports.versionDirectory = function(version) {
+	return jetpack.cwd(path).path(version); 
+}
+
+/**
  * Load a Minecraft version, install it if it doesn't exist
  * @param  {String}   version
  * @param  {Function} callback
@@ -134,7 +143,7 @@ exports.loadVersion = function(version, callback) {
  */
 exports.installVersion = function(version, callback) {
 
-	console.log("Downloading version:", version.id, version.url);
+	console.log("Installing version:", version.id, version.url);
 
 	// Download location
 	var dir = jetpack.cwd(path).cwd(version.id);
