@@ -1,17 +1,24 @@
 const jetpack = require('fs-jetpack');
 const jsonfile = require('jsonfile');
 
+const cache = require('../cache');
 const config = require('../config');
 const downloadManager = require('../download_manager')
 const minecraft = require('./minecraft');
 const versionManager = require('./version_manager');
 
+const MinecraftInstance = require('./minecraft_instance').MinecraftInstance;
+
 class LaunchTask {
-	constructor(version) {
+	constructor(clientToken, account, profile, version) {
+		this.clientToken = clientToken;
+		this.account = account;
+		this.profile = profile;
+		this.version = version;
 		this.starting = false;
 		this.finishedCallback = undefined;
-		this.version = version;
 		this.libraries = [];
+		this.tempPath = cache.createTempPath();
 	}
 
 	/**
@@ -20,7 +27,7 @@ class LaunchTask {
 	 */
 	start(callback) {
 		if (this.starting) {
-			console.log("WARNING: Attempted to start an already starting app");
+			console.log("WARNING: Attempted to start an already starting Minecraft instance");
 			return;
 		}
 		this.starting = true;
@@ -76,7 +83,7 @@ class LaunchTask {
 
 		if (Object.keys(toInstall).length > 0) {
 			console.log("Installing", Object.keys(toInstall).length, "dependencies");
-			return downloadManager.downloadList(toInstall, (result) => {
+			downloadManager.downloadList(toInstall, (result) => {
 				if (result) {
 					this.version.loadAssetIndex((assetIndex) => {
 						this.installAssets(assetIndex);
@@ -99,6 +106,7 @@ class LaunchTask {
 	 * @return {[type]} [description]
 	 */
 	installAssets(assetIndex) {
+		console.log("Finding assets");
 		var assets = assetIndex.assets();
 		var toInstall = {};
 
@@ -111,7 +119,7 @@ class LaunchTask {
 		downloadManager.downloadList(toInstall, (result) => {
 			if (result) {
 				console.log("Assets installed successfully!");
-				this.cleanAndFinish(true);
+				this.extractDependencies();
 			} else {
 				console.error("Assets failed to install");
 				this.cleanAndFinish(false);
@@ -120,13 +128,36 @@ class LaunchTask {
 	}
 
 	/**
+	 * Extract the necessary dependencies
+	 * @return {Undefined}
+	 */
+	extractDependencies() {
+		var tempPath = this.tempPath;
+		var dependencies = [];
+		for (var i = 0; i < this.libraries.length; i++)
+			if (this.libraries[i].needsExtraction())
+				dependencies.push(this.libraries[i]);
+		
+		var nextLib = function(launchTask, libraries) {
+			if (libraries.length == 0)
+				return launchTask.cleanAndFinish(true);
+
+			libraries[0].extract(tempPath, () => {
+				nextLib(launchTask, libraries.slice(1));
+			});
+		};
+		nextLib(this, dependencies);
+	}
+
+	/**
 	 * Clean the launch task after start attempt, and give a result
 	 * @param  {Boolean} result
 	 * @return {Undefined}
 	 */
 	cleanAndFinish(result) {
+		var minecraftInstance = new MinecraftInstance(this.clientToken, this.account, this.profile, this.version, this.tempPath);
 		this.starting = false;
-		this.finishedCallback(this, result);
+		this.finishedCallback(this, result, minecraftInstance);
 	}
 }
 

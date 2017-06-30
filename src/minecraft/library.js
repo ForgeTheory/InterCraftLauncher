@@ -1,14 +1,23 @@
+const fs = require('fs');
 const jetpack = require('fs-jetpack');
+const unzip = require('unzip');
 
 const config = require('../config');
 const utils = require('../utils');
 
 class Library {
 	constructor(libraryJson) {
+		this.libName = null;
+		this.libNatives = null;
+		this.libUrl = null;
+		this.libExtract = null;
+		this.isUsed = true;
+
 		this.parseName(libraryJson.name);
 		this.parseNatives(libraryJson.natives);
 		this.parseRules(libraryJson.rules);
 		this.parseUrl(libraryJson.downloads);
+		this.parseExtract(libraryJson.extract);
 	}
 
 	parseName(name) {
@@ -30,8 +39,6 @@ class Library {
 	}
 
 	parseRules(rules) {
-		this.isUsed = true;
-
 		if (rules == undefined)
 			return;
 
@@ -53,7 +60,7 @@ class Library {
 
 	parseUrl(downloads) {
 		if (downloads == undefined) {
-			this.libUrl = undefined;
+			this.libUrl = null;
 			return;
 		}
 
@@ -69,12 +76,23 @@ class Library {
 		}
 	}
 
+	parseExtract(extract) {
+		if (extract == undefined)
+			return;
+
+		this.libExtract = extract;
+	}
+
 	isRequired() {
 		return this.isUsed;
 	}
 
 	isInstalled() {
 		return jetpack.exists(this.path());
+	}
+
+	needsExtraction() {
+		return this.libExtract != null;
 	}
 
 	downloadUrl() {
@@ -103,6 +121,37 @@ class Library {
 			path += '-' + this.libNatives;
 
 		return path + '.jar';
+	}
+
+	extract(path, callback) {
+		if (!this.libExtract == null)
+			return callback();
+
+		var exclude = this.libExtract.exclude;
+		if (exclude == undefined)
+			exclude = [];
+
+		fs.createReadStream(this.path())
+			.pipe(unzip.Parse())
+			.on('entry', (entry) => {
+				var fileName = entry.path;
+				var type = entry.type; // 'Directory' or 'File'
+				var size = entry.size;
+
+				if (exclude.indexOf(fileName) > -1)
+					return entry.autodrain();
+				
+				if (type == 'Directory') {
+					jetpack.dir(jetpack.cwd(path).path(fileName));
+					return entry.autodrain();
+				}
+
+				if (jetpack.exists(jetpack.cwd(path).cwd(fileName).path('../')))
+					entry.pipe(fs.createWriteStream(jetpack.cwd(path).path(fileName)));
+				else
+					entry.autodrain();
+			})
+			.on('close', () => { callback(); });
 	}
 }
 

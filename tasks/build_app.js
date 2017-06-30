@@ -20,6 +20,7 @@ const destDir = jetpack.cwd('./app');
 
 gulp.task('bundle', () => {
 	return Promise.all([
+		bundle(srcDir.path('cache.js'), destDir.path('cache.js')),
 		bundle(srcDir.path('config.js'), destDir.path('config.js')),
 		bundle(srcDir.path('download_manager.js'), destDir.path('download_manager.js')),
 		bundle(srcDir.path('intercraft.js'), destDir.path('intercraft.js')),

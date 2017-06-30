@@ -1,5 +1,6 @@
 const { ipcSend, ipcReceive } = require('electron-simple-ipc');
 
+const cache = require('./cache');
 const config = require('./config');
 const intercraftAuth = require('./intercraft_auth');
 const minecraft = require('./minecraft/minecraft');
@@ -40,7 +41,9 @@ ipcReceive('control_panel_done', (payload) => {
 });
 
 ipcReceive('control_panel_launch_minecraft', (payload) => {
-	minecraft.launcher().launch(payload.profile, () => {
+	var account = minecraft.profileManager().activeAccount();
+	var profile = minecraft.profileManager().profile(payload.profile);
+	minecraft.launcher().launch(profile, account, (result) => {
 		console.log("Launch finished");
 	});
 });
@@ -49,6 +52,9 @@ exports.init = function() {
 
 	// Initialize the configuration
 	config.init();
+
+	// Initialize the cache
+	cache.init();
 
 	// Initialize the window manager
 	windowManager.init();

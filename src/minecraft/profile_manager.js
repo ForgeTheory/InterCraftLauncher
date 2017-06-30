@@ -18,6 +18,10 @@ var selectedProfile;
 var selectedUser;
 var version;
 
+/**
+ * Initialize the profile manager
+ * @return {Boolean}
+ */
 exports.init = function() {
 
 	// Save the path
@@ -30,6 +34,10 @@ exports.init = function() {
 	return true;
 };
 
+/**
+ * Load the launcher profiles
+ * @return {Undefined}
+ */
 exports.load = function() {
 
 	// Clear the last profile
@@ -67,6 +75,10 @@ exports.load = function() {
 	parseUserAccounts(profile);
 };
 
+/**
+ * Save the launcher profiles
+ * @return {Undefined}
+ */
 exports.save = function() {
 
 	console.log("Saving profiles...");
@@ -135,6 +147,11 @@ exports.save = function() {
 	});
 };
 
+/**
+ * Parse the given launcher profiles version
+ * @param  {Json Object} launcherProfile
+ * @return {Undefined}
+ */
 var parseVersion = function(launcherProfile) {
 
 	// Check if the launcher version is defined
@@ -154,10 +171,20 @@ var parseVersion = function(launcherProfile) {
 	legacy = version.name.startsWith('1');
 };
 
+/**
+ * Parse the launcher profile settings
+ * @param  {Json Object} launcherProfile
+ * @return {Undefined}
+ */
 var parseSettings = function(launcherProfile) {
 	settings = launcherProfile.settings;
 };
 
+/**
+ * Parse the given launcher profiles
+ * @param  {Json Object} launcherProfile
+ * @return {Undefined}
+ */
 var parseProfiles = function(launcherProfile) {
 
 	profiles = [];
@@ -178,6 +205,11 @@ var parseProfiles = function(launcherProfile) {
 	exports.sortProfiles();
 };
 
+/**
+ * Parse the client token
+ * @param  {Json Object} launcherProfile
+ * @return {Undefined}
+ */
 var parseClientToken = function(launcherProfile) {
 	if (launcherProfile.clientToken != undefined) {
 		clientToken = launcherProfile.clientToken;
@@ -186,6 +218,11 @@ var parseClientToken = function(launcherProfile) {
 	exports.generateClientToken();
 };
 
+/**
+ * Parse the analytics token (not really used, just don't want to lose it)
+ * @param  {Json Object} launcherProfile
+ * @return {Undefined}
+ */
 var parseAnalytics = function(launcherProfile) {
 	analytics = {
 		failCount: launcherProfile.analyticsFailcount,
@@ -193,6 +230,11 @@ var parseAnalytics = function(launcherProfile) {
 	}
 };
 
+/**
+ * Parse the accounts
+ * @param  {Json Object} launcherProfile
+ * @return {Undefined}
+ */
 var parseUserAccounts = function(launcherProfile) {
 	accounts = {};
 	if (version.name.startsWith('1'))
@@ -220,6 +262,11 @@ var parseUserAccounts = function(launcherProfile) {
 		selectedUser = null;
 };
 
+/**
+ * Parse the accounts in the legacy version
+ * @param  {Json Object} launcherProfile
+ * @return {Undefined}
+ */
 var parseUserAccountsLegacy = function(launcherProfile) {
 	// User IDs
 	var uuids = Object.keys(launcherProfile.authenticationDatabase);
@@ -240,10 +287,26 @@ var parseUserAccountsLegacy = function(launcherProfile) {
 	}
 }
 
+/**
+ * Generate a client token
+ * @return {Undefined}
+ */
 exports.generateClientToken = function() {
 	clientToken = utils.randomHexStringPartitioned([8, 4, 4, 4, 12]);
 };
 
+/**
+ * Get the client token
+ * @return {String}
+ */
+exports.clientToken = function() {
+	return clientToken;
+}
+
+/**
+ * Sort the profiles by the last used date
+ * @return {Undefined}
+ */
 exports.sortProfiles = function() {
 	var i, j;
 	var profileList = [];
@@ -262,11 +325,21 @@ exports.sortProfiles = function() {
 	profiles = profileList.concat(unused);
 };
 
+/**
+ * Use the given profile
+ * @param  {Profile} profile
+ * @return {Undefined}
+ */
 exports.use = function(profile) {
 	profile.setLastUsed();
 	exports.save();
 };
 
+/**
+ * Fetch a profile from the profile key
+ * @param  {String} key
+ * @return {Profile|Null}
+ */
 exports.profile = function(key) {
 	for (var i = 0; i < profiles.length; i++)
 		if (profiles[i].key() == key)
@@ -274,11 +347,18 @@ exports.profile = function(key) {
 	return null;
 };
 
+/**
+ * Get the full list of the profiles
+ * @return {Array<Profile>}
+ */
 exports.profiles = function() {
-
+	return profiless;
 };
 
-// Generate the list of available profiles sorted by 'last used' date
+/**
+ * Generate the list of available profiles sorted by 'last used' date
+ * @return {Array<Profile>}
+ */
 exports.profilesAvailable = function() {
 	var results = [];
 	for (var i = 0; i < profiles.length; i++) {
@@ -292,6 +372,26 @@ exports.profilesAvailable = function() {
 	return results;
 };
 
+/**
+ * Get the active account
+ * @return {Account|Null}
+ */
+exports.activeAccount = function() {
+	if (!this.selectedUser) {
+		if (Object.keys(accounts).length > 0)
+			return exports.accounts()[0];
+	}
+	else if (accounts[this.selectedUser])
+		return accounts[this.selectedUser];
+
+	console.error("No active account available");
+	return null;
+};
+
+/**
+ * Get the full list of accounts
+ * @return {Array<Account>}
+ */
 exports.accounts = function() {
 	var results = [];
 	var keys = Object.keys(accounts);
@@ -300,12 +400,24 @@ exports.accounts = function() {
 	return results;
 };
 
+/**
+ * Add an account
+ * @param {Account} account
+ */
 exports.addAccount = function(account) {
 	accounts.push(account);
 };
 
+/**
+ * Remove an account
+ * @param  {Account} account
+ * @return {Boolean}
+ */
 exports.removeAccount = function(account) {
 	var index = accounts.indexOf(account);
-	if (index > -1)
+	if (index > -1) {
 		accounts.splice(index, 1);
+		return true;
+	}
+	return false;
 };
