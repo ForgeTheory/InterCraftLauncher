@@ -14,7 +14,7 @@ var dataPath = function() {
 	return path;
 }();
 
-require('find-java-home')((err, home) => {
+require('./java_home')((err, home) => {
 	if (err)
 		return console.error("ERROR: Could not find java installation!");
 	else

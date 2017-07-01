@@ -25,6 +25,7 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('download_manager.js'), destDir.path('download_manager.js')),
 		bundle(srcDir.path('intercraft.js'), destDir.path('intercraft.js')),
 		bundle(srcDir.path('intercraft_auth.js'), destDir.path('intercraft_auth.js')),
+		bundle(srcDir.path('java_home.js'), destDir.path('java_home.js')),
 		bundle(srcDir.path('main.js'), destDir.path('main.js')),
 		bundle(srcDir.path('mojang.js'), destDir.path('mojang.js')),
 		bundle(srcDir.path('utils.js'), destDir.path('utils.js')),
