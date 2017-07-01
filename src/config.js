@@ -7,12 +7,15 @@ var config;
 
 var javaHome;
 var rootPath = jetpack;
-var dataPath = function() {
-	var path = jetpack.cwd(os.homedir());
+var homeDir = jetpack.cwd(os.homedir());
+var minecraftPath = function() {
+	var path = homeDir;
 	if (process.platform == 'win32')
-		path = path.cwd('./AppData/Roaming');
-	return path;
-}();
+		path = path.cwd('./AppData/Roaming/.minecraft');
+	else if (process.platform == 'darwin')
+		path = path.cwd('./Library/Application Support/minecraft');
+	return path.path();
+};
 
 require('./java_home')((err, home) => {
 	if (err)
@@ -22,9 +25,10 @@ require('./java_home')((err, home) => {
 });
 
 var generate = function() {
+	console.log("Generating stuff");
 	config = {
 		"configured": false,
-		"minecraft_path": dataPath.path('.minecraft'),
+		"minecraft_path": minecraftPath(),
 		"access_token": null
 	};
 };
@@ -54,7 +58,7 @@ exports.setMinecraftPath = function(path) {
 exports.tempPath = function() {
 	var path;
 	if (process.platform == 'win32')
-		path = dataPath.cwd('../Local/Temp');
+		path = homeDir.cwd('./AppData/Local/Temp');
 	else
 		path = jetpack.cwd('/tmp');
 	return path;

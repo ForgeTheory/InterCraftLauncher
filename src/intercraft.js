@@ -121,7 +121,7 @@ exports.controlPanel = function() {
 exports.offlinePanel = function() {
 	console.log("Loading offline control panel");
 	windowManager.offlinePanel().show();
-}
+};
 
 exports.activate = function() {
 	exports.initWindow();

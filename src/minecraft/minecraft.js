@@ -17,6 +17,7 @@ exports.minecraftPath = function() {
 exports.init = function() {
 	var result = true;
 	minecraftDir = config.minecraftPath();
+
 	result = result && directoryExists();
 	result = result && filesExist();
 	result = result && profileManager.init();

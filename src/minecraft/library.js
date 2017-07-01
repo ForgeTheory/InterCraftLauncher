@@ -127,6 +127,8 @@ class Library {
 		if (!this.libExtract == null)
 			return callback();
 
+		console.log(`Extracting ${this.name()}`);
+
 		var exclude = this.libExtract.exclude;
 		if (exclude == undefined)
 			exclude = [];
@@ -141,7 +143,9 @@ class Library {
 				if (exclude.indexOf(fileName) > -1)
 					return entry.autodrain();
 				
-				if (type == 'Directory') {
+				console.log(fileName, type);
+				if (type == 'Directory' || fileName[fileName.length-1] == '/') { // Check file name for '/' on OSX
+					console.log("It's a folder ", fileName);
 					jetpack.dir(jetpack.cwd(path).path(fileName));
 					return entry.autodrain();
 				}
