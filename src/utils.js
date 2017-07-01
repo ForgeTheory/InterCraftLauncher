@@ -68,3 +68,16 @@ exports.randomHexStringPartitioned = function(partitions) {
 		result += exports.randomHexString(partitions[i]) + '-';
 	return result.slice(0, result.length - 1);
 };
+
+/**
+ * Portition
+ * @param  {[type]} token [description]
+ * @return {[type]}       [description]
+ */
+exports.partitionToken = function(token) {
+	return token.slice(0, 8) + '-' +
+	       token.slice(8, 12) + '-' +
+	       token.slice(12, 16) + '-' +
+	       token.slice(16, 20) + '-' +
+	       token.slice(20);
+};
