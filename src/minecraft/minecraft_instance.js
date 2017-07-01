@@ -3,6 +3,7 @@ const {spawn} = require('child_process');
 const isRunning = require('is-running');
 
 const config = require('../config');
+const utils = require('../utils');
 
 class MinecraftInstance {
 
@@ -42,9 +43,10 @@ class MinecraftInstance {
 
 		var libraries = this._version.libraries();
 		var libraryString = "";
+		var separator = (utils.os() == 'windows') ? ';' : ':';
 		for (var i = 0; i < libraries.length; i++)
 			if (!libraries[i].needsExtraction())
-				libraryString += libraries[i].path() + ';';
+				libraryString += libraries[i].path() + separator;
 		libraryString += this._version.jarPath();
 
 		args.push(libraryString);
@@ -81,11 +83,7 @@ class MinecraftInstance {
 		console.log("Launching Minecraft instance");
 		this.started = true;
 
-		var args = [
-			"-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump",
-			"-Dos.name=Windows 10",
-			"-Dos.version=10.0"
-		];
+		var args = [];
 		var javaPath    = this._profile.javaPath();
 		var javaArgs    = this._profile.javaArgs();
 		var libraryArgs = this.generateLibraryArgs();
@@ -109,7 +107,8 @@ class MinecraftInstance {
 	 */
 	createProcess(javaPath, args, cwd) {
 
-		console.log(`Launching with the command:"\n${javaPath}" ` + args.join(' '));
+		// Uncomment the line below to debug the Minecraft start command
+		// console.log(`Launching with the command:\n"${javaPath}" ` + args.join(' '));
 
 		this._process = spawn(javaPath, args, {
 			cwd: cwd,
@@ -117,11 +116,15 @@ class MinecraftInstance {
 		});
 
 		this._process.stdout.on('data', (data) => {
-			// console.log(`stdout: ${data}`);
+			console.log(`stdout: ${data}`);
 		});
 
-		this._process.stdout.on('close', (data) => {
-			console.log("Instance closed");
+		this._process.stderr.on('data', (data) => {
+			console.log(`ps stderr: ${data}`);
+		});
+
+		this._process.stdout.on('close', (code) => {
+			console.log(`Closed with exit code ${code}`);
 		});
 
 		this._pid = this._process.pid;
