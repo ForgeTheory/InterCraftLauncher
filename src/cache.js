@@ -17,9 +17,17 @@ exports.init = function() {
 	});
 };
 
+// This needs to be better, no feedback on whether an element was actually cleaned
 exports.clean = function(path) {
+	console.log("Cleaning cache...");
 	if (path == undefined) {
-		for (var i = 0; i < entries.length; i++){}
+		for (var i = 0; i < entries.length; i++){
+			if (jetpack.exists(entries[i]))
+				jetpack.remove(entries[i]);
+			else {
+				entries = utils.arrayRemove(entries, i--); // Remove element, and decrement i
+			}
+		}
 	} else if (entries.indexOf(path) != -1) {
 
 	}

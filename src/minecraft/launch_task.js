@@ -155,7 +155,7 @@ class LaunchTask {
 	 * @return {Undefined}
 	 */
 	cleanAndFinish(result) {
-		var minecraftInstance = new MinecraftInstance(this.clientToken, this.account, this.profile, this.version, this.tempPath);
+		var minecraftInstance = new MinecraftInstance(config.javaPath().path(), this.clientToken, this.account, this.profile, this.version, this.tempPath);
 		this.starting = false;
 		this.finishedCallback(this, result, minecraftInstance);
 	}

@@ -82,7 +82,6 @@ exports.load = function() {
 exports.save = function() {
 
 	console.log("Saving profiles...");
-	return;
 
 	var i = 0;
 	var keys;

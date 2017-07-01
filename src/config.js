@@ -16,8 +16,9 @@ var dataPath = function() {
 
 require('find-java-home')((err, home) => {
 	if (err)
-		return console.error("Could not find java installation!");
-	javaHome = jetpack.cwd(home);
+		return console.error("ERROR: Could not find java installation!");
+	else
+		javaHome = jetpack.cwd(home);
 });
 
 var generate = function() {

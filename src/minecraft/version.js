@@ -1,5 +1,6 @@
 const jetpack = require('fs-jetpack');
 const jsonfile = require('jsonfile');
+const stringArgv = require('string-argv');
 
 const config = require('../config');
 const downloadManager = require('../download_manager');
@@ -10,13 +11,19 @@ const Library = require('./library').Library;
 
 class Version {
 	constructor(versionJson) {
-		this.id = versionJson.id;
-		this.jar = versionJson.jar;
-		this.parent = null;
-		this.parentVersion = versionJson.inheritsFrom;
-		this.downloads = versionJson.downloads;
-		this.assetIndex = versionJson.assetIndex;
-		this.assets = versionJson.assets;
+		this._id = versionJson.id;
+		this._jar = versionJson.jar;
+		this._parent = null;
+		this._parentVersion = versionJson.inheritsFrom;
+		this._libraries = undefined;
+		this._downloads = versionJson.downloads;
+		this._assetIndex = versionJson.assetIndex;
+		this._assetIndexObj = undefined;
+		this._assets = versionJson.assets;
+		this._args = versionJson.minecraftArguments;
+		this._mainClass = versionJson.mainClass;
+		this._type = versionJson.type;
+
 		this.parseLibraries(versionJson.libraries);
 	}
 
@@ -26,11 +33,11 @@ class Version {
 	 * @return {Undefined}
 	 */
 	parseLibraries(libraries) {
-		this.libraries = [];
+		this._libraries = [];
 		for (var i = 0; i < libraries.length; i++) {
 			var library = new Library(libraries[i]);
 			if (library.isRequired())
-				this.libraries.push(library);
+				this._libraries.push(library);
 		}
 	}
 
@@ -40,13 +47,11 @@ class Version {
 	 * @return {Undefined}
 	 */
 	resolveInheritance(callback) {
-		// Be able to access this in a closure
-		var thisVersion = this;
 
-		if (this.parentVersion != undefined) {
-			versionManager.loadVersion(this.parentVersion, (version) => {
+		if (this._parentVersion != undefined) {
+			versionManager.loadVersion(this._parentVersion, (version) => {
 				if (version) {
-					thisVersion.parent = version;
+					this._parent = version;
 					return version.resolveInheritance(callback);
 				}
 				return callback(false);
@@ -66,10 +71,10 @@ class Version {
 		if (libraries == undefined)
 			libraries = [];
 
-		libraries = libraries.concat(this.libraries);
+		libraries = libraries.concat(this._libraries);
 
-		if (this.parent)
-			return this.parent.resolveLibraries(callback, libraries);
+		if (this._parent)
+			return this._parent.resolveLibraries(callback, libraries);
 
 		callback(libraries);
 	}
@@ -89,9 +94,11 @@ class Version {
 						console.log("ERROR: Failed to load asset index");
 						return callback(null);
 					}
-					callback(new AssetIndex(obj));
+					this._assetIndexObj = new AssetIndex(obj);
+					callback(this._assetIndexObj);
 				});
 			});
+			return;
 		}
 
 		// Open the asset file
@@ -100,7 +107,8 @@ class Version {
 				console.log("ERROR: Failed to load asset index");
 				return callback(null);
 			}
-			callback(new AssetIndex(obj));
+			this._assetIndexObj = new AssetIndex(obj);
+			callback(this._assetIndexObj);
 		});
 	}
 
@@ -109,11 +117,11 @@ class Version {
 	 * @return {String}
 	 */
 	assetIndexUrl() {
-		if (this.assetIndex != undefined)
-			return this.assetIndex.url;
+		if (this._assetIndex != undefined)
+			return this._assetIndex.url;
 		
-		if (this.parent)
-			return this.parent.assetIndexUrl();
+		if (this._parent)
+			return this._parent.assetIndexUrl();
 
 		console.error("ERROR: Failed to find asset index");
 		return null;
@@ -124,14 +132,38 @@ class Version {
 	 * @return {String}
 	 */
 	assetIndexPath() {
-		if (this.assetIndex != undefined)
-			return config.minecraftPath().path('assets/indexes/' + this.assetIndex.id + '.json');
+		console.log(this._assetIndex);
+		if (this._assetIndex != undefined)
+			return config.minecraftPath().path('assets/indexes/' + this._assetIndex.id + '.json');
 
-		if (this.parent)
-			return this.parent.assetIndexPath();
+		if (this._parent)
+			return this._parent.assetIndexPath();
 
 		console.error("ERROR: Failed to find asset path");
 		return null;
+	}
+
+	/**
+	 * Get the asset index name
+	 * @return {String}
+	 */
+	assetsId() {
+		if (this._assets)
+			return this._assets;
+		else if (this._parent)
+			return this._parent.assetsId();
+		console.error("ERROR: Failed to find assets ID");
+		return undefined;
+	}
+
+	/**
+	 * Get the list of libraries
+	 * @return {Array<Library>}
+	 */
+	libraries() {
+		if (this._parent)
+			return this._libraries.concat(this._parent.libraries());
+		return this._libraries;
 	}
 
 	/**
@@ -139,11 +171,11 @@ class Version {
 	 * @return {String|Undefined}
 	 */
 	jarUrl() {
-		if (this.downloads != undefined && this.downloads.client != undefined)
-			return this.downloads.client.url;
+		if (this._downloads != undefined && this._downloads.client != undefined)
+			return this._downloads.client.url;
 
-		else if (this.parent)
-			return this.parent.jarUrl();
+		else if (this._parent)
+			return this._parent.jarUrl();
 
 		return undefined;
 	}
@@ -153,18 +185,68 @@ class Version {
 	 * @return {String|Undefined}
 	 */
 	jarPath() {
-		if (this.jar != undefined) 
-			return jetpack.cwd(versionManager.versionDirectory(this.jar)).path(this.jar + '.jar');
+		if (this._jar != undefined) 
+			return jetpack.cwd(versionManager.versionDirectory(this._jar)).path(this._jar + '.jar');
 		
-		if (jetpack.exists(jetpack.cwd(versionManager.versionDirectory(this.id)).path(this.id + '.jar'))
-		    || (this.downloads != undefined && this.downloads.client != undefined))
-			return jetpack.cwd(versionManager.versionDirectory(this.id)).path(this.id + '.jar');
+		if (jetpack.exists(jetpack.cwd(versionManager.versionDirectory(this._id)).path(this._id + '.jar'))
+		    || (this._downloads != undefined && this._downloads.client != undefined))
+			return jetpack.cwd(versionManager.versionDirectory(this._id)).path(this._id + '.jar');
 
-		if (this.parent)
-			return this.parent.jarPath();
+		if (this._parent)
+			return this._parent.jarPath();
 
 		console.log("ERROR: Failed to find a jar path");
 		return undefined;
+	}
+
+	/**
+	 * Get the main class
+	 * @return {String}
+	 */
+	mainClass() {
+		return this._mainClass
+	}
+
+	/**
+	 * Get the arguments for the version
+	 * @param  {Json Object} values
+	 * @return {Array}
+	 */
+	arguments(values) {
+		var argValues = {
+			"${assets_root}":       '"' + values.assets_root + '"',
+			"${assets_index_name}": values.assets_index_name,
+			"${auth_access_token}": values.auth_access_token,
+			"${auth_player_name}":  values.auth_player_name,
+			"${auth_uuid}":         values.auth_uuid,
+			"${game_directory}":    '"' + values.game_directory + '"',
+			"${user_type}":         'mojang',
+			"${version_name}":      this.version(),
+			"${version_type}":      this.type()
+		};
+
+		var commandline = this._args;
+		var keys = Object.keys(argValues);
+		for (var i = 0; i < keys.length; i++)
+			commandline = commandline.replace(keys[i], argValues[keys[i]]);
+
+		return stringArgv(commandline);
+	}
+
+	/**
+	 * Get the version type
+	 * @return {String}
+	 */
+	type() {
+		return this._type;
+	}
+
+	/**
+	 * Get the version ID
+	 * @return {String}
+	 */
+	version() {
+		return this._id;
 	}
 }
 

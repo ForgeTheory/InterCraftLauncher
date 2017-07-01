@@ -1,16 +1,19 @@
+const stringArgv = require('string-argv');
+
+const config = require('../config');
 
 class Profile {
 
 	constructor(key, profileJson) {
-		this.profileKey = key;
-		this.profile = profileJson;
+		this._profileKey = key;
+		this._profile = profileJson;
 
-		if (this.profileKey == undefined) {
+		if (this._profileKey == undefined) {
 			this.generateKey();
 		}
 
-		if (this.profile == undefined) {
-			this.profile = {};
+		if (this._profile == undefined) {
+			this._profile = {};
 		}
 	}
 
@@ -20,12 +23,12 @@ class Profile {
 	 */
 	json() {
 		var result = {};
-		var keys = Object.keys(this.profile);
+		var keys = Object.keys(this._profile);
 
 
 		for (var i = 0; i < keys.length; i++)
-			if (this.profile[keys[i]] != undefined)
-				result[keys[i]] = this.profile[keys[i]];
+			if (this._profile[keys[i]] != undefined)
+				result[keys[i]] = this._profile[keys[i]];
 
 		return result;
 	}
@@ -35,7 +38,7 @@ class Profile {
 	 * @return {String}
 	 */
 	key() {
-		return this.profileKey;
+		return this._profileKey;
 	}
 
 	/**
@@ -43,10 +46,10 @@ class Profile {
 	 * @return {String}
 	 */
 	generateKey() {
-		this.profileKey = '';
+		this._profileKey = '';
 		var chars = '0123456789abcdef';
 		for (var i = 0; i < 32; i++)
-			this.profileKey += chars[Math.floor(Math.random()*16)];
+			this._profileKey += chars[Math.floor(Math.random()*16)];
 	}
 
 	/**
@@ -54,18 +57,18 @@ class Profile {
 	 * @return {String|Null}
 	 */
 	displayName() {
-		if (this.profile.name != undefined)
-			return this.profile.name;
+		if (this._profile.name != undefined)
+			return this._profile.name;
 
-		if (this.profile.type != undefined) {
-			if (this.profile.type == 'latest-release')
+		if (this._profile.type != undefined) {
+			if (this._profile.type == 'latest-release')
 				return "Latest Release";
-			else if (this.profile.type == 'latest-snapshot')
+			else if (this._profile.type == 'latest-snapshot')
 				return "Latest Snapshot";
 		}
 
-		if (this.profile.lastVersionId != undefined)
-			return this.profile.lastVersionId;
+		if (this._profile.lastVersionId != undefined)
+			return this._profile.lastVersionId;
 
 		return null;
 	}
@@ -74,7 +77,7 @@ class Profile {
 	 * Get the name of the profile
 	 * @return {String}
 	 */
-	name() { return this.profile.name; }
+	name() { return this._profile.name; }
 
 	/**
 	 * Set the name of the profile
@@ -82,7 +85,7 @@ class Profile {
 	 * @return {this}
 	 */
 	setName(name) {
-		this.profile.name = name;
+		this._profile.name = name;
 		return this;
 	}
 
@@ -90,7 +93,7 @@ class Profile {
 	 * Get the icon of the profile
 	 * @return {String}
 	 */
-	icon() { return this.profile.icon; }
+	icon() { return this._profile.icon; }
 
 	/**
 	 * Set the icon of the profile
@@ -98,7 +101,7 @@ class Profile {
 	 * @return {this}
 	 */
 	setIcon(icon) {
-		this.profile.icon = icon;
+		this._profile.icon = icon;
 		return this;
 	}
 
@@ -106,7 +109,7 @@ class Profile {
 	 * Get the type of profile
 	 * @return {String|Undefined}
 	 */
-	type() { return this.profile.type; }
+	type() { return this._profile.type; }
 
 	/**
 	 * Set the profile type <latest-release, latest-snapshot, custom>
@@ -114,7 +117,7 @@ class Profile {
 	 * @return {this}
 	 */
 	setType(type) {
-		this.profile.type = type;
+		this._profile.type = type;
 		return this;
 	}
 
@@ -122,7 +125,7 @@ class Profile {
 	 * Get the date the profile was created
 	 * @return {String} [description]
 	 */
-	created() { return this.profile.created; }
+	created() { return this._profile.created; }
 
 	/**
 	 * Set the date the profile was created
@@ -132,7 +135,7 @@ class Profile {
 	setCreated(date) {
 		if (date == undefined)
 			date = new Date(Date.now());
-		this.profile.created = date.toISOString();
+		this._profile.created = date.toISOString();
 		return this;
 	}
 
@@ -140,7 +143,7 @@ class Profile {
 	 * Get the date last used
 	 * @return {String}
 	 */
-	lastUsed() { return this.profile.lastUsed; }
+	lastUsed() { return this._profile.lastUsed; }
 
 	/**
 	 * Set the date last used
@@ -150,7 +153,7 @@ class Profile {
 	setLastUsed(date) {
 		if (date == undefined)
 			date = new Date(Date.now());
-		this.profile.lastUsed = date.toISOString();
+		this._profile.lastUsed = date.toISOString();
 		return this;
 	}
 
@@ -158,7 +161,7 @@ class Profile {
 	 * Get the Minecraft version
 	 * @return {String}
 	 */
-	version() { return this.profile.lastVersionId; }
+	version() { return this._profile.lastVersionId; }
 
 	/**
 	 * Set the Minecraft version
@@ -166,7 +169,7 @@ class Profile {
 	 * @return {this}
 	 */
 	setVersion(version) {
-		this.profile.lastVersionId = lastVersionId;
+		this._profile.lastVersionId = lastVersionId;
 		return this;
 	}
 
@@ -174,7 +177,11 @@ class Profile {
 	 * Get the game directory
 	 * @return {String}
 	 */
-	gameDirectory() { return this.profile.gameDir; }
+	gameDirectory() {
+		if (this._profile.gameDir)
+			return this._profile.gameDir;
+		return config.minecraftPath().path();
+	}
 
 	/**
 	 * Set the game directory
@@ -182,7 +189,7 @@ class Profile {
 	 * @return {this}
 	 */
 	setGameDirectory(gameDir) {
-		this.profile.gameDir = gameDir;
+		this._profile.gameDir = gameDir;
 		return this;
 	}
 
@@ -190,7 +197,11 @@ class Profile {
 	 * Get the Java directory
 	 * @return {String}
 	 */
-	javaPath() { return this.profile.javaDir; }
+	javaPath() {
+		if (this._profile.javaDir)
+			return this._profile.javaDir;
+		return config.javaPath().path();
+	}
 
 	/**
 	 * Set the Java directory
@@ -198,15 +209,25 @@ class Profile {
 	 * @return {this}
 	 */
 	setJavaPath(javaDir) {
-		this.profile.javaDir = javaDir;
+		this._profile.javaDir = javaDir;
 		return this;
+	}
+
+	/**
+	 * Get the java arguments
+	 * @return {Array}
+	 */
+	javaArgs() {
+		if (this._profile.javaArgs)
+			return stringArgv(this._profile.javaArgs);
+		return [];
 	}
 
 	/**
 	 * Get the java arguments
 	 * @return {String}
 	 */
-	javaArgs() { return this.profile.javaArgs; }
+	javaArgsString() { return this._profile.javaArgs; }
 
 	/**
 	 * Set the java arguments
@@ -214,7 +235,7 @@ class Profile {
 	 * @return {this}
 	 */
 	setJavaArgs(javaArgs) {
-		this.profile.javaArgs = javaArgs;
+		this._profile.javaArgs = javaArgs;
 		return this;
 	}
 }
