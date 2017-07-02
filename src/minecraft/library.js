@@ -7,11 +7,11 @@ const utils = require('../utils');
 
 class Library {
 	constructor(libraryJson) {
-		this.libName = null;
-		this.libNatives = null;
-		this.libUrl = null;
-		this.libExtract = null;
-		this.isUsed = true;
+		this._name = null;
+		this._natives = null;
+		this._url = null;
+		this._extract = null;
+		this._isUsed = true;
 
 		this.parseName(libraryJson.name);
 		this.parseNatives(libraryJson.natives);
@@ -21,8 +21,8 @@ class Library {
 	}
 
 	parseName(name) {
-		this.libName = name;
-		var parts = this.libName.split(':');
+		this._name = name;
+		var parts = this._name.split(':');
 		if (parts.length != 3) {
 			console.log("ERROR: Invalid library name");
 			return;
@@ -31,11 +31,11 @@ class Library {
 
 	parseNatives(natives) {
 		if (natives == undefined) {
-			this.libNatives = undefined;
+			this._natives = undefined;
 			return;
 		}
 		if (natives[utils.os()] != undefined)
-			this.libNatives = natives[utils.os()];
+			this._natives = natives[utils.os()];
 	}
 
 	parseRules(rules) {
@@ -45,34 +45,34 @@ class Library {
 		for (var i = 0; i < rules.length; i++) {
 			if (rules[i].action == 'allow') {
 				if (rules[i].os == undefined)
-					this.isUsed = true;
+					this._isUsed = true;
 				else
-					this.isUsed = rules[i].os.name == utils.os();
+					this._isUsed = rules[i].os.name == utils.os();
 			}
 			else if (rules[i].action == 'disallow') {
 				if (rules[i].os == undefined)
-					this.isUsed = false;
+					this._isUsed = false;
 				else
-					this.isUsed = rules[i].os.name != utils.os();
+					this._isUsed = rules[i].os.name != utils.os();
 			}
 		}
 	}
 
 	parseUrl(downloads) {
 		if (downloads == undefined) {
-			this.libUrl = null;
+			this._url = null;
 			return;
 		}
 
-		if (this.libNatives == undefined) {
+		if (this._natives == undefined) {
 			if (downloads.artifact != undefined)
 				if (downloads.artifact.url != undefined)
-					this.libUrl = downloads.artifact.url;
+					this._url = downloads.artifact.url;
 		} else {
 			if (downloads.classifiers != undefined)
-				if (downloads.classifiers[this.libNatives] != undefined)
-					if (downloads.classifiers[this.libNatives].url != undefined)
-						this.libUrl = downloads.classifiers[this.libNatives].url;
+				if (downloads.classifiers[this._natives] != undefined)
+					if (downloads.classifiers[this._natives].url != undefined)
+						this._url = downloads.classifiers[this._natives].url;
 		}
 	}
 
@@ -80,11 +80,11 @@ class Library {
 		if (extract == undefined)
 			return;
 
-		this.libExtract = extract;
+		this._extract = extract;
 	}
 
 	isRequired() {
-		return this.isUsed;
+		return this._isUsed;
 	}
 
 	isInstalled() {
@@ -92,19 +92,19 @@ class Library {
 	}
 
 	needsExtraction() {
-		return this.libExtract != null;
+		return this._extract != null;
 	}
 
 	downloadUrl() {
-		return this.libUrl;
+		return this._url;
 	}
 
 	name() {
-		return this.libName;
+		return this._name;
 	}
 
 	path() {
-		var parts = this.libName.split(':');
+		var parts = this._name.split(':');
 		if (parts.length != 3) {
 			console.log("ERROR: Invalid library name");
 			return;
@@ -117,19 +117,19 @@ class Library {
 
 		path = path.cwd(parts[1]).cwd(parts[2]).path(parts[1] + '-' + parts[2]);
 
-		if (this.libNatives)
-			path += '-' + this.libNatives;
+		if (this._natives)
+			path += '-' + this._natives;
 
 		return path + '.jar';
 	}
 
 	extract(path, callback) {
-		if (!this.libExtract == null)
+		if (!this._extract == null)
 			return callback();
 
 		console.log(`Extracting ${this.name()}`);
 
-		var exclude = this.libExtract.exclude;
+		var exclude = this._extract.exclude;
 		if (exclude == undefined)
 			exclude = [];
 

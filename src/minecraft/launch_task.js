@@ -11,14 +11,14 @@ const MinecraftInstance = require('./minecraft_instance').MinecraftInstance;
 
 class LaunchTask {
 	constructor(clientToken, account, profile, version) {
-		this.clientToken = clientToken;
-		this.account = account;
-		this.profile = profile;
-		this.version = version;
-		this.starting = false;
-		this.finishedCallback = undefined;
-		this.libraries = [];
-		this.tempPath = cache.createTempPath();
+		this._clientToken = clientToken;
+		this._account = account;
+		this._profile = profile;
+		this._version = version;
+		this._starting = false;
+		this._finishedCallback = undefined;
+		this._libraries = [];
+		this._tempPath = cache.createTempPath();
 	}
 
 	/**
@@ -26,13 +26,13 @@ class LaunchTask {
 	 * @return {Undefined}
 	 */
 	start(callback) {
-		if (this.starting) {
+		if (this._starting) {
 			console.log("WARNING: Attempted to start an already starting Minecraft instance");
 			return;
 		}
-		this.starting = true;
-		this.finishedCallback = callback;
-		this.version.resolveInheritance((result) => {
+		this._starting = true;
+		this._finishedCallback = callback;
+		this._version.resolveInheritance((result) => {
 			this.onInheritanceResolved(result);
 		});
 	}
@@ -46,7 +46,7 @@ class LaunchTask {
 		if (!result)
 			this.cleanAndFinish(false);
 
-		this.version.resolveLibraries((libraries) => {
+		this._version.resolveLibraries((libraries) => {
 			this.onLibrariesResolved(libraries);
 		});
 	}
@@ -57,7 +57,7 @@ class LaunchTask {
 	 * @return {Undefined}
 	 */
 	onLibrariesResolved(libraries) {
-		this.libraries = libraries;
+		this._libraries = libraries;
 		this.installDependencies();
 	}
 
@@ -69,23 +69,23 @@ class LaunchTask {
 		var toInstall = {};
 		
 		// Main jar file
-		if (jetpack.exists(this.version.jarPath()) != 'file') {
-			if (this.version.jarUrl())
-				toInstall[this.version.jarUrl()] = this.version.jarPath();
+		if (jetpack.exists(this._version.jarPath()) != 'file') {
+			if (this._version.jarUrl())
+				toInstall[this._version.jarUrl()] = this._version.jarPath();
 		}
 
 		// Libraries
-		for (var i = 0; i < this.libraries.length; i++) {
-			if (!this.libraries[i].isInstalled())
-				if (this.libraries[i].downloadUrl() != undefined)
-					toInstall[this.libraries[i].downloadUrl()] = this.libraries[i].path();
+		for (var i = 0; i < this._libraries.length; i++) {
+			if (!this._libraries[i].isInstalled())
+				if (this._libraries[i].downloadUrl() != undefined)
+					toInstall[this._libraries[i].downloadUrl()] = this._libraries[i].path();
 		}
 
 		if (Object.keys(toInstall).length > 0) {
 			console.log("Installing", Object.keys(toInstall).length, "dependencies");
 			downloadManager.downloadList(toInstall, (result) => {
 				if (result) {
-					this.version.loadAssetIndex((assetIndex) => {
+					this._version.loadAssetIndex((assetIndex) => {
 						this.installAssets(assetIndex);
 					});
 				}
@@ -95,7 +95,7 @@ class LaunchTask {
 		}
 		else {
 			console.log("No dependencies to install");
-			this.version.loadAssetIndex((assetIndex) => {
+			this._version.loadAssetIndex((assetIndex) => {
 				this.installAssets(assetIndex);
 			});
 		}
@@ -132,11 +132,11 @@ class LaunchTask {
 	 * @return {Undefined}
 	 */
 	extractDependencies() {
-		var tempPath = this.tempPath;
+		var tempPath = this._tempPath;
 		var dependencies = [];
-		for (var i = 0; i < this.libraries.length; i++)
-			if (this.libraries[i].needsExtraction())
-				dependencies.push(this.libraries[i]);
+		for (var i = 0; i < this._libraries.length; i++)
+			if (this._libraries[i].needsExtraction())
+				dependencies.push(this._libraries[i]);
 		
 		var nextLib = function(launchTask, libraries) {
 			if (libraries.length == 0)
@@ -155,9 +155,9 @@ class LaunchTask {
 	 * @return {Undefined}
 	 */
 	cleanAndFinish(result) {
-		var minecraftInstance = new MinecraftInstance(config.javaPath().path(), this.clientToken, this.account, this.profile, this.version, this.tempPath);
-		this.starting = false;
-		this.finishedCallback(this, result, minecraftInstance);
+		var minecraftInstance = new MinecraftInstance(config.javaPath().path(), this._clientToken, this._account, this._profile, this._version, this._tempPath);
+		this._starting = false;
+		this._finishedCallback(this, result, minecraftInstance);
 	}
 }
 
