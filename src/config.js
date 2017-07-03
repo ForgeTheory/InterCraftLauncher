@@ -1,13 +1,17 @@
+const findJava = require('./utils/find_java');
 const fs = require('fs');
 const jetpack = require('fs-jetpack');
 const jsonfile = require('jsonfile');
 const os = require('os');
+
+const errors = require('./errors');
 
 var config;
 
 var javaHome;
 var rootPath = jetpack;
 var homeDir = jetpack.cwd(os.homedir());
+
 var minecraftPath = function() {
 	var path = homeDir;
 	if (process.platform == 'win32')
@@ -17,30 +21,30 @@ var minecraftPath = function() {
 	return path.path();
 };
 
-require('./utils/find_java')((err, home) => {
-	if (err)
-		return console.error("ERROR: Could not find java installation!");
-	else
-		javaHome = jetpack.cwd(home);
-});
-
 var generate = function() {
 	console.log("Generating stuff");
 	config = {
-		"configured": false,
+		"java": null,
 		"minecraft_path": minecraftPath(),
 		"access_token": null
 	};
 };
 
-exports.init = function() {
+exports.init = function(callback) {
 	if (fs.existsSync(rootPath.path('config.json'))) {
 		config = jsonfile.readFileSync(rootPath.path('./config.json'));
 	} else {
 		generate();
 		exports.save();
 	}
-	return config['configured'];
+
+	findJava((err, home) => {
+		if (err)
+			return callback(errors.NO_JAVA);
+		else
+			javaHome = jetpack.cwd(home);
+		callback(errors.NO_ERROR);
+	});
 };
 
 exports.save = function() {

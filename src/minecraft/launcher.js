@@ -7,14 +7,6 @@ var launchTasks = [];
 var instances = [];
 
 /**
- * Initialize the launcher
- * @return {Boolean}
- */
-exports.init = function() {
-	return true;
-};
-
-/**
  * Launch an instance of Minecraft
  * @param  {Profile}  profile 
  * @param  {Account}  account 

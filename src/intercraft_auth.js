@@ -1,16 +1,19 @@
 const got = require('got');
 const config = require('./config');
 
+const errors = require('./errors');
+
 const DOMAIN = "https://intercraftmc.com/auth";
 const TIMEOUT = 10000
 
+var profile = null;
 var isSignedIn = false;
-var accessToken;
 
-exports.init = function() {
-	accessToken = config.accessToken();
-};
-
+/**
+ * Check if the authentication servers are online
+ * @param  {Function} callback
+ * @return {Boolean}
+ */
 exports.isOnline = function(callback) {
 	console.log("Checking if the server is online...");
 	got.get(DOMAIN + '/status', {
@@ -20,10 +23,33 @@ exports.isOnline = function(callback) {
 	}); 
 };
 
+/**
+ * Check if the user is currently logged in
+ * @return {Boolean}
+ */
 exports.isLoggedIn = function() {
 	return isSignedIn;
 };
 
+/**
+ * Validate the token by updating the profile
+ * @param  {Function} callback
+ * @return {Undefined}
+ */
+exports.authenticate = function(callback) {
+	if (config.accessToken() && config.accessToken().length == 40)
+		return exports.fetchProfile(callback);
+	callback(false);
+};
+
+/**
+ * Attempt to sign the user in
+ * @param  {String}    email
+ * @param  {String}    password
+ * @param  {Boolean}   remember
+ * @param  {Function}  callback
+ * @return {Undefined}
+ */
 exports.login = function(email, password, remember, callback) {
 	console.log("Requesting access token with the given credentials");
 	got.post(DOMAIN + '/login', {
@@ -36,7 +62,6 @@ exports.login = function(email, password, remember, callback) {
 		timeout: TIMEOUT
 	})
 	.then(response => {
-		accessToken = response.body.access_token;
 		config.setAccessToken(response.statusCode == 200 && remember ? response.body.access_token : null);
 		isSignedIn = response.statusCode == 200;
 		callback({
@@ -52,9 +77,13 @@ exports.login = function(email, password, remember, callback) {
 	});
 };
 
+/**
+ * Fetch the user's InterCraft profile
+ * @param  {Function} callback
+ * @return {Undefined}
+ */
 exports.fetchProfile = function(callback) {
-	console.log(config.accessToken());
-	console.log("Getting the profile from the access token");
+	console.log("Fetching InterCraft profile...");
 	got.post(DOMAIN + '/profile', {
 		form: true,
 		json: true,
@@ -63,8 +92,11 @@ exports.fetchProfile = function(callback) {
 		},
 		timeout: TIMEOUT
 	}).then(response => {
-		callback(response.statusCode == 200 ? response.body : null);
+		isSignedIn = response.statusCode == 200;
+		profile = isSignedIn ? response.body : null;
+		callback(isSignedIn);
 	}).catch(error => {
-		callback(null);
+		console.log(error);
+		callback(false);
 	});
 };

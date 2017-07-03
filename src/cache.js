@@ -2,18 +2,20 @@ const jetpack = require('fs-jetpack');
 const jsonfile = require('jsonfile');
 
 const config = require('./config');
+const errors = require('./errors');
 const utils = require('./utils/utils');
 
 const FILE_NAME = 'cache.json';
 var entries = [];
 
-exports.init = function() {
+exports.init = function(callback) {
 	jsonfile.readFile(FILE_NAME, (err, obj) => {
 		if (err)
-			return;
+			return callback(errors.NO_ERROR);
 		entries = obj;
 		console.log(entries);
 		exports.clean();
+		callback(errors.NO_ERROR);
 	});
 };
 

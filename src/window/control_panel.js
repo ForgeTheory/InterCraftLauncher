@@ -1,3 +1,5 @@
+const minecraft = require('../minecraft/minecraft');
+
 const Window = require('./window').Window;
 
 class ControlPanel extends Window {
@@ -12,6 +14,19 @@ class ControlPanel extends Window {
 
 		this.setName('control_panel');
 		this.setView('control_panel');
+
+		this.listen('control_panel_done', (payload) => { this.preInitFinished(payload); });
+		this.listen('control_panel_launch_minecraft', (payload) => { this.launchMinecraft(payload); });
+	}
+
+	preInitFinished(payload) {
+		this.showWhenReady();
+	}
+
+	launchMinecraft(payload) {
+		var account = minecraft.profileManager().activeAccount();
+		var profile = minecraft.profileManager().profile(payload.profile);
+		minecraft.launcher().launch(profile, account, (result) => {});
 	}
 }
 

@@ -3,6 +3,7 @@ const jsonfile = require('jsonfile');
 const path = require('path');
 
 const config = require('../config');
+const errors = require('../errors');
 const launcher = require('./launcher');
 const profileManager = require('./profile_manager');
 const versionManager = require('./version_manager');
@@ -14,17 +15,20 @@ exports.minecraftPath = function() {
 	return minecraftDir;
 };
 
-exports.init = function() {
+exports.init = function(callback) {
 	var result = true;
 	minecraftDir = config.minecraftPath();
 
-	result = result && directoryExists();
-	result = result && filesExist();
-	result = result && profileManager.init();
-	result = result && versionManager.init();
-	result = result && launcher.init();
+	if (!directoryExists())
+		return callback(errors.INVALID_MINECRAFT_PATH);
 
-	return result;
+	if (!profileManager.init())
+		return callback(errors.INIT_PROFILE_MANAGER_FAILED);
+
+	if (!versionManager.init())
+		return callback(errors.INIT_VERSION_MANAGER_FAILED);
+
+	callback(errors.NO_ERROR);
 };
 
 exports.launcher = function() {
@@ -41,10 +45,4 @@ exports.versionManager = function() {
 
 var directoryExists = function() {
 	return jetpack.exists(minecraftDir.path()) == 'dir';
-};
-
-var filesExist = function() {
-	var result = true;
-	result = result && jetpack.exists(minecraftDir.path('launcher_profiles.json'));
-	return result;
 };

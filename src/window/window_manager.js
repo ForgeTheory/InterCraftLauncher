@@ -11,76 +11,11 @@ const TEMPLATES_PATH = '../views';
 
 var windows = {};
 
-// Create a window
-var createWindow = function(name, properties) {
-
-	console.log("Creating window " + name);
-
-	if (windows[name] != undefined)
-		console.warn("WARNING: Window " + name + " already exists!");
-
-	// Property stuff...
-	properties['toolBar'] = false;
-	if (properties.show == undefined)
-		properties.show = false;
-
-	// Create the window and remove the menu bar
-	var win = new BrowserWindow(properties);
-	win.name = name;
-	win.isReadyToShow = false;
-	win.showWhenReadyEnabled = false;
-	win.setMenu(null);
-
-	win.on('closed', () => {
-		windows[name] = undefined;
-	});
-
-	win.on('show', () => {
-		console.log("Checking for the splash...");
-		if ((windows.splash != undefined || windows.splash != null) && windows.splash != win) {
-			console.log("Closing the splash...");
-			windows.splash.close();
-			windows.splash = undefined;
-		}
-	});
-
-	// Give the setView method
-	win.setView = (view) => {
-		win.isReadyToShow = false;
-		win.loadURL(url.format({
-			pathname: path.join(__dirname, `${TEMPLATES_PATH}/${view}.htm`),
-			protocol: 'file:',
-			slashes: true
-		}));
-	};
-
-	win.on('ready-to-show', () => {
-		win.isReadyToShow = true;
-		if (win.showWhenReadyEnabled)
-			win.show();
-		win.showWhenReadyEnabled = false;
-	});
-
-	win.showWhenReady = () => {
-		if (win.isReadyToShow)
-			win.show();
-		else
-			win.showWhenReadyEnabled = true;
-	};
-
-	// Add the window to the list and return
-	windows[name] = win;
-	return win;
-}
-
-exports.init = function() {
-};
-
-exports.createSplash = function(callback) {
+exports.createSplash = function() {
 	windows.splash = new Splash();
 	windows.splash.on('ready-to-show', () => {
 		windows.splash.show();
-		setTimeout(callback, 500);
+		exports.closeOtherWindows(windows.splash);
 	});
 	windows.splash.on('close', () => { windows.splash = null; });
 };
@@ -119,10 +54,23 @@ exports.loginWindow = function() {
 	return windows.login;
 };
 
+exports.closeOtherWindows = function(win) {
+	var keys = Object.keys(windows);
+	for (var i = 0; i < keys.length; i++) {
+		if (windows[keys[i]] != win) {
+			if (windows[keys[i]])
+				windows[keys[i]].close();
+			windows[keys[i]] = null;
+		}
+	}
+};
+
 exports.quit = function() {
 	console.log("Closing windows...");
 	var keys = Object.keys(windows);
 	for (var i = 0; i < keys.length; i++) {
+		if (windows[keys[i]])
+			windows[keys[i]].nullify();
 		windows[keys[i]] = null;
 	}
 };

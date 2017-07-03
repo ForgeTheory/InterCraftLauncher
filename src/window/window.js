@@ -35,10 +35,20 @@ class Window {
 	 */
 	initEvents() {
 		this.on('ready-to-show', () => { this.onReadyToShow(); });
+		this.on('closed', (event) => { this.onClose(); })
 	}
 
 	/**
-	 * Execute when the event is ready to show
+	 * Execute when the window is closing
+	 * @return {[type]} [description]
+	 */
+	onClose(event) {
+		this._closed = true;
+		this._window = null;
+	}
+
+	/**
+	 * Execute when the window is ready to show
 	 * @return {Undefined}
 	 */
 	onReadyToShow() {
@@ -139,11 +149,22 @@ class Window {
 	 * @return {Undefined}
 	 */
 	close() {
+		console.log("Closing window");
 		if (!this._closed) {
 			this._closed = true;
-			this._window.close();
+			if (this._window)
+				this._window.close();
 			this._window = null;
 		}
+	}
+	
+	/**
+	 * Remove the window handle
+	 * @return {Undefined}
+	 */
+	nullify() {
+		this._closed = true;
+		this._window = null;
 	}
 
 	/**

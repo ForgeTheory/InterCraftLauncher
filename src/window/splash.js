@@ -15,11 +15,6 @@ class Splash extends Window {
 		this.setName('splash');
 		this.setView('splash');
 	}
-
-	onReadyToShow() {
-		super.onReadyToShow();
-		console.log("Splash child");
-	}
 }
 
 exports.Splash = Splash;
