@@ -19,16 +19,16 @@ let eventListeners = {
 };
 
 // Login Event
-ipcReceive('login', (payload) => {
-	intercraftAuth.login(payload.email, payload.password, (result) => {
-		if (result.isValid) {
-			console.log("Valid");
-			exports.controlPanel();
-		} else {
-			console.log("Failed to authenticate");
-		}
-	});
-});
+// ipcReceive('login', (payload) => {
+	// intercraftAuth.login(payload.email, payload.password, (result) => {
+	// 	if (result.isValid) {
+	// 		console.log("Valid");
+	// 		exports.controlPanel();
+	// 	} else {
+	// 		console.log("Failed to authenticate");
+	// 	}
+	// });
+// });
 
 ipcReceive('initialized', (payload) => {
 	console.log("Initialized");
@@ -104,15 +104,18 @@ exports.login = function() {
 	windowManager.loginWindow().showWhenReady();
 };
 
+/**
+ * Open the control panel if logged in, otherwise open the login window
+ * @return {Undefined}
+ */
 exports.controlPanel = function() {
-	console.log("Loading control panel");
+	
+	if (!intercraftAuth.isLoggedIn())
+		return exports.login();
+
 	windowManager.controlPanel().once('ready-to-show', () => {
 		ipcSend('control_panel_preload_launcher_profiles', minecraft.profileManager().profilesAvailable());
 		ipcSend('control_panel_preload_done', true);
-		if (windowManager.loginWindow()) {
-			windowManager.loginWindow().close();
-		}
-		minecraft.profileManager().save();
 	});
 	// windowManager.controlPanel().show();
 };

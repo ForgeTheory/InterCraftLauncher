@@ -4,6 +4,13 @@ const config = require('./config');
 const DOMAIN = "https://intercraftmc.com/auth";
 const TIMEOUT = 10000
 
+var isSignedIn = false;
+var accessToken;
+
+exports.init = function() {
+	accessToken = config.accessToken();
+};
+
 exports.isOnline = function(callback) {
 	console.log("Checking if the server is online...");
 	got.get(DOMAIN + '/status', {
@@ -13,7 +20,11 @@ exports.isOnline = function(callback) {
 	}); 
 };
 
-exports.login = function(email, password, callback) {
+exports.isLoggedIn = function() {
+	return isSignedIn;
+};
+
+exports.login = function(email, password, remember, callback) {
 	console.log("Requesting access token with the given credentials");
 	got.post(DOMAIN + '/login', {
 		form: true,
@@ -23,14 +34,21 @@ exports.login = function(email, password, callback) {
 			'password': password
 		},
 		timeout: TIMEOUT
-	}).then(response => {
-		config.setAccessToken(response.statusCode == 200 ? response.body.access_token : null);
+	})
+	.then(response => {
+		accessToken = response.body.access_token;
+		config.setAccessToken(response.statusCode == 200 && remember ? response.body.access_token : null);
+		isSignedIn = response.statusCode == 200;
 		callback({
 			'isValid': response.statusCode == 200,
-			'errorCode': response.body.error_code
+			'errorCode': response.statusCode
 		});
-	}).catch(error => {
-		callback(null);
+	})
+	.catch(error => {
+		callback({
+			'isValid': false,
+			'errorCode': error.statusCode
+		});
 	});
 };
 

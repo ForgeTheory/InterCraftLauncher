@@ -1,4 +1,5 @@
 const {BrowserWindow} = require('electron');
+const {ipcSend, ipcReceive} = require('electron-simple-ipc');
 const path = require('path');
 const url = require('url');
 
@@ -55,6 +56,26 @@ class Window {
 	 */
 	on(event, callback) {
 		this._window.on(event, callback);
+		return this;
+	}
+
+	/**
+	 * Listen for an IPC event
+	 * @param  {String}   event
+	 * @param  {Function} callback
+	 */
+	listen(event, callback) {
+		ipcReceive(event, callback);
+		return this;
+	}
+
+	/**
+	 * Send an IPC event
+	 * @param {String} event
+	 * @param {Json Array} payload
+	 */
+	send(event, payload) {
+		ipcSend(event, payload);
 		return this;
 	}
 
