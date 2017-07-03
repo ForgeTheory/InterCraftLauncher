@@ -39,10 +39,6 @@ exports.versionManager = function() {
 	return versionManager;
 };
 
-exports.loadAssetIndex = function(version) {
-
-};
-
 var directoryExists = function() {
 	return jetpack.exists(minecraftDir.path()) == 'dir';
 };

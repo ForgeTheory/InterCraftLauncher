@@ -2,7 +2,14 @@ const { BrowserWindow } = require('electron');
 const path = require('path');
 const url = require('url');
 
-let windows;
+const ControlPanel = require('./control_panel').ControlPanel;
+const Login        = require('./login').Login;
+const Splash       = require('./splash').Splash;
+const Window       = require('./window').Window;
+
+const TEMPLATES_PATH = '../views';
+
+var windows = {};
 
 // Create a window
 var createWindow = function(name, properties) {
@@ -41,7 +48,7 @@ var createWindow = function(name, properties) {
 	win.setView = (view) => {
 		win.isReadyToShow = false;
 		win.loadURL(url.format({
-			pathname: path.join(__dirname, 'views/' + view + '.htm'),
+			pathname: path.join(__dirname, `${TEMPLATES_PATH}/${view}.htm`),
 			protocol: 'file:',
 			slashes: true
 		}));
@@ -67,72 +74,49 @@ var createWindow = function(name, properties) {
 }
 
 exports.init = function() {
-	windows = {};
 };
 
-exports.splash = function(callback) {
-	var splashWin = createWindow('splash', {
-		width: 600,
-		height: 400,
-		frame: false
-	});
-	splashWin.on('ready-to-show', () => {
-		splashWin.show();
+exports.createSplash = function(callback) {
+	windows.splash = new Splash();
+	windows.splash.on('ready-to-show', () => {
+		windows.splash.show();
 		setTimeout(callback, 500);
 	});
-	splashWin.setView('splash');
-}
+	windows.splash.on('close', () => { windows.splash = null; });
+};
 
 exports.splashWindow = function() {
 	return windows.splash;
-}
+};
 
-exports.initControlPanel = function() {
-	var controlWin = createWindow('control', {
-		width: 1280,
-		height: 720,
-		frame: true,
-		minWidth: 992,
-		minHeight: 500,
-	});
-	controlWin.on('closed', () => {
-		controlWin = null;
-	});
-	// controlWin.openDevTools();
-	controlWin.setView('index');
+exports.closeSplash = function() {
+	if (windows.splash)
+		windows.splash.close();
+};
+
+exports.createControlPanel = function() {
+	windows.control = new ControlPanel();
+	windows.control.on('closed', () => { windows.control = null; })
+	               .on('show',   () => { exports.closeSplash(); });
+	// windows.control.window().openDevTools();
 };
 
 exports.controlPanel = function() {
-	if (windows.control == undefined)
-		exports.initControlPanel();
+	if (windows.control == null)
+		exports.createControlPanel();
 	return windows.control;
 };
 
-exports.initLoginWindow = function() {
-	var loginWindow = createWindow('login', {
-		width: 420,
-		height: 480,
-		frame: true,
-		resizable: false
-	});
-	loginWindow.on('closed', () => {
-		loginWindow = null;
-	});
-	loginWindow.setView('login');
+exports.createLoginWindow = function() {
+	windows.login = new Login();
+	windows.login.on('closed', () => { windows.login = null; })
+	             .on('show',   () => { exports.closeSplash(); });
 };
 
 exports.loginWindow = function() {
 	if (windows.login == undefined)
-		exports.initLoginWindow();
+		exports.createLoginWindow();
 	return windows.login;
-};
-
-exports.closeWindow = function(windowId) {
-	console.log("Closing", windowId);
-	if (windows[windowId] != undefined && windows[windowId] != null) {
-		windows[windowId].close();
-		delete windows[windowId];
-	}
 };
 
 exports.quit = function() {
@@ -141,4 +125,4 @@ exports.quit = function() {
 	for (var i = 0; i < keys.length; i++) {
 		windows[keys[i]] = null;
 	}
-}
+};

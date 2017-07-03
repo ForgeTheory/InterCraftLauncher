@@ -10,6 +10,11 @@ class AssetIndex {
 	}
 
 	// This causes a small lag spike in the GUI, needs a work around!!!
+	/**
+	 * Parse the asset
+	 * @param  {Json Object} assetIndexJson
+	 * @return {Undefined}
+	 */
 	parseAssets(assetIndexJson) {
 		var keys = Object.keys(assetIndexJson);
 		for (var i = 0; i < keys.length; i++) {
@@ -20,10 +25,18 @@ class AssetIndex {
 		}
 	}
 
+	/**
+	 * Get the name of the asset index
+	 * @return {String}
+	 */
 	name() {
 		return this._id;
 	}
 
+	/**
+	 * Get the list of assets
+	 * @return {Array<Asset>}
+	 */
 	assets() {
 		return this._assetList;
 	}

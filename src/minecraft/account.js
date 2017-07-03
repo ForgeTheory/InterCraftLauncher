@@ -1,4 +1,4 @@
-const utils = require('../utils');
+const utils = require('../utils/utils');
 
 class Account {
 	constructor(legacy, userJson) {
@@ -6,6 +6,10 @@ class Account {
 		this._userData = userJson;
 	}
 
+	/**
+	 * Get the account in JSON format
+	 * @return {Json Object}
+	 */
 	json() {
 		if (this._legacy)
 			return this.legacyJson();
@@ -22,6 +26,10 @@ class Account {
 		};
 	}
 
+	/**
+	 * Get the account in legacy JSON format
+	 * @return {Json Object}
+	 */
 	legacyJson() {
 		return {
 			displayName: this._userData.username,
@@ -32,31 +40,76 @@ class Account {
 		};
 	}
 
+	/**
+	 * Get the access token
+	 * @return {String}
+	 */
 	accessToken() { return this._userData.accessToken; }
+
+	/**
+	 * Set the access token
+	 * @param {String} accessToken
+	 */
 	setAccessToken(accessToken) {
 		this._userData.accessToken = accessToken;
 		return this;
 	}
 
+	/**
+	 * Get the email address
+	 * @return {String}
+	 */
 	email() { return this._userData.email; }
+
+	/**
+	 * Set the email address
+	 * @param {String} email
+	 */
 	setEmail(email) {
 		this._userData.email = email
 		return this;
 	}
 
+	/**
+	 * Get the username/display name
+	 * @return {String}
+	 */
 	username() { return this._userData.username; }
+
+	/**
+	 * Set the username/display name
+	 * @param {String} username
+	 */
 	setUsername(username) {
 		this._userData.username = username;
 		return this;
 	}
 
+	/**
+	 * Get the UUID
+	 * @return {String} [description]
+	 */
 	uuid() { return this._userData.uuid; }
+
+	/**
+	 * Set the UUID
+	 * @param {String} uuid
+	 */
 	setUuid(uuid) {
 		this._userData.uuid = uuid;
 		return this;
 	}
 
+	/**
+	 * Get the user ID
+	 * @return {String}
+	 */
 	userId() { return this._userData.userId; }
+
+	/**
+	 * Set the user ID
+	 * @param {String} userId
+	 */
 	setUserId(userId) {
 		this._userData.userId = userId;
 		return this;

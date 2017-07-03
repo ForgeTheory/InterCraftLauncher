@@ -2,7 +2,7 @@ const jetpack = require('fs-jetpack');
 const jsonfile = require('jsonfile');
 
 const config = require('./config');
-const utils = require('./utils');
+const utils = require('./utils/utils');
 
 const FILE_NAME = 'cache.json';
 var entries = [];

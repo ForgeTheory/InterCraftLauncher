@@ -3,7 +3,7 @@ const jsonfile = require('jsonfile');
 const stringArgv = require('string-argv');
 
 const config = require('../config');
-const downloadManager = require('../download_manager');
+const downloadManager = require('../utils/download_manager');
 const versionManager = require('./version_manager');
 
 const AssetIndex = require('./asset_index').AssetIndex;

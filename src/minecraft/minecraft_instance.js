@@ -3,7 +3,7 @@ const {spawn} = require('child_process');
 const isRunning = require('is-running');
 
 const config = require('../config');
-const utils = require('../utils');
+const utils = require('../utils/utils');
 
 class MinecraftInstance {
 

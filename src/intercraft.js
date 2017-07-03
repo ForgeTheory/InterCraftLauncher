@@ -4,7 +4,7 @@ const cache = require('./cache');
 const config = require('./config');
 const intercraftAuth = require('./intercraft_auth');
 const minecraft = require('./minecraft/minecraft');
-const windowManager = require('./window_manager');
+const windowManager = require('./window/window_manager');
 
 let profile;
 profile = { // Temporary profile for SirDavidLudwig
@@ -60,7 +60,7 @@ exports.init = function() {
 	windowManager.init();
 
 	// Display the splash during background processes
-	windowManager.splash(initMinecraft);
+	windowManager.createSplash(initMinecraft);
 };
 
 var initMinecraft = function() {
@@ -106,12 +106,11 @@ exports.login = function() {
 
 exports.controlPanel = function() {
 	console.log("Loading control panel");
-	windowManager.initControlPanel();
 	windowManager.controlPanel().once('ready-to-show', () => {
 		ipcSend('control_panel_preload_launcher_profiles', minecraft.profileManager().profilesAvailable());
 		ipcSend('control_panel_preload_done', true);
 		if (windowManager.loginWindow()) {
-			windowManager.closeWindow('login');
+			windowManager.loginWindow().close();
 		}
 		minecraft.profileManager().save();
 	});

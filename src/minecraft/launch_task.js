@@ -3,7 +3,7 @@ const jsonfile = require('jsonfile');
 
 const cache = require('../cache');
 const config = require('../config');
-const downloadManager = require('../download_manager')
+const downloadManager = require('../utils/download_manager')
 const minecraft = require('./minecraft');
 const versionManager = require('./version_manager');
 

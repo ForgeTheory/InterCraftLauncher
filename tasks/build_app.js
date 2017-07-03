@@ -22,15 +22,11 @@ gulp.task('bundle', () => {
 	return Promise.all([
 		bundle(srcDir.path('cache.js'), destDir.path('cache.js')),
 		bundle(srcDir.path('config.js'), destDir.path('config.js')),
-		bundle(srcDir.path('download_manager.js'), destDir.path('download_manager.js')),
 		bundle(srcDir.path('intercraft.js'), destDir.path('intercraft.js')),
 		bundle(srcDir.path('intercraft_auth.js'), destDir.path('intercraft_auth.js')),
-		bundle(srcDir.path('java_home.js'), destDir.path('java_home.js')),
 		bundle(srcDir.path('main.js'), destDir.path('main.js')),
 		bundle(srcDir.path('mojang.js'), destDir.path('mojang.js')),
-		bundle(srcDir.path('utils.js'), destDir.path('utils.js')),
 		bundle(srcDir.path('view_loader.js'), destDir.path('view_loader.js')),
-		bundle(srcDir.path('window_manager.js'), destDir.path('window_manager.js')),
 
 		bundle(srcDir.path('minecraft/minecraft.js'), destDir.path('minecraft/minecraft.js')),
 		bundle(srcDir.path('minecraft/account.js'), destDir.path('minecraft/account.js')),
@@ -43,7 +39,17 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('minecraft/profile.js'), destDir.path('minecraft/profile.js')),
 		bundle(srcDir.path('minecraft/profile_manager.js'), destDir.path('minecraft/profile_manager.js')),
 		bundle(srcDir.path('minecraft/version.js'), destDir.path('minecraft/version.js')),
-		bundle(srcDir.path('minecraft/version_manager.js'), destDir.path('minecraft/version_manager.js'))
+		bundle(srcDir.path('minecraft/version_manager.js'), destDir.path('minecraft/version_manager.js')),
+
+		bundle(srcDir.path('utils/download_manager.js'), destDir.path('utils/download_manager.js')),
+		bundle(srcDir.path('utils/find_java.js'), destDir.path('utils/find_java.js')),
+		bundle(srcDir.path('utils/utils.js'), destDir.path('utils/utils.js')),
+
+		bundle(srcDir.path('window/control_panel.js'), destDir.path('window/control_panel.js')),
+		bundle(srcDir.path('window/login.js'), destDir.path('window/login.js')),
+		bundle(srcDir.path('window/splash.js'), destDir.path('window/splash.js')),
+		bundle(srcDir.path('window/window.js'), destDir.path('window/window.js')),
+		bundle(srcDir.path('window/window_manager.js'), destDir.path('window/window_manager.js'))
 	]);
 });
 

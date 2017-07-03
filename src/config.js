@@ -17,7 +17,7 @@ var minecraftPath = function() {
 	return path.path();
 };
 
-require('./java_home')((err, home) => {
+require('./utils/find_java')((err, home) => {
 	if (err)
 		return console.error("ERROR: Could not find java installation!");
 	else
@@ -65,9 +65,7 @@ exports.tempPath = function() {
 };
 
 exports.javaPath = function() {
-	if (process.platform == 'win32')
-		return javaHome.cwd('bin/java.exe');
-	return javaHome.cwd('bin/java');
+	return javaHome;
 };
 
 exports.accessToken = function() {
