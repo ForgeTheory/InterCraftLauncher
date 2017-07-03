@@ -27,9 +27,7 @@ exports.start = function() {
 
 	// Display the splash during background processes
 	windowManager.createSplash();
-
-	// Initialize
-	init();
+	windowManager.splashWindow().window().once('show', init);
 };
 
 /**
@@ -146,6 +144,8 @@ exports.controlPanel = function() {
 	if (!intercraftAuth.isLoggedIn())
 		return exports.login();
 
+	console.log("Displaying control panel");
+
 	windowManager.controlPanel().once('ready-to-show', () => {
 		ipcSend('control_panel_preload_launcher_profiles', minecraft.profileManager().profilesAvailable());
 		ipcSend('control_panel_preload_done', true);
@@ -155,7 +155,7 @@ exports.controlPanel = function() {
 
 exports.offlinePanel = function() {
 	console.log("Loading offline control panel");
-	windowManager.offlinePanel().show();
+	windowManager.offlinePanel().show()
 };
 
 exports.activate = function() {

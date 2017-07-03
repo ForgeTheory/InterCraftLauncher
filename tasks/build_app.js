@@ -27,7 +27,6 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('intercraft_auth.js'), destDir.path('intercraft_auth.js')),
 		bundle(srcDir.path('main.js'), destDir.path('main.js')),
 		bundle(srcDir.path('mojang.js'), destDir.path('mojang.js')),
-		bundle(srcDir.path('view_loader.js'), destDir.path('view_loader.js')),
 
 		bundle(srcDir.path('minecraft/minecraft.js'), destDir.path('minecraft/minecraft.js')),
 		bundle(srcDir.path('minecraft/account.js'), destDir.path('minecraft/account.js')),
@@ -49,6 +48,7 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('window/control_panel.js'), destDir.path('window/control_panel.js')),
 		bundle(srcDir.path('window/login.js'), destDir.path('window/login.js')),
 		bundle(srcDir.path('window/splash.js'), destDir.path('window/splash.js')),
+		bundle(srcDir.path('window/view_loader.js'), destDir.path('window/view_loader.js')),
 		bundle(srcDir.path('window/window.js'), destDir.path('window/window.js')),
 		bundle(srcDir.path('window/window_manager.js'), destDir.path('window/window_manager.js'))
 	]);
