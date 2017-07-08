@@ -28,6 +28,8 @@ var setProfiles = function(profiles) {
 };
 
 var loadView = function(view) {
+	var err = new Error();
+	return err.stack;
 	ipcSend('view_load', {
 		'key': 'control_panel',
 		'view': view
@@ -47,25 +49,29 @@ var displayView = function(view) {
 	});
 };
 
+var setView = function(view) {
+	if (view == currentView)
+		return;
+	console.log("View can be loaded");
+	$('.sidenav-item > .active').removeClass('active');
+	$(`.sidenav-tab[view='${view}']`).addClass('active');
+	currentView = view;
+	loadView(view);
+};
+
 $(document).ready(function() {
 	init();
 	
 	$('.sidenav-tab').click(function(e) {
-		console.log("Loading view...");
-		if ($(e.target).attr('view') != currentView) {
-			console.log("View can be loaded");
-			$('.sidenav-item > .active').removeClass('active');
-			$(e.target).addClass('active');
-			currentView = $(e.target).attr('view');
-			loadView($(e.target).attr('view'));
-		}
+		setView($(this).attr('view'));
 	});
 
 	$('.sidenav-dropdown-tab').click(function(e) {
-		var hasClass = $(e.target).hasClass('toggled')
+		console.log("Clicked");
+		var hasClass = $(this).hasClass('toggled')
 		$('.sidenav-item .toggled').removeClass('toggled');
 		if (!hasClass) {
-			$(e.target).addClass('toggled');
+			$(this).addClass('toggled');
 		}
 	});
 
