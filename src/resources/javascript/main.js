@@ -28,8 +28,7 @@ var setProfiles = function(profiles) {
 };
 
 var loadView = function(view) {
-	var err = new Error();
-	return err.stack;
+	console.log(`Loading view: ${view}`);
 	ipcSend('view_load', {
 		'key': 'control_panel',
 		'view': view
@@ -93,6 +92,7 @@ ipcReceive('control_panel_preload_done', function(payload) {
 });
 
 ipcReceive('view_result', function(payload) {
+	console.log("Got a view");
 	if (payload.key == "control_panel")
 		if (currentView == payload.view)
 			displayView(payload.html);
