@@ -15,6 +15,8 @@ class ControlPanel extends Window {
 			minHeight: 500
 		});
 
+		// this.window().openDevTools();
+
 		this.setName('control_panel');
 		this.setView('control_panel');
 

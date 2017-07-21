@@ -14,6 +14,10 @@
 // Pages
 @import "login";
 
+.hidden {
+	display: none !important;
+}
+
 .main-container {
 	height: 100vh;
 	width: 100%;
@@ -42,4 +46,11 @@
 .unloaded {
 	margin-top: 20px !important;
 	opacity: 0;
+}
+
+.skin-face {
+	image-rendering: optimizeSpeed;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: pixelated;
+	image-rendering: optimize-contrast;
 }

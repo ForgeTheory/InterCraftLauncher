@@ -55,7 +55,24 @@ var createLaunchTask = function(clientToken, account, profile, version, callback
 var launchTaskFinished = function(launchTask, result, minecraftInstance, callback) {
 	if (result) { // Check if the launch task was successful
 		console.log("Starting Minecraft...");
-		minecraftInstance.start();
+		minecraftInstance.onClose(instanceFinished);
+		minecraftInstance.start((result) => {
+			if (result)
+				instances.push(minecraftInstance);
+			else
+				minecraftInstance.clean();
+		});
+	} else {
+		minecraftInstance.clean();
 	}
 	callback(result);
+};
+
+/**
+ * Invoked when a Minecraft instance is finished
+ * @param  {MinecraftInstance} minecraftInstance
+ * @return {Undefined}
+ */
+var instanceFinished = function(minecraftInstance) {
+	
 };

@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="../css/materialdesignicons.min.css">
 	<link rel="stylesheet" href="../css/bootstrap.min.css">
 	<link rel="stylesheet" href="../css/mdb.min.css">
+	<link rel="stylesheet" href="../css/odometer.css">
 	<link rel="stylesheet" href="../css/app.css">
 
 </head>
@@ -30,7 +31,7 @@
 								<a class="nav-link waves-effect waves-light"><i class="mdi mdi-bell-outline"></i></a>
 							</li>
 							<li class="nav-item avatar dropdown">
-								<a class="nav-link dropdown-toggle waves-effect waves-light" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><img src="../img/head_32.png" class="img-fluid z-depth-0"></a>
+								<a class="nav-link dropdown-toggle waves-effect waves-light" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><img src="../img/skin_face_placeholder.png" class="img-fluid z-depth-0 skin-face"></a>
 								<div class="dropdown-menu dropdown-primary dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
 									<a class="dropdown-item waves-effect waves-light" href="#">Edit Profile</a>
 									<a class="dropdown-item waves-effect waves-light" href="#">Switch Profile</a>
@@ -47,15 +48,19 @@
 			<div class="sidebar">
 				<div class="profile-block">
 					<div>
-						<img src="../img/head_64.png" alt="">
-					</div><!-- 
-				 --><div>
-						<div class="sidebar-username">SirDavidLudwig</div><!-- 
-					 --><div class="sidebar-email text-muted">davidludwigii@gmail.com</div>
+						<img src="../img/skin_face_placeholder.png" alt="" class="skin-face">
+					</div><!--
+				 --><div id="sidebar-profile-signin">
+				 		<div class="sidebar-signin">No accounts available</div><!-- 
+					 --><div class="sidebar-signin"><a href="#" class="sidebar-signin" data-toggle="modal" data-target="#add-account-modal">Add Account</a></div>
+					</div><!--
+				 --><div id="sidebar-profile-info" class="hidden">
+						<div class="sidebar-username" mcvalue="username">SirDavidLudwig</div><!-- 
+					 --><div class="sidebar-email text-muted" mcvalue="email">davidludwigii@gmail.com</div>
 					</div>
 				</div>
 				<div class="play-button btn-group dropdown">
-					<button class="btn btn-block btn-primary" id="launcher-profile-button">InterCraft</button>
+					<button class="btn btn-block btn-primary" id="launcher-profile-button" disabled>InterCraft</button>
 					<button class="btn btn-block btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						<span class="sr-only">Toggle Dropdown</span>
 					</button>
@@ -135,6 +140,48 @@
 			</div>
 		</div>
 	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="add-account-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<!--Content-->
+			<div class="modal-content">
+				<!--Header-->
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title w-100" id="myModalLabel">Minecraft Login</h4>
+				</div>
+				<!--Body-->
+				<div class="modal-body">
+					<form action="#" method="post" id="add-mc-account-form">
+							<div class="form-group md-form">
+								<i class="fa fa-user prefix" style="padding-top: 8px;"></i>
+								<input type="text" id="add-mc-account-email" class="form-control">
+								<label for="add-mc-account-email" class="no-selection">Email/Username</label>
+							</div>
+							<div class="form-group md-form">
+								<i class="fa fa-lock prefix" style="padding-top: 8px;"></i>
+								<input type="password" id="add-mc-account-password" class="form-control">
+								<label for="add-mc-account-password" class="no-selection">Password</label>
+							</div>
+							<fieldset class="form-group">
+								<input type="checkbox" id="add-mc-account-remember">
+								<label for="remember">Stay Signed In</label>
+							</fieldset>
+							<div class="form-group text-center">
+								<button id="button-login" type="submit" class="btn btn-primary">Sign In</button>
+							</div>
+							<div class="form-group text-center ">
+								<a href="https://account.mojang.com/password?ref=launcher" target="_blank">Forgot Password</a>
+							</div>
+						</form>
+				</div>
+			</div>
+			<!--/.Content-->
+		</div>
+	</div>
+<!-- Modal -->
 	<!-- Insert this line above script imports  -->
 	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 	<script>const { ipcSend, ipcReceive } = require('electron-simple-ipc');</script>
@@ -143,7 +190,13 @@
 	<script type="text/javascript" src="../js/tether.min.js"></script>
 	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="../js/mdb.min.js"></script>
+	<script type="text/javascript" src="../js/odometer.min.js"></script>
 	<script type="text/javascript" src="../js/main.js"></script>
+	<script type="text/javascript" src="../js/view_manager.js"></script>
+	<script type="text/javascript" src="../js/intercraft_stats.js"></script>
 	<script>if (window.module) module = window.module;</script>
+	<script>
+		odometerOptions = { auto: false };
+	</script>
 </body>
 </html>

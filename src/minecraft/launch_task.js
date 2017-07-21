@@ -1,11 +1,11 @@
 const jetpack = require('fs-jetpack');
 const jsonfile = require('jsonfile');
 
-const cache = require('../cache');
 const config = require('../config');
 const downloadManager = require('../utils/download_manager')
 const minecraft = require('./minecraft');
 const versionManager = require('./version_manager');
+const utils = require('../utils/utils');
 
 const MinecraftInstance = require('./minecraft_instance').MinecraftInstance;
 
@@ -18,7 +18,7 @@ class LaunchTask {
 		this._starting = false;
 		this._finishedCallback = undefined;
 		this._libraries = [];
-		this._tempPath = cache.createTempPath();
+		this._tempPath = this.createTempPath();
 	}
 
 	/**
@@ -148,6 +148,18 @@ class LaunchTask {
 		};
 		nextLib(this, dependencies);
 	}
+
+	/**
+	 * Create a temporary directory
+	 * @return {String}
+	 */
+	createTempPath() {
+		console.log("Creating temporary path");
+		var folder = utils.randomHexStringPartitioned([4, 4, 4, 4]);
+		var path = config.tempPath().path(folder);
+		jetpack.dir(path);
+		return path;
+	};
 
 	/**
 	 * Clean the launch task after start attempt, and give a result

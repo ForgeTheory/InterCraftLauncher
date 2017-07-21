@@ -3,7 +3,7 @@ const config = require('./config');
 
 const errors = require('./errors');
 
-const DOMAIN = "https://intercraftmc.com/auth";
+const DOMAIN = "https://intercraftmc.com/launcher";
 const TIMEOUT = 10000
 
 var profile = null;

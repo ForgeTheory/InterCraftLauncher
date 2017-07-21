@@ -33,7 +33,6 @@ exports.createControlPanel = function() {
 	windows.control = new ControlPanel();
 	windows.control.on('closed', () => { windows.control = null; })
 	               .on('show',   () => { exports.closeSplash(); });
-	// windows.control.window().openDevTools();
 };
 
 exports.controlPanel = function() {

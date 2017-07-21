@@ -77,7 +77,9 @@ class MinecraftInstance {
 	start(callback) {
 		if (this._started) {
 			console.log("WARNING: Attempted to start an already started/starting instance of Minecraft");
-			return callback(false);
+			if (callback)
+				callback(false);
+			return;
 		}
 
 		console.log("Launching Minecraft instance");
@@ -96,6 +98,9 @@ class MinecraftInstance {
 		           .concat(versionArgs);
 
 		this.createProcess(javaPath, args, this._profile.gameDirectory());
+
+		if (callback)
+			callback(true);
 	}
 
 	/**
@@ -125,9 +130,34 @@ class MinecraftInstance {
 
 		this._process.stdout.on('close', (code) => {
 			console.log(`Closed with exit code ${code}`);
+			if (this.onCloseCallback)
+				this.onCloseCallback(this);
 		});
 
 		this._pid = this._process.pid;
+	}
+
+	onCloseEvent() {
+		if (this.onCloseCallback)
+			this.onCloseCallback(this);
+	}
+
+	/**
+	 * Callback to invoke when the instance is finished
+	 * @param  {Function} callback
+	 */
+	onClose(callback) {
+		this.onCloseCallback = callback;
+		return this;
+	}
+
+	/**
+	 * Clean the files
+	 * @param  {Function} callback [description]
+	 * @return {[type]}            [description]
+	 */
+	clean() {
+
 	}
 }
 

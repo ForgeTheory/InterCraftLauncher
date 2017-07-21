@@ -1,9 +1,16 @@
+const shell = require('electron').shell;
+$('a[target="_blank"]').click((event) => {
+	event.preventDefault();
+	shell.openExternal(event.target.href);
+});
+
 var viewport;
 var currentView = 'dashboard';
 
-var init = function() {
-	viewport = $("#viewport");
-	loadView('dashboard');
+var addMinecraftAccount = function(username, password, remember) {
+	console.log(username);
+	console.log(password);
+	console.log(remember);
 };
 
 var setProfiles = function(profiles) {
@@ -27,39 +34,10 @@ var setProfiles = function(profiles) {
 	$('.launcher-profile-link').eq(0).click();
 };
 
-var loadView = function(view) {
-	console.log(`Loading view: ${view}`);
-	ipcSend('view_load', {
-		'key': 'control_panel',
-		'view': view
-	});
-};
-
-var displayView = function(view) {
-	$view = $(view).addClass('unloaded');
-	$('#viewport').html($view);
-	console.log($view);
-	$view.each(function(index) {
-		var $v = $(this);
-		setTimeout(function() {
-			console.log("Adding class");
-			$v.removeClass('unloaded');
-		}, 100*(index+1));
-	});
-};
-
-var setView = function(view) {
-	if (view == currentView)
-		return;
-	console.log("View can be loaded");
-	$('.sidenav-item > .active').removeClass('active');
-	$(`.sidenav-tab[view='${view}']`).addClass('active');
-	currentView = view;
-	loadView(view);
-};
-
 $(document).ready(function() {
-	init();
+
+	initViewManager();
+	updateInterCraftStats();
 	
 	$('.sidenav-tab').click(function(e) {
 		setView($(this).attr('view'));
@@ -79,6 +57,15 @@ $(document).ready(function() {
 			'profile': $('input[name=launcher-profile-id]:checked').val()
 		});
 	});
+
+	$('#add-mc-account-form').submit(function(event) {
+		event.preventDefault();
+		addMinecraftAccount(
+			$('#add-mc-account-email').val(),
+			$('#add-mc-account-password').val(),
+			$('#add-mc-account-remember').is(':checked')
+		);
+	});
 });
 
 ipcReceive('control_panel_preload_launcher_profiles', function(payload) {
@@ -89,11 +76,4 @@ ipcReceive('control_panel_preload_launcher_profiles', function(payload) {
 ipcReceive('control_panel_preload_done', function(payload) {
 	console.log("Finished preloading...");
 	ipcSend('control_panel_done', true);
-});
-
-ipcReceive('view_result', function(payload) {
-	console.log("Got a view");
-	if (payload.key == "control_panel")
-		if (currentView == payload.view)
-			displayView(payload.html);
 });

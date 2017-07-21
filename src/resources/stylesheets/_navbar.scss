@@ -1,7 +1,7 @@
 .navbar {
 	padding: 0;
 	padding-right: 20px;
-	z-index: 9999;
+	z-index: 100;
 
 	& .container {
 		padding: 0;
@@ -25,6 +25,7 @@
 		& .nav-item {
 			& img {
 				vertical-align: top;
+				width: 24px !important;
 				height: 24px !important;
 				margin: 5px 10px 0 10px;
 			}

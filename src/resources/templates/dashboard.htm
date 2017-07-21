@@ -4,7 +4,8 @@
 			<div class="card-header">Members</div>
 			<div class="card-block">
 				<i class="icon mdi mdi-account-multiple icon-yellow"></i>
-				3
+				<span class="data-card-value dashboard-odometer" id="data-card-members-value">
+				</span>
 			</div>
 		</div>
 	</div>
@@ -13,7 +14,8 @@
 			<div class="card-header">World Area</div>
 			<div class="card-block">
 				<i class="icon mdi mdi-image-filter-hdr icon-green"></i>
-				17
+				<span class="data-card-value dashboard-odometer" id="data-card-world-area-value">
+				</span>
 			</div>
 		</div>
 	</div>
@@ -22,7 +24,8 @@
 			<div class="card-header">Current Day</div>
 			<div class="card-block">
 				<i class="icon mdi mdi-white-balance-sunny icon-blue"></i>
-				35,102
+				<span class="data-card-value dashboard-odometer" id="data-card-current-day-value">
+				</span>
 			</div>
 		</div>
 	</div>
@@ -31,8 +34,45 @@
 			<div class="card-header">Players Online</div>
 			<div class="card-block">
 				<i class="icon mdi mdi-account-multiple-outline icon-red"></i>
-				17
+				<span class="data-card-value dashboard-odometer" id="data-card-players-online-value">
+				</span>
 			</div>
 		</div>
 	</div>
 </div>
+<script>
+	
+	var dashboardOdometers = [];
+
+	var onStatsUpdate = function(stats) {
+		console.log("Got the stats", stats);
+		if (stats == undefined) {
+			let loading = '<img src="../img/loading_48.gif" alt="" style="float: right;">';
+			$('#data-card-members-value').html(loading);
+			$('#data-card-world-area-value').html(loading);
+			$('#data-card-current-day-value').html(loading);
+			$('#data-card-players-online-value').html(loading);
+		} else {
+			$('#data-card-members-value').html(stats.members.length);
+			$('#data-card-world-area-value').html((stats.chunks*16*16).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "m&sup2;");
+			$('#data-card-current-day-value').html(stats.day);
+			$('#data-card-players-online-value').html(stats.players_online.length);
+		}
+	};
+
+	register = function() {
+		addOnInterCraftStatsUpdateListener(onStatsUpdate);
+		$('.dashboard-odometer').each(function() {
+			dashboardOdometers.push(new Odometer({ el: this, theme: 'minimal' }));
+		});
+
+		onStatsUpdate(intercraftStats);
+	};
+
+	unregister = function() {
+		removeOnInterCraftStatsUpdateListener(onStatsUpdate);
+		for (var i = 0; i < dashboardOdometers.length; i++)
+			delete dashboardOdometers[i];
+	}
+
+</script>
