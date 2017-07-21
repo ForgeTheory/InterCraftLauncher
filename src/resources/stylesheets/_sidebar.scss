@@ -170,6 +170,9 @@
 							text-align: center;
 						}
 					}
+					& .active {
+						background: rgb(220, 220, 220);
+					}
 				}
 			}
 		}

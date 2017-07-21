@@ -39,7 +39,7 @@ $(document).ready(function() {
 	initViewManager();
 	updateInterCraftStats();
 	
-	$('.sidenav-tab').click(function(e) {
+	$('.sidenav-tab,.sidenav-dropdown-link').click(function(e) {
 		setView($(this).attr('view'));
 	});
 

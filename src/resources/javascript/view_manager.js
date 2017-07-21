@@ -2,6 +2,18 @@ var register = undefined;
 var unregister = undefined;
 var viewport;
 var currentView = undefined;
+var activeTab = undefined;
+
+var viewTabs = {
+	"dashboard": $('.sidenav-tab[view="dashboard"]'),
+	"news": $('.sidenav-tab[view="news"]'),
+	"intercraft_applications": $('.sidenav-dropdown-link[view="intercraft_applications"]'),
+	"intercraft_blog": $('.sidenav-dropdown-link[view="intercraft_blog"]'),
+	"intercraft_gallery": $('.sidenav-dropdown-link[view="intercraft_gallery"]'),
+	"intercraft_members": $('.sidenav-dropdown-link[view="intercraft_members"]'),
+	"intercraft_profile": $('.sidenav-dropdown-link[view="intercraft_profile"]'),
+	"settings": $('.sidenav-tab[view="settings"]')
+}
 
 var initViewManager = function() {
 	console.log("Initialized");
@@ -24,11 +36,10 @@ var unregisterView = function() {
 };
 
 var setView = function(view) {
-	if (view == currentView)
+	if (view == currentView || viewTabs[view] == undefined)
 		return;
 
-	$('.sidenav-item > .active').removeClass('active');
-	$(`.sidenav-tab[view='${view}']`).addClass('active');
+	setTab(view);
 
 	currentView = view;
 	unregisterView();
@@ -37,6 +48,19 @@ var setView = function(view) {
 		'key': 'control_panel',
 		'view': view
 	});
+};
+
+var setTab = function(view) {
+	if (viewTabs[view] == undefined)
+		return;
+	if (activeTab != undefined)
+		activeTab.removeClass('active');
+	viewTabs[view].addClass('active');
+
+	if (viewTabs[view].hasClass('sidenav-dropdown-link')) {
+		// viewTabs[view]
+	}
+	activeTab = viewTabs[view];
 };
 
 var displayView = function(view) {
