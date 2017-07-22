@@ -2,6 +2,7 @@ const fs = require('fs');
 const jetpack = require('fs-jetpack');
 
 const minecraft = require('../minecraft/minecraft');
+const profileManager = require('../minecraft/profile_manager');
 
 const Window = require('./window').Window;
 
@@ -22,6 +23,7 @@ class ControlPanel extends Window {
 
 		this.listen('control_panel_done', (payload) => { this.preInitFinished(payload); });
 		this.listen('control_panel_launch_minecraft', (payload) => { this.launchMinecraft(payload); });
+		this.listen('control_panel_minecraft_login', (payload) => { this.minecraftLogin(payload); });
 		this.listen('view_load', (payload) => { this.loadView(payload); });
 	}
 
@@ -33,6 +35,22 @@ class ControlPanel extends Window {
 		var account = minecraft.profileManager().activeAccount();
 		var profile = minecraft.profileManager().profile(payload.profile);
 		minecraft.launcher().launch(profile, account, (result) => {});
+	}
+
+	minecraftLogin(payload) {
+		minecraft.authentication().authenticate(
+			payload.email,
+			payload.password,
+			minecraft.profileManager.clientToken,
+			(account) => {
+				if (account === null)
+					this.send('control_panel_minecraft_login_result', false);
+				else {
+					account.setRemember(payload.remember);
+					profileManager.addAccount(account);
+					this.send('control_panel_minecraft_login_result', true);
+				}
+			});
 	}
 
 	loadView(payload) {

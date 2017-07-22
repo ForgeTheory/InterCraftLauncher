@@ -22,7 +22,7 @@
     "connectivity": "^1.0.0",
     "download-file": "^0.1.5",
     "download-file-sync": "^1.0.4",
-    "electron-simple-ipc": "^1.0.2",
+    "electron-simple-ipc": "https://github.com/SirDavidLudwig/electron-simple-ipc",
     "fs-jetpack": "^1.0.0",
     "got": "^7.0.0",
     "is-running": "^2.1.0",
@@ -54,7 +54,7 @@
     "uglify-js": "^3.0.15"
   },
   "build": {
-    "appId": "com.intercraftmc.intercraft.launcher",
+    "appId": "com.intercraftmc.launcher",
     "win": {}
   }
 }

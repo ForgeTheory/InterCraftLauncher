@@ -114,10 +114,11 @@ exports.save = function() {
 
 	// User Accounts
 	result.authenticationDatabase = {};
-	keys = Object.keys(accounts);
-	for (i = 0; i < keys.length; i++) {
-		var key = (legacy) ? keys[i] : accounts[keys[i]].userId();
-		result.authenticationDatabase[key] = accounts[keys[i]].json();
+	for (i = 0; i < accounts.length; i++) {
+		if (!accounts[i].remember())
+			continue;
+		var key = (legacy) ? accounts[i].uuid() : accounts[i].userId();
+		result.authenticationDatabase[key] = accounts[i].json(legacy);
 	}
 
 	// Selected Profile
@@ -127,11 +128,10 @@ exports.save = function() {
 	if (legacy) {
 		result.selectedUser = selectedUser;
 	} else {
-		keys = Object.keys(accounts);
-		for (i = 0; i < keys.length; i++) {
-			if (accounts[keys[i]].uuid() == selectedUser) {
+		for (i = 0; i < accounts.length; i++) {
+			if (accounts[i].uuid() == selectedUser) {
 				result.selectedUser = {
-					account: accounts[keys[i]].userId(),
+					account: accounts[i].userId(),
 					profile: selectedUser
 				};
 				break;
@@ -235,7 +235,7 @@ var parseAnalytics = function(launcherProfile) {
  * @return {Undefined}
  */
 var parseUserAccounts = function(launcherProfile) {
-	accounts = {};
+	accounts = [];
 	if (version.name.startsWith('1'))
 		return parseUserAccountsLegacy(launcherProfile);
 
@@ -246,13 +246,13 @@ var parseUserAccounts = function(launcherProfile) {
 	for (var i = 0; i < userIds.length; i++) {
 		var account = launcherProfile.authenticationDatabase[userIds[i]];
 		var uuid = Object.keys(account.profiles)[0];
-		accounts[uuid] = new Account(false, {
+		accounts.push(new Account({
 			username: account.profiles[uuid].displayName,
 			accessToken: account.accessToken,
 			userId: userIds[i],
 			uuid: uuid,
 			email: account.username
-		});
+		}));
 	}
 
 	if (launcherProfile.selectedUser != undefined)
@@ -271,13 +271,13 @@ var parseUserAccountsLegacy = function(launcherProfile) {
 	var uuids = Object.keys(launcherProfile.authenticationDatabase);
 	for (var i = 0; i < uuids.length; i++) {
 		var account = launcherProfile.authenticationDatabase[uuids[i]];
-		accounts[uuids[i]] = new Account(true, {
+		accounts.push(new Account({
 			username: account.displayName,
 			accessToken: account.accessToken,
 			userId: account.userid,
 			uuid: uuids[i],
 			email: account.username
-		});
+		}));
 
 		if (launcherProfile.selectedUser != undefined)
 			selectedUser = launcherProfile.selectedUser;
@@ -377,8 +377,8 @@ exports.profilesAvailable = function() {
  */
 exports.activeAccount = function() {
 	if (!this.selectedUser) {
-		if (Object.keys(accounts).length > 0)
-			return exports.accounts()[0];
+		if (accounts.length > 0)
+			return exports.accounts[0];
 	}
 	else if (accounts[this.selectedUser])
 		return accounts[this.selectedUser];
@@ -393,9 +393,8 @@ exports.activeAccount = function() {
  */
 exports.accounts = function() {
 	var results = [];
-	var keys = Object.keys(accounts);
-	for (var i = 0; i < keys.length; i++)
-		results.push(accounts[keys[i]]);
+	for (var i = 0; i < accounts.length; i++)
+		results.push(accounts[i]);
 	return results;
 };
 
@@ -404,7 +403,14 @@ exports.accounts = function() {
  * @param {Account} account
  */
 exports.addAccount = function(account) {
+	for (var i = 0; i < accounts.length; i++) {
+		if (accounts[i].userId() == account.userId()) {
+			accounts[i] = account;
+			return exports.save();
+		}
+	}
 	accounts.push(account);
+	exports.save();
 };
 
 /**

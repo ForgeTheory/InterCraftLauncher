@@ -1,17 +1,17 @@
 const utils = require('../utils/utils');
 
 class Account {
-	constructor(legacy, userJson) {
-		this._legacy = legacy;
-		this._userData = userJson;
+	constructor(userJson, remember = true) {
+		this._userData = userJson || {};
+		this._remember = remember;
 	}
 
 	/**
 	 * Get the account in JSON format
 	 * @return {Json Object}
 	 */
-	json() {
-		if (this._legacy)
+	json(legacy) {
+		if (legacy === true)
 			return this.legacyJson();
 
 		var profiles = {};
@@ -112,6 +112,23 @@ class Account {
 	 */
 	setUserId(userId) {
 		this._userData.userId = userId;
+		return this;
+	}
+
+	/**
+	 * 
+	 * @return {[type]} [description]
+	 */
+	remember() {
+		return this._remember;
+	}
+
+	/**
+	 * Set whether or not the launcher should save the account
+	 * @param {Boolean} remember
+	 */
+	setRemember(remember) {
+		this._remember = remember;
 		return this;
 	}
 }

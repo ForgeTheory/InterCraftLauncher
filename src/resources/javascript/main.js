@@ -34,10 +34,20 @@ var setProfiles = function(profiles) {
 	$('.launcher-profile-link').eq(0).click();
 };
 
+var setLaunchButtonEnabled = function(enabled) {
+	$('#launcher-profile-button').prop('disabled', !enabled);
+	// $('.play-button').attr('rel', enabled ? null : 'tooltip');
+};
+
 $(document).ready(function() {
 
 	initViewManager();
 	updateInterCraftStats();
+	setLaunchButtonEnabled(false);
+
+	$('body').tooltip({
+		selector: '[rel="tooltip"]'
+	});
 	
 	$('.sidenav-tab,.sidenav-dropdown-link').click(function(e) {
 		setView($(this).attr('view'));
@@ -60,11 +70,14 @@ $(document).ready(function() {
 
 	$('#add-mc-account-form').submit(function(event) {
 		event.preventDefault();
-		addMinecraftAccount(
-			$('#add-mc-account-email').val(),
-			$('#add-mc-account-password').val(),
-			$('#add-mc-account-remember').is(':checked')
-		);
+		$('#button-login').prop('disabled', true);
+		var email = $('#add-mc-account-email').val();
+		var password = $('#add-mc-account-password').val();
+		var remember = $('#add-mc-account-remember').is(':checked');
+		authMinecraftAccount(email, password, remember, function(result) {
+			console.log("Ready for next step");
+			$('#button-login').prop('disabled', false);
+		});
 	});
 });
 

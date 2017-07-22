@@ -4,6 +4,7 @@ const path = require('path');
 
 const config = require('../config');
 const errors = require('../errors');
+const authentication = require('./authentication');
 const launcher = require('./launcher');
 const profileManager = require('./profile_manager');
 const versionManager = require('./version_manager');
@@ -29,6 +30,10 @@ exports.init = function(callback) {
 		return callback(errors.INIT_VERSION_MANAGER_FAILED);
 
 	callback(errors.NO_ERROR);
+};
+
+exports.authentication = function() {
+	return authentication;
 };
 
 exports.launcher = function() {
