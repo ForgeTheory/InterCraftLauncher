@@ -7,12 +7,6 @@ $('a[target="_blank"]').click((event) => {
 var viewport;
 var currentView = 'dashboard';
 
-var addMinecraftAccount = function(username, password, remember) {
-	console.log(username);
-	console.log(password);
-	console.log(remember);
-};
-
 var setProfiles = function(profiles) {
 	var item;
 
@@ -70,13 +64,13 @@ $(document).ready(function() {
 
 	$('#add-mc-account-form').submit(function(event) {
 		event.preventDefault();
-		$('#button-login').prop('disabled', true);
+		$('#add-mc-account-login-button').prop('disabled', true);
 		var email = $('#add-mc-account-email').val();
 		var password = $('#add-mc-account-password').val();
 		var remember = $('#add-mc-account-remember').is(':checked');
 		authMinecraftAccount(email, password, remember, function(result) {
 			console.log("Ready for next step");
-			$('#button-login').prop('disabled', false);
+			$('#add-mc-account-login-button').prop('disabled', false);
 		});
 	});
 });
