@@ -75,12 +75,8 @@ $(document).ready(function() {
 	});
 });
 
-ipcReceive('control_panel_preload_launcher_profiles', function(payload) {
+ipcReceive('control_panel_preload', function(payload) {
 	console.log("Preloading launcher profiles");
 	setProfiles(payload);
-});
-
-ipcReceive('control_panel_preload_done', function(payload) {
-	console.log("Finished preloading...");
 	ipcSend('control_panel_done', true);
 });

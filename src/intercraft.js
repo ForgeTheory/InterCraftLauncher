@@ -146,11 +146,7 @@ exports.controlPanel = function() {
 
 	console.log("Displaying control panel");
 
-	windowManager.controlPanel().once('ready-to-show', () => {
-		ipcSend('control_panel_preload_launcher_profiles', minecraft.profileManager().profilesAvailable());
-		ipcSend('control_panel_preload_done', true);
-	});
-	// windowManager.controlPanel().show();
+	windowManager.controlPanel().showWhenReady();
 };
 
 exports.offlinePanel = function() {

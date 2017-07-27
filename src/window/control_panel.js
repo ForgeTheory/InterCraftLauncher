@@ -16,19 +16,38 @@ class ControlPanel extends Window {
 			minHeight: 500
 		});
 
+		this._isReady = false;
+		this._showWhenReady = false;
+
 		this.window().openDevTools();
+		this.window().once('ready-to-show', () => { this.init()	});
 
-		this.setName('control_panel');
-		this.setView('control_panel');
-
-		this.listen('control_panel_done', (payload) => { this.preInitFinished(payload); });
+		this.listen('control_panel_done', (payload) => { this.initFinished(payload); });
 		this.listen('control_panel_launch_minecraft', (payload) => { this.launchMinecraft(payload); });
 		this.listen('control_panel_minecraft_login', (payload) => { this.minecraftLogin(payload); });
 		this.listen('view_load', (payload) => { this.loadView(payload); });
+
+		this.setName('control_panel');
+		this.setView('control_panel');
 	}
 
-	preInitFinished(payload) {
-		this.showWhenReady();
+	init() {
+		this.send('control_panel_preload', {
+			'profiles': minecraft.profileManager().profilesAvailable(),
+		});
+	}
+
+	initFinished(payload) {
+		this._isReady = true;
+		if (this._showWhenReady)
+			this.show();
+	}
+
+	showWhenReady() {
+		if (this._isReady)
+			this.show();
+		else
+			this._showWhenReady = true;
 	}
 
 	launchMinecraft(payload) {
