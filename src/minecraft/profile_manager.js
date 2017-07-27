@@ -73,6 +73,8 @@ exports.load = function() {
 
 	// Parse the authentication database
 	parseUserAccounts(profile);
+
+	exports.save();
 };
 
 /**
@@ -244,6 +246,7 @@ var parseUserAccounts = function(launcherProfile) {
 
 	var userIds = Object.keys(launcherProfile.authenticationDatabase);
 	for (var i = 0; i < userIds.length; i++) {
+		console.log("Adding account");
 		var account = launcherProfile.authenticationDatabase[userIds[i]];
 		var uuid = Object.keys(account.profiles)[0];
 		accounts.push(new Account({
@@ -257,7 +260,10 @@ var parseUserAccounts = function(launcherProfile) {
 
 	if (launcherProfile.selectedUser != undefined)
 		selectedUser = launcherProfile.selectedUser.profile;
-	else
+	else if (accounts.length > 0) {
+		console.log("Found an account");
+		selectedUser = accounts[0].uuid();
+	} else
 		selectedUser = null;
 };
 
@@ -279,10 +285,13 @@ var parseUserAccountsLegacy = function(launcherProfile) {
 			email: account.username
 		}));
 
-		if (launcherProfile.selectedUser != undefined)
-			selectedUser = launcherProfile.selectedUser;
-		else
-			selectedUser = null;
+	if (launcherProfile.selectedUser != undefined)
+		selectedUser = launcherProfile.selectedUser.profile;
+	else if (accounts.length > 0) {
+		console.log("Found an account");
+		selectedUser = accounts[0].uuid();
+	} else
+		selectedUser = null;
 	}
 }
 
@@ -376,12 +385,14 @@ exports.profilesAvailable = function() {
  * @return {Account|Null}
  */
 exports.activeAccount = function() {
-	if (!this.selectedUser) {
-		if (accounts.length > 0)
-			return exports.accounts[0];
+	if (selectedUser) {
+		console.log(selectedUser);
+		for (var i = 0; i < accounts.length; i++)
+			if (accounts[i].uuid() == selectedUser)
+				return accounts[i];
 	}
-	else if (accounts[this.selectedUser])
-		return accounts[this.selectedUser];
+	if (accounts.length > 0)
+		return exports.accounts[0];
 
 	console.error("No active account available");
 	return null;
@@ -400,16 +411,30 @@ exports.accounts = function() {
 
 /**
  * Get the full list of accounts in Json format
- * @return {Json Object} [description]
+ * @return {Json Object}
  */
 exports.accountsAvailable = function() {
-	var results = {};
+	var results = {
+		active: null,
+		accounts: {}
+	};
+
+	var account = exports.activeAccount();
+	console.log(account);
+	if (account) {
+		results.active = {
+			'email'   : account.email(),
+			'username': account.username(),
+			'uuid'    : account.uuid()
+		};
+	}
+
 	for (var i = 0; i < accounts.length; i++) {
-		results[accounts[i].username()] = ({
+		results.accounts[accounts[i].username()] = ({
 			'email'   : accounts[i].email(),
 			'username': accounts[i].username(),
 			'uuid'    : accounts[i].uuid()
-		})
+		});
 	}
 	return results;
 };
@@ -419,6 +444,8 @@ exports.accountsAvailable = function() {
  * @param {Account} account
  */
 exports.addAccount = function(account) {
+	if (account.remember())
+		selectedUser = account.uuid();
 	for (var i = 0; i < accounts.length; i++) {
 		if (accounts[i].userId() == account.userId()) {
 			accounts[i] = account;

@@ -4,11 +4,21 @@ $('a[target="_blank"]').click((event) => {
 	shell.openExternal(event.target.href);
 });
 
-var viewport;
-var currentView = 'dashboard';
-
 var setAccounts = function(accounts) {
-	console.log(accounts);
+	setActiveAccount(accounts.active);
+};
+
+var setActiveAccount = function(account) {
+	if (account) {
+		$('*[mcvalue="username"]').html(account.username);
+		$('*[mcvalue="email"]').html(account.email);
+		$('#sidebar-profile-signin').addClass('hidden');
+		$('#sidebar-profile-info').removeClass('hidden');
+	} else {
+		$('#sidebar-profile-info').addClass('hidden');
+		$('#sidebar-profile-signin').removeClass('hidden');
+	}
+	setLaunchButtonEnabled(Boolean(account));
 };
 
 var setProfiles = function(profiles) {
@@ -92,5 +102,5 @@ ipcReceive('control_panel_load_profiles_result', function(payload) {
 
 ipcReceive('control_panel_load_accounts_result', function(payload) {
 	console.log("Received new accounts");
-	setAccounts(accounts);
+	setAccounts(payload);
 });

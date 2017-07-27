@@ -10,6 +10,14 @@ var profile = null;
 var isSignedIn = false;
 
 /**
+ * Get the current InterCraft profile
+ * @return {Json Object}
+ */
+exports.profile = function() {
+	return profile
+};
+
+/**
  * Check if the authentication servers are online
  * @param  {Function} callback
  * @return {Boolean}

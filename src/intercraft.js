@@ -7,14 +7,6 @@ const intercraftAuth = require('./intercraft_auth');
 const minecraft = require('./minecraft/minecraft');
 const windowManager = require('./window/window_manager');
 
-let profile;
-profile = { // Temporary profile for SirDavidLudwig
-	'privilege': 2,
-	'active': 1,
-	'uuid': 'b50cffd9ee8949b9b1223f1da79b2080',
-	'access_token': 'c1ab4bbaab938e687830fd1f3a7201d9deff2ad7'
-};
-
 let eventListeners = {
 	"quit": []
 };
@@ -113,7 +105,6 @@ var parseInterCraftSession = function() {
 			else
 				intercraftAuth.fetchProfile((result) => {
 					if (result) {
-						profile = result;
 						exports.controlPanel();
 					}
 					else {
@@ -126,10 +117,10 @@ var parseInterCraftSession = function() {
 	});
 };
 
-exports.configureMinecraft = function(callback) {
-	console.log("Configuring Minecraft...");
-};
-
+/**
+ * Open the login window
+ * @return {Undefined}
+ */
 exports.login = function() {
 	console.log("Loading login form");
 	windowManager.loginWindow().showWhenReady();

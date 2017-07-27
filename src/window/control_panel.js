@@ -24,6 +24,7 @@ class ControlPanel extends Window {
 
 		this.listen('control_panel_done', (payload) => { this.initFinished(payload); });
 		this.listen('control_panel_launch_minecraft', (payload) => { this.launchMinecraft(payload); });
+		this.listen('control_panel_load_accounts', (payload) => { this.loadAccounts(); });
 		this.listen('control_panel_minecraft_login', (payload) => { this.minecraftLogin(payload); });
 		this.listen('view_load', (payload) => { this.loadView(payload); });
 
@@ -61,20 +62,20 @@ class ControlPanel extends Window {
 		minecraft.authentication().authenticate(
 			payload.email,
 			payload.password,
-			minecraft.profileManager.clientToken,
+			minecraft.profileManager().clientToken(),
 			(account) => {
-				if (account === null)
-					this.send('control_panel_minecraft_login_result', false);
-				else {
+				if (account) {
 					account.setRemember(payload.remember);
 					profileManager.addAccount(account);
 					this.send('control_panel_minecraft_login_result', true);
-				}
+					this.loadAccounts();
+				} else
+					this.send('control_panel_minecraft_login_result', false);
 			});
 	}
 
-	loadAccounts(payload) {
-
+	loadAccounts() {
+		this.send('control_panel_load_accounts_result', minecraft.profileManager().accountsAvailable());
 	}
 
 	loadView(payload) {

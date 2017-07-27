@@ -6,7 +6,6 @@ const AUTH_URL = 'https://authserver.mojang.com';
 const TIMEOUT = 10000; // 10 seconds
 
 exports.authenticate = function(email, password, clientToken, callback) {
-	console.log("Authenticating Minecraft account...");
 	got.post(AUTH_URL + '/authenticate', {
 		json: true,
 		body: {
@@ -23,6 +22,7 @@ exports.authenticate = function(email, password, clientToken, callback) {
 	})
 	.then(response => {
 		if (response.statusCode == 200) {
+			console.log("Minecraft authenticated successfully!");
 			var account = new Account();
 			account.setAccessToken(response.body.accessToken);
 			account.setEmail(email.toLowerCase());
