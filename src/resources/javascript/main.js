@@ -7,6 +7,10 @@ $('a[target="_blank"]').click((event) => {
 var viewport;
 var currentView = 'dashboard';
 
+var setAccounts = function(accounts) {
+	console.log(accounts);
+};
+
 var setProfiles = function(profiles) {
 	var item;
 
@@ -30,7 +34,6 @@ var setProfiles = function(profiles) {
 
 var setLaunchButtonEnabled = function(enabled) {
 	$('#launcher-profile-button').prop('disabled', !enabled);
-	// $('.play-button').attr('rel', enabled ? null : 'tooltip');
 };
 
 $(document).ready(function() {
@@ -77,6 +80,17 @@ $(document).ready(function() {
 
 ipcReceive('control_panel_preload', function(payload) {
 	console.log("Preloading launcher profiles");
-	setProfiles(payload);
+	setAccounts(payload.accounts);
+	setProfiles(payload.profiles);
 	ipcSend('control_panel_done', true);
+});
+
+ipcReceive('control_panel_load_profiles_result', function(payload) {
+	console.log("Received new profiles");
+	setProfiles(payload);
+});
+
+ipcReceive('control_panel_load_accounts_result', function(payload) {
+	console.log("Received new accounts");
+	setAccounts(accounts);
 });

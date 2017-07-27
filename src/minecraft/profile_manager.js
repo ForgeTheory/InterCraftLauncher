@@ -351,7 +351,7 @@ exports.profile = function(key) {
  * @return {Array<Profile>}
  */
 exports.profiles = function() {
-	return profiless;
+	return profiles;
 };
 
 /**
@@ -395,6 +395,22 @@ exports.accounts = function() {
 	var results = [];
 	for (var i = 0; i < accounts.length; i++)
 		results.push(accounts[i]);
+	return results;
+};
+
+/**
+ * Get the full list of accounts in Json format
+ * @return {Json Object} [description]
+ */
+exports.accountsAvailable = function() {
+	var results = {};
+	for (var i = 0; i < accounts.length; i++) {
+		results[accounts[i].username()] = ({
+			'email'   : accounts[i].email(),
+			'username': accounts[i].username(),
+			'uuid'    : accounts[i].uuid()
+		})
+	}
 	return results;
 };
 

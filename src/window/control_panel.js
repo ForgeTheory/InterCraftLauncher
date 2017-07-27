@@ -33,6 +33,7 @@ class ControlPanel extends Window {
 
 	init() {
 		this.send('control_panel_preload', {
+			'accounts': minecraft.profileManager().accountsAvailable(),
 			'profiles': minecraft.profileManager().profilesAvailable(),
 		});
 	}
@@ -70,6 +71,10 @@ class ControlPanel extends Window {
 					this.send('control_panel_minecraft_login_result', true);
 				}
 			});
+	}
+
+	loadAccounts(payload) {
+
 	}
 
 	loadView(payload) {
