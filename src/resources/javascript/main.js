@@ -1,4 +1,7 @@
 const shell = require('electron').shell;
+
+var signingIn = false;
+
 $('a[target="_blank"]').click((event) => {
 	event.preventDefault();
 	shell.openExternal(event.target.href);
@@ -75,14 +78,36 @@ $(document).ready(function() {
 		});
 	});
 
+	$('#add-account-modal').on('hide.bs.modal', function(e) {
+		if (signingIn)
+			e.preventDefault();
+		return !signingIn;
+	});
+
+	$('#add-account-modal').on('hidden.bs.modal', function(e) {
+		$('#add-mc-account-email').val("");
+		$('#add-mc-account-email').blur();
+		$('#add-mc-account-password').val("");
+		$('#add-mc-account-password').blur();
+		$('#add-mc-account-remember').prop('checked', false);
+	});
+
 	$('#add-mc-account-form').submit(function(event) {
 		event.preventDefault();
+		signingIn = true;
+		$('#add-mc-account-email').prop('disabled', true);
+		$('#add-mc-account-password').prop('disabled', true);
 		$('#add-mc-account-login-button').prop('disabled', true);
 		var email = $('#add-mc-account-email').val();
 		var password = $('#add-mc-account-password').val();
 		var remember = $('#add-mc-account-remember').is(':checked');
 		authMinecraftAccount(email, password, remember, function(result) {
 			console.log("Ready for next step");
+			signingIn = false;
+			if (result)
+				$('#add-account-modal').modal('hide');
+			$('#add-mc-account-email').prop('disabled', false);
+			$('#add-mc-account-password').prop('disabled', false);
 			$('#add-mc-account-login-button').prop('disabled', false);
 		});
 	});

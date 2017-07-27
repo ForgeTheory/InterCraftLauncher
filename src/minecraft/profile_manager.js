@@ -386,13 +386,12 @@ exports.profilesAvailable = function() {
  */
 exports.activeAccount = function() {
 	if (selectedUser) {
-		console.log(selectedUser);
 		for (var i = 0; i < accounts.length; i++)
 			if (accounts[i].uuid() == selectedUser)
 				return accounts[i];
 	}
 	if (accounts.length > 0)
-		return exports.accounts[0];
+		return accounts[0];
 
 	console.error("No active account available");
 	return null;

@@ -19,7 +19,7 @@ class ControlPanel extends Window {
 		this._isReady = false;
 		this._showWhenReady = false;
 
-		this.window().openDevTools();
+		// this.window().openDevTools();
 		this.window().once('ready-to-show', () => { this.init()	});
 
 		this.listen('control_panel_done', (payload) => { this.initFinished(payload); });
@@ -55,6 +55,7 @@ class ControlPanel extends Window {
 	launchMinecraft(payload) {
 		var account = minecraft.profileManager().activeAccount();
 		var profile = minecraft.profileManager().profile(payload.profile);
+		console.log(profile);
 		minecraft.launcher().launch(profile, account, (result) => {});
 	}
 
@@ -65,6 +66,7 @@ class ControlPanel extends Window {
 			minecraft.profileManager().clientToken(),
 			(account) => {
 				if (account) {
+					console.log("Adding account...");
 					account.setRemember(payload.remember);
 					profileManager.addAccount(account);
 					this.send('control_panel_minecraft_login_result', true);
