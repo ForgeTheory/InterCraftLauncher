@@ -53,10 +53,27 @@ class ControlPanel extends Window {
 	}
 
 	launchMinecraft(payload) {
+		this.setLaunchEnabled(false);
+
 		var account = minecraft.profileManager().activeAccount();
 		var profile = minecraft.profileManager().profile(payload.profile);
-		console.log(profile);
-		minecraft.launcher().launch(profile, account, (result) => {});
+
+		// Validate the access token
+		minecraft.authentication().validate(account, minecraft.profileManager().clientToken(), (result) => {
+			if (result) {
+				// If it's valid, refresh it
+				minecraft.authentication().refresh(account, minecraft.profileManager().clientToken(), (result) => {
+					if (result) {
+						// If everything went smoothely, launch the Minecraft instance
+						minecraft.launcher().launch(profile, account, (result) => {});
+					}
+					this.setLaunchEnabled(true);
+				});
+			} else {
+				this.requestMinecraftLogin(account);
+				this.setLaunchEnabled(true);
+			}
+		});
 	}
 
 	minecraftLogin(payload) {
@@ -74,6 +91,19 @@ class ControlPanel extends Window {
 				} else
 					this.send('control_panel_minecraft_login_result', false);
 			});
+	}
+
+	requestMinecraftLogin(account) {
+		console.log("Requesting minecraft login...");
+		this.send('control_panel_minecraft_login_request', {
+			'email': account.email(),
+			'remember': account.remember(),
+			'callback': 'launch'
+		});
+	}
+
+	setLaunchEnabled(enabled) {
+		this.send('contorl_panel_launch_button_enabled', enabled);
 	}
 
 	loadAccounts() {
