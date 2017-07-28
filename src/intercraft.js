@@ -1,6 +1,5 @@
 const { ipcSend, ipcReceive } = require('electron-simple-ipc');
 
-const cache = require('./cache');
 const config = require('./config');
 const errors = require('./errors');
 const intercraftAuth = require('./intercraft_auth');
@@ -32,8 +31,8 @@ var init = function() {
 	// List of modules to initialize
 	var moduleList = [
 		config.init,
-		cache.init,
-		minecraft.init
+		minecraft.init,
+		minecraft.launcher().init
 	];
 
 	var initModule = (modules) => {

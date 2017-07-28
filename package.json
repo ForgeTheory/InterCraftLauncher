@@ -29,6 +29,7 @@
     "jquery": "^3.2.1",
     "jsonfile": "^3.0.0",
     "node-cmd": "^3.0.0",
+    "rimraf": "^2.6.1",
     "string-argv": "0.0.2",
     "unzip": "^0.1.11",
     "winreg": "^1.2.4"

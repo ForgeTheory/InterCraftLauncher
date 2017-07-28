@@ -1,4 +1,5 @@
 const jetpack = require('fs-jetpack');
+const rimraf  = require('rimraf');
 const {spawn} = require('child_process');
 const isRunning = require('is-running');
 
@@ -16,7 +17,7 @@ class MinecraftInstance {
 	 * @param  {Version} version
 	 * @param  {String} tempPath
 	 */
-	constructor(javaPath, clientToken, account, profile, version, tempPath) {
+	constructor(javaPath, clientToken, account, profile, version, tempPath, pid) {
 		this._javaPath    = javaPath
 		this._clientToken = clientToken;
 		this._profile     = profile;
@@ -25,8 +26,8 @@ class MinecraftInstance {
 		this._tempPath    = tempPath;
 
 		this._process = null;
-		this._pid     = null;
-		this._started = false;
+		this._pid     = pid;
+		this._started = Boolean(pid);
 	}
 
 	/**
@@ -83,7 +84,7 @@ class MinecraftInstance {
 		}
 
 		console.log("Launching Minecraft instance");
-		this.started = true;
+		this._started = true;
 
 		var args = [];
 		var javaPath    = this._profile.javaPath();
@@ -130,14 +131,18 @@ class MinecraftInstance {
 
 		this._process.stdout.on('close', (code) => {
 			console.log(`Closed with exit code ${code}`);
-			if (this.onCloseCallback)
-				this.onCloseCallback(this);
+			this.onCloseEvent();
 		});
 
 		this._pid = this._process.pid;
 	}
 
+	/**
+	 * Invoked when the Minecraft instance exits
+	 * @return {Undefined}
+	 */
 	onCloseEvent() {
+		this._pid = null;
 		if (this.onCloseCallback)
 			this.onCloseCallback(this);
 	}
@@ -152,12 +157,60 @@ class MinecraftInstance {
 	}
 
 	/**
-	 * Clean the files
-	 * @param  {Function} callback [description]
-	 * @return {[type]}            [description]
+	 * Close the current Minecraft instance
 	 */
-	clean() {
+	close() {
+		if (isRunning(this._pid))
+			process.kill(this._pid);
+		return this;
+	}
 
+	/**
+	 * Clean the temporary files
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	clean(callback) {
+		if (!this.isRunning()) {
+			console.log("Cleaning directory", this._tempPath);
+			rimraf(this._tempPath, () => {
+				if (callback)
+					callback(true);
+			});
+		} else if (callback)
+			callback(false);
+	}
+
+	/**
+	 * Check if the current instance is running
+	 * @return {Boolean}
+	 */
+	isRunning() {
+		return (this._started && this._pid) && isRunning(this._pid);
+	}
+
+	/**
+	 * Return the current process ID
+	 * @return {Integer|Null}
+	 */
+	pid() {
+		return this._pid;
+	}
+
+	/**
+	 * Return the temporary path to libraries
+	 * @return {String}
+	 */
+	tempPath() {
+		return this._tempPath;
+	}
+
+	/**
+	 * Check if the instance has already started
+	 * @return {Boolean}
+	 */
+	started() {
+		return this._started;
 	}
 }
 
