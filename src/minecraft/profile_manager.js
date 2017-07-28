@@ -286,7 +286,7 @@ var parseUserAccountsLegacy = function(launcherProfile) {
 		}));
 
 	if (launcherProfile.selectedUser != undefined)
-		selectedUser = launcherProfile.selectedUser.profile;
+		selectedUser = launcherProfile.selectedUser;
 	else if (accounts.length > 0) {
 		console.log("Found an account");
 		selectedUser = accounts[0].uuid();
