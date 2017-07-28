@@ -18,6 +18,8 @@ var minecraftPath = function() {
 		path = path.cwd('./AppData/Roaming/.minecraft');
 	else if (process.platform == 'darwin')
 		path = path.cwd('./Library/Application Support/minecraft');
+	else
+		path = path.cwd('.minecraft');
 	return path.path();
 };
 
