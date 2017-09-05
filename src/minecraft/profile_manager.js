@@ -3,8 +3,8 @@ const jsonfile = require('jsonfile');
 
 const config = require('../config');
 const utils = require('../utils/utils');
-const Account = require('./account').Account;
-const Profile = require('./profile').Profile;
+const {Account} = require('./account');
+const {Profile} = require('./profile');
 
 var path;
 

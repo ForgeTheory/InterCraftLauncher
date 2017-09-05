@@ -4,9 +4,10 @@ const jetpack = require('fs-jetpack');
 const minecraft = require('../minecraft/minecraft');
 const profileManager = require('../minecraft/profile_manager');
 
-const Window = require('./window').Window;
+const {Window} = require('./window');
 
 class ControlPanel extends Window {
+
 	constructor() {
 		super({
 			width: 1280,
@@ -61,14 +62,22 @@ class ControlPanel extends Window {
 		// Validate the access token
 		minecraft.authentication().validate(account, minecraft.profileManager().clientToken(), (result) => {
 			if (result) {
-				// If it's valid, refresh it
-				minecraft.authentication().refresh(account, minecraft.profileManager().clientToken(), (result) => {
-					if (result) {
-						// If everything went smoothely, launch the Minecraft instance
-						minecraft.launcher().launch(profile, account, (result) => {});
-					}
+				// If it's valid, refresh it if no other instances are already running
+				if (minecraft.launcher().instances().length == 0) {
+					minecraft.authentication().refresh(account, minecraft.profileManager().clientToken(), (result) => {
+						if (result) {
+							// If everything went smoothely, launch the Minecraft instance
+							minecraft.launcher().launch(profile, account, (result) => {});
+						} else {
+							this.alert(ControlPanel.ALERT_ERROR, "Failed to launch", "Failed to refresh your access token");
+						}
+						this.setLaunchEnabled(true);
+					});
+				} else {instance
+					// If everything went smoothely, launch the Minecraft 
+					minecraft.launcher().launch(profile, account, (result) => {});
 					this.setLaunchEnabled(true);
-				});
+				}
 			} else {
 				this.requestMinecraftLogin(account);
 				this.setLaunchEnabled(true);
@@ -122,4 +131,10 @@ class ControlPanel extends Window {
 	}
 }
 
-exports.ControlPanel = ControlPanel;
+// Alert types
+ControlPanel.ALERT_INFO    = 0;
+ControlPanel.ALERT_SUCCESS = 1;
+ControlPanel.ALERT_WARNING = 2;
+ControlPanel.ALERT_DANGER  = 3;
+
+module.exports = {ControlPanel};

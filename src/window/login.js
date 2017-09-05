@@ -1,7 +1,7 @@
 const intercraft = require('../intercraft');
 const intercraftAuth = require('../intercraft_auth');
 
-const Window = require('./window').Window;
+const {Window} = require('./window');
 
 class Login extends Window {
 	constructor() {
@@ -50,4 +50,4 @@ class Login extends Window {
 	}
 }
 
-exports.Login = Login;
+module.exports = {Login};

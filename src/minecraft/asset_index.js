@@ -1,5 +1,5 @@
 
-const Asset = require('./asset').Asset;
+const {Asset} = require('./asset');
 
 class AssetIndex {
 	constructor(assetIndexJson) {
@@ -42,4 +42,4 @@ class AssetIndex {
 	}
 }
 
-exports.AssetIndex = AssetIndex;
+module.exports = {AssetIndex};

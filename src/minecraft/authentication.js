@@ -1,6 +1,6 @@
 const got = require('got');
 
-const Account = require('./account').Account;
+const {Account} = require('./account');
 
 const AUTH_URL = 'https://authserver.mojang.com';
 const TIMEOUT = 10000; // 10 seconds

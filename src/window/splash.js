@@ -1,4 +1,4 @@
-const Window = require('./window').Window;
+const {Window} = require('./window');
 
 class Splash extends Window {
 	constructor() {
@@ -17,4 +17,4 @@ class Splash extends Window {
 	}
 }
 
-exports.Splash = Splash;
+module.exports = {Splash};

@@ -7,7 +7,7 @@ const minecraft = require('./minecraft');
 const versionManager = require('./version_manager');
 const utils = require('../utils/utils');
 
-const MinecraftInstance = require('./minecraft_instance').MinecraftInstance;
+const {MinecraftInstance} = require('./minecraft_instance');
 
 class LaunchTask {
 	constructor(clientToken, account, profile, version) {
@@ -173,4 +173,4 @@ class LaunchTask {
 	}
 }
 
-exports.LaunchTask = LaunchTask;
+module.exports = {LaunchTask};

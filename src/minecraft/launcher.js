@@ -5,8 +5,8 @@ const utils          = require('../utils/utils');
 const profileManager = require('./profile_manager');
 const versionManager = require('./version_manager');
 
-const LaunchTask = require('./launch_task').LaunchTask;
-const MinecraftInstance = require('./minecraft_instance').MinecraftInstance;
+const {LaunchTask} = require('./launch_task');
+const {MinecraftInstance} = require('./minecraft_instance');
 
 const FILE_NAME = 'sessions.json';
 

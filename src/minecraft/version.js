@@ -6,8 +6,8 @@ const config = require('../config');
 const downloadManager = require('../utils/download_manager');
 const versionManager = require('./version_manager');
 
-const AssetIndex = require('./asset_index').AssetIndex;
-const Library = require('./library').Library;
+const {AssetIndex} = require('./asset_index');
+const {Library} = require('./library');
 
 class Version {
 	constructor(versionJson) {
@@ -250,4 +250,4 @@ class Version {
 	}
 }
 
-exports.Version = Version;
+module.exports = {Version};

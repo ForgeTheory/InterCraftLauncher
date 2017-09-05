@@ -190,4 +190,4 @@ class Window {
 	}
 }
 
-exports.Window = Window;
+module.exports = {Window}

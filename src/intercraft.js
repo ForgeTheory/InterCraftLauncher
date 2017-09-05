@@ -1,7 +1,6 @@
 const { ipcSend, ipcReceive } = require('electron-simple-ipc');
 
 const config = require('./config');
-const errors = require('./errors');
 const intercraftAuth = require('./intercraft_auth');
 const minecraft = require('./minecraft/minecraft');
 const windowManager = require('./window/window_manager');
@@ -18,6 +17,8 @@ exports.start = function() {
 
 	// Display the splash during background processes
 	windowManager.createSplash();
+
+	// Start initialization process after splash is visible
 	windowManager.splashWindow().window().once('show', init);
 };
 
@@ -30,19 +31,19 @@ var init = function() {
 
 	// List of modules to initialize
 	var moduleList = [
-		config.init,
-		minecraft.init,
-		minecraft.launcher().init
+		config.init, "Config init",
+		minecraft.init, "Minecraft init",
+		minecraft.launcher().init, "Launcher init"
 	];
 
 	var initModule = (modules) => {
 		if (modules.length == 0)
-			return initFinished(errors.NO_ERROR);
+			return initFinished(false);
 
 		modules[0]((error) => {
-			if (error != errors.NO_ERROR)
-				return initFinished(error);
-			initModule(modules.slice(1));
+			if (error)
+				return initFinished(error, modules[1]);
+			initModule(modules.slice(2));
 		});
 	};
 	initModule(moduleList);
@@ -50,17 +51,15 @@ var init = function() {
 
 /**
  * Execute when the launcher finished initializing, regardless of errors
- * @param  {Integer} error
+ * @param  {Boolean} error
  * @return {Undefined}
  */
-var initFinished = function(error) {
-	if (error == errors.NO_ERROR) {
+var initFinished = function(error, module = undefined) {
+	if (!error) {
 		console.log("Initialization finished");
-		authenticate();
-	} else {
-		console.error("ERROR: Failed initializing");
-		handleError(error);
+		return authenticate();
 	}
+	console.error(`ERROR: Failed initializing ${module}`);
 };
 
 /**
@@ -70,48 +69,18 @@ var initFinished = function(error) {
 var authenticate = function() {
 	console.log("Authenticating session...");
 	intercraftAuth.isOnline((isOnline) => {
-		if (isOnline)
+		if (isOnline) {
 			intercraftAuth.authenticate((result) => {
 				console.log(result);
 				if (result)
 					exports.controlPanel();
 				else
 					exports.login();
+				windowManager.splashWindow().close();
 			});
-		else
+		} else {
 			console.log("Unable to connect to authentication servers");
-	});
-};
-
-/**
- * Handle any errors thrown during the initialization and authentication phase.
- * @param  {Integer} error
- * @return {Undefined}
- */
-var handleError = function(error) {
-	console.log(error);
-	console.log(errors.messages[error]);
-};
-
-var parseInterCraftSession = function() {
-	intercraftAuth.isOnline((isOnline) => {
-		if (isOnline)
-			if (config.accessToken() == null ||
-				config.accessToken == undefined ||
-				config.accessToken().length != 40)
-				
-				exports.login();
-			else
-				intercraftAuth.fetchProfile((result) => {
-					if (result) {
-						exports.controlPanel();
-					}
-					else {
-						exports.login();
-					}
-				});
-		else {
-			exports.offlinePanel();
+			exports.quit();
 		}
 	});
 };
@@ -135,7 +104,6 @@ exports.controlPanel = function() {
 		return exports.login();
 
 	console.log("Displaying control panel");
-
 	windowManager.controlPanel().showWhenReady();
 };
 

@@ -6,7 +6,7 @@ const config = require('../config');
 const URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
 const TIMEOUT = 10000 // 10 seconds
 
-const Version = require('./version').Version;
+const {Version} = require('./version');
 
 var path;
 var versionsInstalled;

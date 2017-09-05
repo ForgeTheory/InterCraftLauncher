@@ -2,10 +2,10 @@ const { BrowserWindow } = require('electron');
 const path = require('path');
 const url = require('url');
 
-const ControlPanel = require('./control_panel').ControlPanel;
-const Login        = require('./login').Login;
-const Splash       = require('./splash').Splash;
-const Window       = require('./window').Window;
+const {ControlPanel} = require('./control_panel');
+const {Login} = require('./login');
+const {Splash} = require('./splash');
+const {Window} = require('./window');
 
 const TEMPLATES_PATH = '../views';
 

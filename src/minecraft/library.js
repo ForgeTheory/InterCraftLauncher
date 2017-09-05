@@ -210,4 +210,4 @@ class Library {
 	}
 }
 
-exports.Library = Library;
+module.exports = {Library};

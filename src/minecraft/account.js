@@ -134,4 +134,4 @@ class Account {
 }
 
 // Make class visible outside
-exports.Account = Account;
+module.exports = {Account};

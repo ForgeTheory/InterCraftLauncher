@@ -241,4 +241,4 @@ class Profile {
 }
 
 // Make class visible outside
-exports.Profile = Profile;
+module.exports = {Profile};

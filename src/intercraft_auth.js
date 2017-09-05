@@ -28,6 +28,8 @@ exports.isOnline = function(callback) {
 		'timeout': TIMEOUT
 	}).then(response => {
 		callback(response.statusCode == 200);
+	}).catch(error => {
+		callback(response.statusCode == 200);
 	}); 
 };
 

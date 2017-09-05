@@ -214,4 +214,4 @@ class MinecraftInstance {
 	}
 }
 
-exports.MinecraftInstance = MinecraftInstance;
+module.exports = {MinecraftInstance};
