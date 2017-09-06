@@ -19,4 +19,4 @@ app.on('window-all-closed', () => {
 });
 
 // On InterCraft quit
-intercraft.onQuit(app.quit);
+intercraft.addOnQuitListener(app.quit);

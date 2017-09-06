@@ -1,9 +1,10 @@
 const { ipcSend, ipcReceive } = require('electron-simple-ipc');
 
-const config = require('./config');
+const config         = require('./config');
 const intercraftAuth = require('./intercraft_auth');
-const minecraft = require('./minecraft/minecraft');
-const windowManager = require('./window/window_manager');
+const locale         = require('./locale');
+const minecraft      = require('./minecraft/minecraft');
+const windowManager  = require('./window/window_manager');
 
 let eventListeners = {
 	"quit": []
@@ -31,35 +32,37 @@ var init = function() {
 
 	// List of modules to initialize
 	var moduleList = [
-		config.init, "Config init",
-		minecraft.init, "Minecraft init",
-		minecraft.launcher().init, "Launcher init"
+		[config.init, {}],
+		[locale.init, {}],
+		[minecraft.init, {}],
+		[minecraft.launcher().init, {}]
 	];
 
 	var initModule = (modules) => {
 		if (modules.length == 0)
-			return initFinished(false);
+			return initFinished(undefined);
 
-		modules[0]((error) => {
-			if (error)
-				return initFinished(error, modules[1]);
-			initModule(modules.slice(2));
-		});
+		modules[0][0]((errorMessage) => {
+			if (errorMessage)
+				return initFinished(errorMessage);
+			initModule(modules.slice(1));
+		}, modules[0][1]);
 	};
 	initModule(moduleList);
 };
 
 /**
- * Execute when the launcher finished initializing, regardless of errors
+ * Execute when the launcher finished initializing regardless of errors
  * @param  {Boolean} error
  * @return {Undefined}
  */
-var initFinished = function(error, module = undefined) {
-	if (!error) {
-		console.log("Initialization finished");
-		return authenticate();
+var initFinished = function(error) {
+	if (error) {
+		console.log(error);
+		return exports.quit();
 	}
-	console.error(`ERROR: Failed initializing ${module}`);
+	console.log("Initialization finished");
+	return authenticate();
 };
 
 /**
@@ -127,6 +130,6 @@ exports.quit = function() {
 	exports.emitEvent('quit');
 };
 
-exports.onQuit = function(callback) {
+exports.addOnQuitListener = function(callback) {
 	eventListeners.quit.push(callback);
 };

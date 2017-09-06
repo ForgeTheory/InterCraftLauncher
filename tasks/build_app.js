@@ -1,28 +1,30 @@
-const gulp = require('gulp');
-const gulpcopy = require('gulp-copy');
-const sass = require('gulp-sass');
-const watch = require('gulp-watch');
-const batch = require('gulp-batch');
-const minifycss = require('gulp-clean-css');
-const minifyhtml = require('gulp-htmlmin')
-const plumber = require('gulp-plumber');
-const imagemin = require('gulp-imagemin');
-const jetpack = require('fs-jetpack');
-const bundle = require('./bundle');
-const utils = require('./utils');
+const gulp       = require('gulp');
+const gulpcopy   = require('gulp-copy');
+const sass       = require('gulp-sass');
+const watch      = require('gulp-watch');
+const batch      = require('gulp-batch');
+const minifycss  = require('gulp-clean-css');
+const minifyhtml = require('gulp-htmlmin');
+const jsonmin    = require('gulp-jsonmin');
+const plumber    = require('gulp-plumber');
+const imagemin   = require('gulp-imagemin');
+const jetpack    = require('fs-jetpack');
+const bundle     = require('./bundle');
+const utils      = require('./utils');
 
 const projectDir = jetpack;
-const buildDir = jetpack.cwd('./build');
-const libsDir = jetpack.cwd('./libs');
-const srcDir = jetpack.cwd('./src');
-const resDir = jetpack.cwd('./src/resources');
-const destDir = jetpack.cwd('./app');
+const buildDir   = jetpack.cwd('./build');
+const libsDir    = jetpack.cwd('./libs');
+const srcDir     = jetpack.cwd('./src');
+const resDir     = jetpack.cwd('./src/resources');
+const destDir    = jetpack.cwd('./app');
 
 gulp.task('bundle', () => {
 	return Promise.all([
 		bundle(srcDir.path('config.js'),          destDir.path('config.js')),
 		bundle(srcDir.path('intercraft.js'),      destDir.path('intercraft.js')),
 		bundle(srcDir.path('intercraft_auth.js'), destDir.path('intercraft_auth.js')),
+		bundle(srcDir.path('locale.js'),          destDir.path('locale.js')),
 		bundle(srcDir.path('main.js'),            destDir.path('main.js')),
 
 		bundle(srcDir.path('minecraft/minecraft.js'),          destDir.path('minecraft/minecraft.js')),
@@ -55,6 +57,12 @@ gulp.task('bundle', () => {
 gulp.task('libs', () => {
 	return gulp.src(libsDir.path('./**/*'))
 	           .pipe(gulp.dest(destDir.path()));
+});
+
+gulp.task('locale', () => {
+	return gulp.src(resDir.path('locale/*'))
+	           .pipe(jsonmin())
+	           .pipe(gulp.dest(projectDir.path('locale')));
 });
 
 gulp.task('sass', () => {
@@ -117,6 +125,9 @@ gulp.task('watch', () => {
 	watch('src/**/*.js', batch((events, done) => {
 		gulp.start('bundle', beepOnError(done));
 	}));
+	watch('src/resource/locale/*', batch((events, done) => {
+		gulp.start('bundle', beepOnError(done));
+	}));
 	watch('src/resources/javascript/*.js', batch((events, done) => {
 		gulp.start('javascript', beepOnError(done));
 	}));
@@ -134,6 +145,7 @@ gulp.task('watch', () => {
 gulp.task('build', [
 	'bundle',
 	'libs',
+	'locale',
 	'sass',
 	'javascript',
 	'views',

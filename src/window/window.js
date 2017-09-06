@@ -1,7 +1,9 @@
-const {BrowserWindow} = require('electron');
+const {BrowserWindow, session} = require('electron');
 const {ipcSend, ipcReceive} = require('electron-simple-ipc');
 const path = require('path');
-const url = require('url');
+const {URL} = require('url');
+
+const locale = require('../locale');
 
 const TEMPLATES_PATH = '../views';
 
@@ -137,11 +139,12 @@ class Window {
 	 */
 	setView(view) {
 		this._readyToShow = false;
-		this._window.loadURL(url.format({
-			pathname: path.join(__dirname, `${TEMPLATES_PATH}/${view}.htm`),
-			protocol: 'file:',
-			slashes: true
-		}));
+		var urlObj = new URL(path.join(__dirname, `${TEMPLATES_PATH}/${view}.htm`));
+		urlObj.protocol = "file:"
+		urlObj.slashes = true;
+		urlObj.searchParams.append("locale", JSON.stringify(locale.locale()));
+		this._window.loadURL(urlObj.href);
+		console.log(urlObj.href);
 	}
 
 	/**

@@ -1,6 +1,5 @@
 const jsonfile = require('jsonfile');
 
-const errors         = require('../errors');
 const utils          = require('../utils/utils');
 const profileManager = require('./profile_manager');
 const versionManager = require('./version_manager');
@@ -32,7 +31,7 @@ exports.init = function(callback) {
 				instance.clean();
 		}
 		exports.save((error) => {
-			callback(error ? errors.LAUNCHER_SAVE_FAILED : errors.NO_ERROR);
+			callback(error ? "Failed to save launcher cache" : undefined);
 		});
 	});
 };

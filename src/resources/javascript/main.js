@@ -1,9 +1,29 @@
 const shell = require('electron').shell;
+var locale;
 
 $('a[target="_blank"]').click((event) => {
 	event.preventDefault();
 	shell.openExternal(event.target.href);
 });
+
+var getUrlParameter = function(name, defaultValue = undefined) {
+	var results = new RegExp("[\?&]" + name + "=([^&#]*)").exec(window.location.href);
+	if (results==null){
+		return null;
+	}
+	return decodeURIComponent(results[1]) || 0;
+};
+
+var initLocale = function() {
+	locale = JSON.parse(getUrlParameter("locale"));
+	$('*[locale]').each(function(index) {
+		var parts = $(this).attr("locale").split('.');
+		var current = locale;
+		for (var i = 0; i < parts.length; i++)
+			current = current[parts[i]];
+		$(this).html(current);
+	});
+};
 
 var setAccounts = function(accounts) {
 	setActiveAccount(accounts.active);
@@ -48,7 +68,7 @@ var setLaunchButtonEnabled = function(enabled) {
 };
 
 $(document).ready(function() {
-
+	initLocale();
 	initMinecraft();
 	initViewManager();
 	updateInterCraftStats();

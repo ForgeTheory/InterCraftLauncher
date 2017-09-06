@@ -28,7 +28,9 @@
     "is-running": "^2.1.0",
     "jquery": "^3.2.1",
     "jsonfile": "^3.0.0",
+    "locale": "^0.1.0",
     "node-cmd": "^3.0.0",
+    "os-locale": "^2.1.0",
     "rimraf": "^2.6.1",
     "string-argv": "0.0.2",
     "unzip": "^0.1.11",
@@ -45,14 +47,14 @@
     "gulp-copy": "^1.0.0",
     "gulp-htmlmin": "^3.0.0",
     "gulp-imagemin": "^3.3.0",
+    "gulp-jsonmin": "^1.1.0",
     "gulp-plumber": "^1.1.0",
     "gulp-sass": "^3.1.0",
     "gulp-size": "^2.1.0",
     "gulp-watch": "^4.3.11",
     "minimist": "^1.2.0",
     "object-keys": "^1.0.11",
-    "rollup": "^0.41.6",
-    "uglify-js": "^3.0.15"
+    "rollup": "^0.41.6"
   },
   "build": {
     "appId": "com.intercraftmc.launcher",

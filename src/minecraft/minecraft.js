@@ -3,7 +3,6 @@ const jsonfile = require('jsonfile');
 const path = require('path');
 
 const config = require('../config');
-const errors = require('../errors');
 const authentication = require('./authentication');
 const launcher = require('./launcher');
 const profileManager = require('./profile_manager');
@@ -21,15 +20,15 @@ exports.init = function(callback) {
 	minecraftDir = config.minecraftPath();
 
 	if (!directoryExists())
-		return callback(errors.INVALID_MINECRAFT_PATH);
+		return callback("The given Minecraft directory could not be found");
 
 	if (!profileManager.init())
-		return callback(errors.INIT_PROFILE_MANAGER_FAILED);
+		return callback("Failed to initialize the profile manager");
 
 	if (!versionManager.init())
-		return callback(errors.INIT_VERSION_MANAGER_FAILED);
+		return callback("Failed to initialize the version manager");
 
-	callback(errors.NO_ERROR);
+	callback();
 };
 
 exports.authentication = function() {

@@ -1,15 +1,24 @@
-const { BrowserWindow } = require('electron');
-const path = require('path');
-const url = require('url');
+const {BrowserWindow, session} = require('electron');
+const path              = require('path');
+const url               = require('url');
+
+const locale = require('../locale');
 
 const {ControlPanel} = require('./control_panel');
-const {Login} = require('./login');
-const {Splash} = require('./splash');
-const {Window} = require('./window');
+const {Login}        = require('./login');
+const {Splash}       = require('./splash');
+const {Window}       = require('./window');
 
 const TEMPLATES_PATH = '../views';
 
 var windows = {};
+
+exports.init = function(callback) {
+	var cookie = {}
+	// session.defaultSession.cookies.set()
+	// locale.locale()
+	callback();
+};
 
 exports.createSplash = function() {
 	windows.splash = new Splash();

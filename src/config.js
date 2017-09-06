@@ -4,7 +4,7 @@ const jetpack = require('fs-jetpack');
 const jsonfile = require('jsonfile');
 const os = require('os');
 
-const errors = require('./errors');
+const locale = require('./locale');
 
 var config;
 
@@ -24,33 +24,52 @@ var minecraftPath = function() {
 };
 
 var generate = function() {
-	console.log("Generating stuff");
+	console.log("Generating configuration");
 	config = {
 		"java": null,
+		"locale": null,
 		"minecraft_path": minecraftPath(),
 		"access_token": null
 	};
 };
 
 exports.init = function(callback) {
+	
+	// Load/generate the configuration
+	exports.load();
+
+	// Locate the Java installation
+	findJava((err, home) => {
+		if (err)
+			return callback(false);
+		else
+			javaHome = jetpack.cwd(home);
+		callback(false);
+	});
+};
+
+exports.load = function() {
+	// Open the configuration
 	if (fs.existsSync(rootPath.path('config.json'))) {
-		config = jsonfile.readFileSync(rootPath.path('./config.json'));
-	} else {
+		config = jsonfile.readFileSync(rootPath.path('./config.json'), {throws: false});
+	}
+	// If there was an error, generate a new configuration
+	if (config == null) {
 		generate();
 		exports.save();
 	}
-
-	findJava((err, home) => {
-		if (err)
-			return callback(errors.NO_JAVA);
-		else
-			javaHome = jetpack.cwd(home);
-		callback(errors.NO_ERROR);
-	});
 };
 
 exports.save = function() {
 	jsonfile.writeFile(rootPath.path('./config.json'), config);
+};
+
+exports.locale = function() {
+	return config["locale"];
+};
+
+exports.setLocale = function(locale) {
+	config["locale"] = locale;
 };
 
 exports.minecraftPath = function() {
