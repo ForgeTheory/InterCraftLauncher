@@ -1,8 +1,21 @@
+const INFO    = 0;
+const SUCCESS = 1;
+const WARNING = 2;
+const DANGER  = 3;
+
 var register = undefined;
 var unregister = undefined;
 var viewport;
 var currentView = undefined;
 var activeTab = undefined;
+
+var toast = function(type, message, title) {
+	var func = [toastr.info, toastr.success, toastr.warning, toastr.danger][type];
+	if (title)
+		func(title, message);
+	else
+		func(message);
+};
 
 var viewTabs = {
 	"dashboard": $('.sidenav-tab[view="dashboard"]'),
@@ -12,6 +25,7 @@ var viewTabs = {
 	"intercraft_gallery": $('.sidenav-dropdown-link[view="intercraft_gallery"]'),
 	"intercraft_members": $('.sidenav-dropdown-link[view="intercraft_members"]'),
 	"intercraft_profile": $('.sidenav-dropdown-link[view="intercraft_profile"]'),
+	"minecraft_account": $('.sidenav-tab[view="minecraft_account"]'),
 	"settings": $('.sidenav-tab[view="settings"]')
 }
 
@@ -53,12 +67,12 @@ var setView = function(view) {
 var setTab = function(view) {
 	if (viewTabs[view] == undefined)
 		return;
-	if (activeTab != undefined)
-		activeTab.removeClass('active');
+	$('.sidenav-container .active').removeClass('active');
 	viewTabs[view].addClass('active');
 
 	if (viewTabs[view].hasClass('sidenav-dropdown-link')) {
-		// viewTabs[view]
+		console.log(viewTabs[view].parents('.sidenav-item').children('.sidenav-dropdown-link'));
+		viewTabs[view].parents('.sidenav-item').children('.sidenav-dropdown-tab').addClass('active');
 	}
 	activeTab = viewTabs[view];
 };
@@ -82,4 +96,8 @@ ipcReceive('view_result', function(payload) {
 	if (payload.key == "control_panel")
 		if (currentView == payload.view)
 			displayView(payload.html);
+});
+
+ipcReceive('control_panel_toast', function(payload) {
+	toast(payload.type, payload.message, payload.title);
 });

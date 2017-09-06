@@ -36,7 +36,7 @@ class ControlPanel extends Window {
 	init() {
 		this.send('control_panel_preload', {
 			'accounts': minecraft.profileManager().accountsAvailable(),
-			'profiles': minecraft.profileManager().profilesAvailable(),
+			'profiles': minecraft.profileManager().profilesAvailable()
 		});
 	}
 
@@ -67,21 +67,37 @@ class ControlPanel extends Window {
 					minecraft.authentication().refresh(account, minecraft.profileManager().clientToken(), (result) => {
 						if (result) {
 							// If everything went smoothely, launch the Minecraft instance
-							minecraft.launcher().launch(profile, account, (result) => {});
+							minecraft.launcher().launch(profile, account, {
+								onError: (i) => {this.onMinecraftError(i)},
+								onClose: (i) => {this.onMinecraftClosed(i)},
+								onStart: (i) => {this.onMinecraftStart(i)}
+							}, (result) => {});
 						} else {
-							this.alert(ControlPanel.ALERT_ERROR, "Failed to launch", "Failed to refresh your access token");
+							this.toast(ControlPanel.ERROR, "Failed to launch", "Failed to refresh your access token");
 						}
 						this.setLaunchEnabled(true);
 					});
-				} else {instance
+				} else {
 					// If everything went smoothely, launch the Minecraft 
-					minecraft.launcher().launch(profile, account, (result) => {});
+					minecraft.launcher().launch(profile, account, {
+						onError: (i) => {this.onMinecraftError(i)},
+						onClose: (i) => {this.onMinecraftClosed(i)},
+						onStart: (i) => {this.onMinecraftStart(i)}
+					}, (result) => {});
 					this.setLaunchEnabled(true);
 				}
 			} else {
 				this.requestMinecraftLogin(account);
 				this.setLaunchEnabled(true);
 			}
+		});
+	}
+
+	toast(type, message, title) {
+		this.send("control_panel_toast", {
+			type: type,
+			message: message,
+			title: title
 		});
 	}
 
@@ -129,12 +145,24 @@ class ControlPanel extends Window {
 			this.send('view_result', payload);
 		});
 	}
+
+	onMinecraftError(minecraftInstance) {
+		this.toast(ControlPanel.ERROR, "Error occurred");
+	}
+
+	onMinecraftClosed(minecraftInstance) {
+		this.toast(ControlPanel.INFO, "Minecraft instance closed");
+	}
+
+	onMinecraftStart(minecraftInstance) {
+		this.toast(ControlPanel.SUCCESS, "Minecraft started successfully");
+	}
 }
 
 // Alert types
-ControlPanel.ALERT_INFO    = 0;
-ControlPanel.ALERT_SUCCESS = 1;
-ControlPanel.ALERT_WARNING = 2;
-ControlPanel.ALERT_DANGER  = 3;
+ControlPanel.INFO    = 0;
+ControlPanel.SUCCESS = 1;
+ControlPanel.WARNING = 2;
+ControlPanel.DANGER  = 3;
 
 module.exports = {ControlPanel};

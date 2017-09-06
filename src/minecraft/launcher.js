@@ -70,8 +70,8 @@ exports.save = function(callback) {
  * @param  {Function} callback
  * @return {Undefined}           
  */
-exports.launch = function(profile, account, callback) {
-	console.log("Launching", profile.displayName());
+exports.launch = function(profile, account, options, callback) {
+	console.log("Launching", profile.displayName(), callback);
 
 	// Get the required stuff
 	var clientToken = profileManager.clientToken();
@@ -81,7 +81,7 @@ exports.launch = function(profile, account, callback) {
 
 	// Load the version, then create a launch task
 	versionManager.loadVersionFromProfile(profile, (version) => {
-		createLaunchTask(clientToken, account, profile, version, callback);
+		createLaunchTask(clientToken, account, profile, version, options, callback);
 	});
 };
 
@@ -92,12 +92,13 @@ exports.launch = function(profile, account, callback) {
  * @param  {Profile}  profile    
  * @param  {Version}  version    
  * @param  {Function} callback   
+ * @param  {Json Object} options
  * @return {Undefined}              
  */
-var createLaunchTask = function(clientToken, account, profile, version, callback) {
-	var launchTask = new LaunchTask(clientToken, account, profile, version);
+var createLaunchTask = function(clientToken, account, profile, version, options, callback) {
+	var launchTask = new LaunchTask(clientToken, account, profile, version, options);
 	launchTask.start((launchTask, result, minecraftInstance) => {
-		launchTaskFinished(launchTask, result, minecraftInstance, callback);
+		launchTaskFinished(launchTask, result, minecraftInstance, options, callback);
 	});
 };
 
@@ -109,17 +110,31 @@ var createLaunchTask = function(clientToken, account, profile, version, callback
  * @param  {Function}            callback         
  * @return {Undefined}                    
  */
-var launchTaskFinished = function(launchTask, result, minecraftInstance, callback) {
+var launchTaskFinished = function(launchTask, result, minecraftInstance, options, callback) {
 	if (result) { // Check if the launch task was successful
-		console.log("Starting Minecraft...");
-		minecraftInstance.onClose(instanceFinished);
+		console.log("Starting Minecraft...", callback);
+
+		// Set listeners
+		minecraftInstance.onClose(instance => {
+			instanceFinished(instance);
+			if (options.onClose) {
+				options.onClose(instance);
+			}
+		});
+
+		// Start the instance
 		minecraftInstance.start((result) => {
 			if (result) {
 				instances.push(minecraftInstance);
 				exports.save();
+				if (options.onStart)
+					options.onStart(minecraftInstance);
 			}
-			else
+			else {
 				minecraftInstance.clean();
+				if (options.onError)
+					options.onError(minecraftInstance);
+			}
 		});
 	} else {
 		minecraftInstance.clean();

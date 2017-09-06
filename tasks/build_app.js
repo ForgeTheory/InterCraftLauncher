@@ -1,15 +1,17 @@
+const bundle     = require('./bundle');
+const jetpack    = require('fs-jetpack');
 const gulp       = require('gulp');
-const gulpcopy   = require('gulp-copy');
-const sass       = require('gulp-sass');
-const watch      = require('gulp-watch');
 const batch      = require('gulp-batch');
+const gulpcopy   = require('gulp-copy');
 const minifycss  = require('gulp-clean-css');
 const minifyhtml = require('gulp-htmlmin');
-const jsonmin    = require('gulp-jsonmin');
-const plumber    = require('gulp-plumber');
 const imagemin   = require('gulp-imagemin');
-const jetpack    = require('fs-jetpack');
-const bundle     = require('./bundle');
+const jsonmin    = require('gulp-jsonmin');
+const minify     = require('gulp-minify');
+const plumber    = require('gulp-plumber');
+const sass       = require('gulp-sass');
+const watch      = require('gulp-watch');
+
 const utils      = require('./utils');
 
 const projectDir = jetpack;

@@ -139,12 +139,10 @@ class Window {
 	 */
 	setView(view) {
 		this._readyToShow = false;
-		var urlObj = new URL(path.join(__dirname, `${TEMPLATES_PATH}/${view}.htm`));
-		urlObj.protocol = "file:"
+		var urlObj = new URL("file://" + path.join(__dirname, `${TEMPLATES_PATH}/${view}.htm`));
 		urlObj.slashes = true;
 		urlObj.searchParams.append("locale", JSON.stringify(locale.locale()));
 		this._window.loadURL(urlObj.href);
-		console.log(urlObj.href);
 	}
 
 	/**
