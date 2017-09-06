@@ -6,6 +6,7 @@ sessions.json
 # Compiled files
 app/*.js
 app/*.js.map
+locale/*.json
 
 # Builds
 app/
