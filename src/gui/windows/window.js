@@ -1,15 +1,14 @@
 const {BrowserWindow} = require("electron");
 
-class Window
+class Window extends BrowserWindow
 {
 	/**
 	 * Create a window
 	 * @param {Json} options
 	 */
 	constructor(options) {
-		this._options = options;
-		this._window = new BrowserWindow(options);
-
+		super(options);
+		this.setMenu(null);
 		this.initEvents();
 	}
 
@@ -18,25 +17,34 @@ class Window
 	 * @return {Undefined}
 	 */
 	initEvents() {
-		var on = (event, callback) => {
-			this._window.on(event, (...args) => { callback(...args); });
-		};
-		on("close",              this.onClose);
-		on("move",               this.onMove);
-		on("moved",              this.onMove);
-		on("page-title-updated", this.onPageTitleUpdate);
-		on("resize",             this.onResize);
-		on("ready-to-show",      this.onReadyToShow);
-		on("blur",               this.onBlur);
-		on("focus",              this.onFocus);
-		on("minimize",           this.onMinimize);
-		on("restore",            this.onRestore);
-		on("maximize",           this.onMaximize);
-		on("unmaximize",         this.onUnmaximize);
-		on("hide",               this.hide);
-		on("show",               this.show);
-		on("enter-full-screen",  this.onEnterFullScreen);
-		on("leave-full-screen",  this.onLeaveFullScreen);
+		this.on("close",              this.onClose);
+		this.on("move",               this.onMove);
+		this.on("moved",              this.onMove);
+		this.on("page-title-updated", this.onPageTitleUpdate);
+		this.on("resize",             this.onResize);
+		this.on("ready-to-show",      this.onReadyToShow);
+		this.on("blur",               this.onBlur);
+		this.on("focus",              this.onFocus);
+		this.on("minimize",           this.onMinimize);
+		this.on("restore",            this.onRestore);
+		this.on("maximize",           this.onMaximize);
+		this.on("unmaximize",         this.onUnmaximize);
+		this.on("hide",               this.onHide);
+		this.on("show",               this.onShow);
+		this.on("enter-full-screen",  this.onEnterFullScreen);
+		this.on("leave-full-screen",  this.onLeaveFullScreen);
+	}
+
+	// Methods -----------------------------------------------------------------
+
+	/**
+	 * Add an event listener
+	 * @param  {String}   event   
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	on(event, callback) {
+		super.on(event, (...args) => { callback(...args); });
 	}
 
 	// Overridable Events ------------------------------------------------------

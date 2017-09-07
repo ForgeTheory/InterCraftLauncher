@@ -32,8 +32,7 @@ class InterCraftLauncher
 	 * @return {Undefined}
 	 */
 	run(launchInfo) {
-		const {SplashWindow} = require('../gui/windows/splash_window');
-		var window = new SplashWindow();
+		
 	}
 
 	/**
