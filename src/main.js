@@ -1,22 +1,8 @@
-const {app} = require('electron');
-const got = require('got');
-const intercraft = require('./intercraft');
+const {InterCraftLauncher} = require("./core/intercraft_launcher");
+const process              = require("process");
 
-// Start the app when ready
-app.on('ready', intercraft.start);
+// Create the application instance
+let app = new InterCraftLauncher(process.argv);
 
-// Activate the app (for MAC)
-app.on('activate', intercraft.activate);
-
-// Exit when all windows are closed
-app.on('window-all-closed', () => {
-	if (process.platform !== 'darwin') {
-		console.log("All windows are closed");
-		process.nextTick(() => {
-			intercraft.quit();
-		});
-	}
-});
-
-// On InterCraft quit
-intercraft.addOnQuitListener(app.quit);
+// Start the application
+app.start();
