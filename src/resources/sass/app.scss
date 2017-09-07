@@ -1,0 +1,56 @@
+@charset "UTF-8"; 
+
+// Colors
+@import "colors";
+
+// Variables
+@import "variables";
+
+// Widgets
+@import 'card';
+@import 'navbar';
+@import 'sidebar';
+
+// Pages
+@import "login";
+
+.hidden {
+	display: none !important;
+}
+
+.main-container {
+	height: 100vh;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.content-container {
+	flex: 1;
+	width: 100%;
+	display: flex;
+}
+
+.main-content {
+	flex: 1;
+	overflow: auto;
+	padding: 15px !important;
+	background: #f4f4f4;
+}
+
+.row-main {
+	opacity: 1;
+	transition: margin 0.5s cubic-bezier(0.0, 0.0, 0.2, 1), opacity 0.5s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+
+.unloaded {
+	margin-top: 20px !important;
+	opacity: 0;
+}
+
+.skin-face {
+	image-rendering: optimizeSpeed;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: pixelated;
+	image-rendering: optimize-contrast;
+}

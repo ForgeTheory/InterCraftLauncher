@@ -31,7 +31,7 @@ class InterCraftLauncher
 	 * Run the application when ready
 	 * @return {Undefined}
 	 */
-	run() {
+	run(launchInfo) {
 		
 	}
 
@@ -69,15 +69,16 @@ class InterCraftLauncher
 	 * @return {Undefined}
 	 */
 	initEvents() {
-		EventManager.subscribe("electron-activate",          this.onActivate,      this);
-		EventManager.subscribe("electron-before-quit",       this.onBeforeQuit,    this);
-		EventManager.subscribe("electron-ready",             this.onReady,         this);
-		EventManager.subscribe("electron-will-quit",         this.onQuit,          this);
-		EventManager.subscribe("electron-window-all-closed", this.onWindowsClosed, this);
+		EventManager.subscribe("electron-ready",  this.onReady, this);
 	}
-	
+
+	/**
+	 * Execute when the Electron app is ready
+	 * @param  {} launchInfo
+	 * @return {}
+	 */
 	onReady(launchInfo) {
-		this.run();
+		this.run(launchInfo);
 	}
 }
 

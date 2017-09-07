@@ -1,4 +1,5 @@
 const {app} = require("electron");
+const _     = require("underscore");
 
 let instance;
 
@@ -12,7 +13,7 @@ class EventManager
 	 * @return {Undefined}
 	 */
 	static subscribe(event, callback, context = undefined) {
-		EventManager.instance().addListener(event, callback, context);
+		EventManager.instance().addListener(event, callback, context, false);
 	}
 
 	/**
@@ -33,7 +34,7 @@ class EventManager
 	 * @return {Undefined}
 	 */
 	static listen(event, callback, context = undefined) {
-		EventManager.instance().addOneTimeListener(event, callback, context);
+		EventManager.instance().addListener(event, callback, context, true);
 	}
 
 	/**
@@ -61,7 +62,7 @@ class EventManager
 	 * EventManager constructor
 	 */
 	constructor() {
-		this._listeners = {}
+		this._listeners = {};
 	}
 
 	/**
@@ -71,7 +72,7 @@ class EventManager
 	 * @param  {Context}   context
 	 * @return {Undefined}
 	 */
-	addListener(event, callback, context) {
+	addListener(event, callback, context, oneTime = false) {
 		if (this._listeners[event] == undefined) {
 			if (event.startsWith("electron-")) {
 				app.on(
@@ -81,18 +82,7 @@ class EventManager
 			}
 			this._listeners[event] = [];
 		}
-		this._listeners[event].push([callback, context]);
-	}
-
-	/**
-	 * Add a one-time event listener
-	 * @param  {String}   event
-	 * @param  {Function} callback
-	 * @param  {Context}   context
-	 * @return {Undefined}
-	 */
-	addOneTimeListener(event, callback, context) {
-
+		this._listeners[event].push([callback, context, oneTime]);
 	}
 
 	/**
@@ -105,6 +95,19 @@ class EventManager
 	removeListener(event, callback) {
 		if (this._listeners[event] == undefined)
 			return;
+
+		for (var i = 0; i < this._listeners[event].length; i++) {
+			if (this._listeners[event][i][0] == callback) {
+				this._listeners[event].splice(i, 1);
+				return;
+			}
+		}
+		for (var i = 0; i < this._oneTimeListeners[event].length; i++) {
+			if (this._oneTimeListeners[event][i][0] == callback) {
+				this._oneTimeListeners[event].splice(i, 1);
+				return;
+			}
+		}
 	}
 
 	/**
@@ -117,10 +120,12 @@ class EventManager
 	broadcast(event, args, callback) {
 		if (this._listeners[event] == undefined)
 			return;
-			
+
 		for (var i = 0; i < this._listeners[event].length; i++) {
 			let method  = this._listeners[event][i][0];
 			let context = this._listeners[event][i][1];
+			if (this._listeners[event][i][2])
+				this._listeners[event].splice(i--, 1);
 			method.apply(context, args);
 		}
 
