@@ -29,7 +29,7 @@ class EventManager
 	 * Listen for an event once
 	 * @param  {String}   event
 	 * @param  {Function} callback
-	 * @param  {Context}   context
+	 * @param  {Context}  context
 	 * @return {Undefined}
 	 */
 	static listen(event, callback, context = undefined) {
@@ -38,12 +38,13 @@ class EventManager
 
 	/**
 	 * Broadcast an event
-	 * @param  {String} event
-	 * @param  {Array} args
+	 * @param  {String}   event
+	 * @param  {Array}    args
+	 * @param  {Function} callback
 	 * @return {Undefined}
 	 */
-	static emit(event, args) {
-		EventManager.instance().broadcast(event, args);
+	static emit(event, args, callback) {
+		EventManager.instance().broadcast(event, args, callback);
 	}
 
 	/**
@@ -108,19 +109,23 @@ class EventManager
 
 	/**
 	 * Broadcast an event
-	 * @param  {String} event
-	 * @param  {Array} args
+	 * @param  {String}   event
+	 * @param  {Array}    args
+	 * @param  {Function} callback
 	 * @return {Undefined}
 	 */
-	broadcast(event, args) {
+	broadcast(event, args, callback) {
 		if (this._listeners[event] == undefined)
 			return;
-
+			
 		for (var i = 0; i < this._listeners[event].length; i++) {
-			let callback = this._listeners[event][i][0];
-			let context  = this._listeners[event][i][1];
-			callback.apply(context, args);
+			let method  = this._listeners[event][i][0];
+			let context = this._listeners[event][i][1];
+			method.apply(context, args);
 		}
+
+		if (callback)
+			callback(event, args);
 	}
 }
 

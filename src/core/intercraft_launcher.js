@@ -32,12 +32,7 @@ class InterCraftLauncher
 	 * @return {Undefined}
 	 */
 	run() {
-		EventManager.subscribe("test", this.test, this);
-		EventManager.emit("test", ['value', 17]);
-	}
-
-	test(arg1, arg2) {
-		console.log("The test went successfully", arg1, arg2);
+		
 	}
 
 	/**
@@ -80,27 +75,9 @@ class InterCraftLauncher
 		EventManager.subscribe("electron-will-quit",         this.onQuit,          this);
 		EventManager.subscribe("electron-window-all-closed", this.onWindowsClosed, this);
 	}
-
-	onActivate(event, hasVisibleWindows) {
-		if (process.platform !== "darwin") {
-			this.quit();
-		}
-	}
-
-	onBeforeQuit(event) {
-		console.log("About to quit");
-	}
-
-	onQuitEvent(event, exitCode) {
-		console.log("Quitting");
-	}
-
+	
 	onReady(launchInfo) {
 		this.run();
-	}
-
-	onWindowsClosed() {
-		console.log("The windows have been closed");
 	}
 }
 
