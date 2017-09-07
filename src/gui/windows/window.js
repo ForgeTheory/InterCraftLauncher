@@ -1,7 +1,17 @@
 const {BrowserWindow} = require("electron");
+const {EventManager}  = require("../../core/event_manager");
 
 class Window extends BrowserWindow
 {
+	/**
+	 * Create a new instance of the window
+	 * @param  {Json} options
+	 * @return {Undefined}
+	 */
+	static create(options) {
+		// Written in this form to fix syntax highlighting
+		return new (this)(options);
+	}
 	/**
 	 * Create a window
 	 * @param {Json} options
@@ -10,6 +20,7 @@ class Window extends BrowserWindow
 		super(options);
 		this.setMenu(null);
 		this.initEvents();
+		EventManager.emit("window-created", this);
 	}
 
 	/**
@@ -44,8 +55,14 @@ class Window extends BrowserWindow
 	 * @return {Undefined}
 	 */
 	on(event, callback) {
-		super.on(event, (...args) => { callback(...args); });
+		super.on(event, (...args) => { callback.apply(this, args); });
 	}
+
+	/**
+	 * Executed after the window has closed right before it's destroyed
+	 * @return {Undefined}
+	 */
+	clean() { console.log("Original clean"); }
 
 	// Overridable Events ------------------------------------------------------
 
@@ -61,7 +78,12 @@ class Window extends BrowserWindow
 	 * @param  {Event} event
 	 * @return {Undefined}
 	 */
-	onClose(event) { }
+	onClose(event) {
+		if (!event.defaultPrevented) {
+			this.clean();
+			EventManager.emit("window-closed", this);
+		}
+	}
 
 	/**
 	 * Executed when the window enters full-screen

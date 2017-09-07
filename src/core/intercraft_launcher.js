@@ -1,6 +1,10 @@
-const {app}          = require("electron");
-const process        = require("process");
-const {EventManager} = require('./event_manager');
+const {app}           = require("electron");
+const async           = require("async");
+const process         = require("process");
+const {Config}        = require("./config");
+const {EventManager}  = require("./event_manager");
+const {WindowManager} = require("./window_manager");
+
 
 // Store the instance globally
 let instance = null;
@@ -20,19 +24,25 @@ class InterCraftLauncher
 	constructor(argv) {
 		// Exit if an instance already exists
 		if (instance) { return instance; }
-		instance = this;
 
 		this._argv = argv;
+		this._windowManager = new WindowManager();
 
-		return instance;
+		return instance = this;
 	}
 
 	/**
-	 * Run the application when ready
+	 * run the application when ready
 	 * @return {Undefined}
 	 */
 	run(launchInfo) {
-		
+		this._launchInfo = launchInfo;
+		async.waterfall([
+			(callback) => { Config.init(callback); }
+		], () => {
+			const {SplashWindow} = require("../gui/windows/splash_window");
+			SplashWindow.create();
+		});
 	}
 
 	/**

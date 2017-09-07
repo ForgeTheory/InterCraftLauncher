@@ -23,15 +23,17 @@ const destDir    = jetpack.cwd('./app');
 
 gulp.task('bundle', () => {
 	return Promise.all([
-		bundle(srcDir.path('main.js'),            destDir.path('main.js')),
+		bundle(srcDir.path('main.js'), destDir.path('main.js')),
 
 		// Core Module
+		bundle(srcDir.path('core/config.js'),              destDir.path('core/config.js')),
 		bundle(srcDir.path('core/intercraft_launcher.js'), destDir.path('core/intercraft_launcher.js')),
-		bundle(srcDir.path('core/event_manager.js'), destDir.path('core/event_manager.js')),
+		bundle(srcDir.path('core/event_manager.js'),       destDir.path('core/event_manager.js')),
+		bundle(srcDir.path('core/window_manager.js'),      destDir.path('core/window_manager.js')),
 
 		// Gui Module
 		// -- Windows
-		bundle(srcDir.path('gui/windows/window.js'), destDir.path('gui/windows/window.js')),
+		bundle(srcDir.path('gui/windows/window.js'),        destDir.path('gui/windows/window.js')),
 		bundle(srcDir.path('gui/windows/splash_window.js'), destDir.path('gui/windows/splash_window.js'))
 	]);
 });

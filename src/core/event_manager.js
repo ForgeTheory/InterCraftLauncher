@@ -1,5 +1,4 @@
 const {app} = require("electron");
-const _     = require("underscore");
 
 let instance;
 

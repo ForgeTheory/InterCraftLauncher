@@ -2,8 +2,8 @@ const {Window} = require("./window");
 
 class SplashWindow extends Window
 {
-	constructor() {
-		super({
+	static create() {
+		super.create({
 			width: 341,
 			height: 421,
 			// frame: false,
@@ -12,9 +12,6 @@ class SplashWindow extends Window
 			movable: false,
 			minimizable: false
 		});
-
-		// this.setName('splash');
-		// this.setView('splash');
 	}
 }
 
