@@ -26,10 +26,18 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('main.js'), destDir.path('main.js')),
 
 		// Core Module
+		// --
 		bundle(srcDir.path('core/config.js'),              destDir.path('core/config.js')),
 		bundle(srcDir.path('core/intercraft_launcher.js'), destDir.path('core/intercraft_launcher.js')),
 		bundle(srcDir.path('core/event_manager.js'),       destDir.path('core/event_manager.js')),
+		bundle(srcDir.path('core/task_manager.js'),        destDir.path('core/task_manager.js')),
 		bundle(srcDir.path('core/window_manager.js'),      destDir.path('core/window_manager.js')),
+		// -- Tasks
+		bundle(srcDir.path('core/tasks/task.js'),                 destDir.path('core/tasks/task.js')),
+		bundle(srcDir.path('core/tasks/initialize_task.js'),      destDir.path('core/tasks/initialize_task.js')),
+
+		// Locale Module
+		bundle(srcDir.path('locale/locale.js'), destDir.path('locale/locale.js')),
 
 		// Gui Module
 		// -- Windows

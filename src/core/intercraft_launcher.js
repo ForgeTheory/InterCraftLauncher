@@ -3,8 +3,9 @@ const async           = require("async");
 const process         = require("process");
 const {Config}        = require("./config");
 const {EventManager}  = require("./event_manager");
+const {Locale}        = require("../locale/locale");
+const {TaskManager}   = require("./task_manager");
 const {WindowManager} = require("./window_manager");
-
 
 // Store the instance globally
 let instance = null;
@@ -26,6 +27,7 @@ class InterCraftLauncher
 		if (instance) { return instance; }
 
 		this._argv = argv;
+		this._taskManager   = new TaskManager();
 		this._windowManager = new WindowManager();
 
 		return instance = this;
@@ -37,12 +39,7 @@ class InterCraftLauncher
 	 */
 	run(launchInfo) {
 		this._launchInfo = launchInfo;
-		async.waterfall([
-			(callback) => { Config.init(callback); }
-		], () => {
-			const {SplashWindow} = require("../gui/windows/splash_window");
-			SplashWindow.create();
-		});
+		this._taskManager.start();
 	}
 
 	/**

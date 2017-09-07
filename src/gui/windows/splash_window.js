@@ -3,7 +3,7 @@ const {Window} = require("./window");
 class SplashWindow extends Window
 {
 	static create() {
-		super.create({
+		return super.create({
 			width: 341,
 			height: 421,
 			// frame: false,
