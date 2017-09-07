@@ -1,200 +1,151 @@
-const {BrowserWindow, session} = require('electron');
-const {ipcSend, ipcReceive}    = require('electron-simple-ipc');
-const path                     = require('path');
-const {URL}                    = require('url');
+const {BrowserWindow} = require("electron");
 
-const locale = require('../locale');
-
-const TEMPLATES_PATH = '../views';
-
-class Window {
-
+class Window
+{
 	/**
-	 * Electron Browser Window
-	 * @param  {[type]} options [description]
-	 * @return {[type]}         [description]
+	 * Create a window
+	 * @param {Json} options
 	 */
 	constructor(options) {
-		this._readyToShow = true;
-		this._showWhenReady = false;
-		this._options = this.parseOptions(options);
-		this._window = new BrowserWindow(this._options);
-		this._window.setMenu(null);
+		this._options = options;
+		this._window = new BrowserWindow(options);
 
 		this.initEvents();
 	}
 
 	/**
-	 * Parse the given options
-	 * @param  {Json Object} options
-	 * @return {Json Object}
-	 */
-	parseOptions(options) {
-		if (options.toolBar == undefined)
-			options.toolBar = false;
-		if (options.show == undefined)
-			options.show = false;
-		return options;
-	}
-
-	/**
-	 * Initialize the events and listeners
+	 * Initialize the event listeners
 	 * @return {Undefined}
 	 */
 	initEvents() {
-		this.on('ready-to-show', () => { this.onReadyToShow(); });
-		this.on('closed', (event) => { this.onClose(); })
+		var on = (event, callback) => {
+			this._window.on(event, (...args) => { callback(...args); });
+		};
+		on("close",              this.onClose);
+		on("move",               this.onMove);
+		on("moved",              this.onMove);
+		on("page-title-updated", this.onPageTitleUpdate);
+		on("resize",             this.onResize);
+		on("ready-to-show",      this.onReadyToShow);
+		on("blur",               this.onBlur);
+		on("focus",              this.onFocus);
+		on("minimize",           this.onMinimize);
+		on("restore",            this.onRestore);
+		on("maximize",           this.onMaximize);
+		on("unmaximize",         this.onUnmaximize);
+		on("hide",               this.hide);
+		on("show",               this.show);
+		on("enter-full-screen",  this.onEnterFullScreen);
+		on("leave-full-screen",  this.onLeaveFullScreen);
 	}
 
-	/**
-	 * Execute when the window is closing
-	 * @return {[type]} [description]
-	 */
-	onClose(event) {
-		this._closed = true;
-		this._window = null;
-	}
+	// Overridable Events ------------------------------------------------------
 
 	/**
-	 * Execute when the window is ready to show
+	 * Executed when the window loses focus
+	 * @param  {Event} event
 	 * @return {Undefined}
 	 */
-	onReadyToShow() {
-		console.log("Ready to show...", this._showWhenReady);
-		this._readyToShow = true;
-		if (this._showWhenReady)
-			this.show();
-		this._showWhenReady = false;
-	}
+	onBlur(event) { }
 
 	/**
-	 * On the given event, invoke the given callback
-	 * @param  {String}   event
-	 * @param  {Function} callback
-	 */
-	on(event, callback) {
-		this._window.on(event, callback);
-		return this;
-	}
-
-	/**
-	 * Listen for an IPC event
-	 * @param  {String}   event
-	 * @param  {Function} callback
-	 */
-	listen(event, callback) {
-		ipcReceive(event, callback);
-		return this;
-	}
-
-	/**
-	 * Send an IPC event
-	 * @param {String} event
-	 * @param {Json Array} payload
-	 */
-	send(event, payload) {
-		ipcSend(event, payload);
-		return this;
-	}
-
-	/**
-	 * Add an event listener for the given event for one invokation
-	 * @param  {String}   event
-	 * @param  {Function} callback
-	 */
-	once(event, callback) {
-		this._window.once(event, callback);
-		return this;
-	}
-
-	/**
-	 * Get the BrowserWindow
-	 * @return {BrowserWindow}
-	 */
-	window() {
-		return this._window;
-	}
-
-	/**
-	 * Get the name of the window
-	 * @return {String}
-	 */
-	name() {
-		return this._name;
-	}
-
-	/**
-	 * Set the name of the window
-	 */
-	setName(name) {
-		this._name = name;
-		return this;
-	}
-
-	/**
-	 * Get the current view
-	 * @return {String}
-	 */
-	view() {
-		return this._view;
-	}
-
-	/**
-	 * Set the current view
-	 * @param {String} view
-	 */
-	setView(view) {
-		this._readyToShow = false;
-		var urlObj = new URL("file://" + path.join(__dirname, `${TEMPLATES_PATH}/${view}.htm`));
-		urlObj.slashes = true;
-		urlObj.searchParams.append("locale", JSON.stringify(locale.locale()));
-		this._window.loadURL(urlObj.href);
-	}
-
-	/**
-	 * Close the window
+	 * Executed when attempting to close the window
+	 * @param  {Event} event
 	 * @return {Undefined}
 	 */
-	close() {
-		console.log("Closing window");
-		if (!this._closed) {
-			this._closed = true;
-			if (this._window)
-				this._window.close();
-			this._window = null;
-		}
-	}
-	
+	onClose(event) { }
+
 	/**
-	 * Remove the window handle
+	 * Executed when the window enters full-screen
+	 * @param  {Event} event
 	 * @return {Undefined}
 	 */
-	nullify() {
-		this._closed = true;
-		this._window = null;
-	}
+	onEnterFullScreen(event) { }
 
 	/**
-	 * Show the window
+	 * Executed when the window gains focus
+	 * @param  {Event} event
+	 * @return {Undefined}
 	 */
-	show() {
-		if (!this._window.isVisible())
-			this._window.show();
-		return this;
-	}
+	onFocus(event) { }
 
 	/**
-	 * Show the window when the view has fully loaded
+	 * Executed when the window is hidden
+	 * @param  {Event} event
+	 * @return {Undefined}
 	 */
-	showWhenReady() {
-		console.log("Showing when ready...");
-		if (this._window.isVisible())
-			return this;
-		if (this._readyToShow)
-			return this.show();
-		this._showWhenReady = true;
-		return this;
-	}
-}
+	onHide(event) { }
 
-module.exports = {Window}
+	/**
+	 * Executed when the window leaves full-screen
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onLeaveFullScreen(event) { }
+
+	/**
+	 * Executed when the window is maximized
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onMaximize(event) { }
+
+	/**
+	 * Executed when the window is minimized
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onMinimize(event) { }
+
+	/**
+	 * Executed when the window is moved
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onMove(event) { }
+
+	/**
+	 * Executed when the webpage title updates
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onPageTitleUpdate(event, title) { this._window.setTitle(title); }
+
+	/**
+	 * Executed when the window is ready to be displayed
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onReadyToShow(event) { }
+
+	/**
+	 * Executed when the window is resized
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onResize(event) { }
+
+	/**
+	 * Executed when the window is restored from a minimized state
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onRestore(event) { }
+
+	/**
+	 * Executed when the window is shown
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onShow(event) { }
+
+	/**
+	 * Executed when the window exits a maximized state
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onUnmaximize(event) { }
+};
+
+// Export the module
+module.exports = {Window};

@@ -27,7 +27,12 @@ gulp.task('bundle', () => {
 
 		// Core Module
 		bundle(srcDir.path('core/intercraft_launcher.js'), destDir.path('core/intercraft_launcher.js')),
-		bundle(srcDir.path('core/event_manager.js'), destDir.path('core/event_manager.js'))
+		bundle(srcDir.path('core/event_manager.js'), destDir.path('core/event_manager.js')),
+
+		// Gui Module
+		// -- Windows
+		bundle(srcDir.path('gui/windows/window.js'), destDir.path('gui/windows/window.js')),
+		bundle(srcDir.path('gui/windows/splash_window.js'), destDir.path('gui/windows/splash_window.js'))
 	]);
 });
 
