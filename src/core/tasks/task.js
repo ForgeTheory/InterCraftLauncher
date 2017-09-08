@@ -5,9 +5,9 @@ class Task
 	/**
 	 * Create a new Task instance
 	 */
-	constructor() { }
+	constructor() { this._exitCode = 0;	}
 
-	// Overridable methods -----------------------------------------------------
+	// Overridable Methods -----------------------------------------------------
 
 	/**
 	 * What the task will run
@@ -21,13 +21,31 @@ class Task
 	 */
 	clean() {}
 
+	// Members -----------------------------------------------------------------
+
+	/**
+	 * Get the exit code of the task
+	 * @return {Integer}
+	 */
+	exitCode() {
+		return this._exitCode;
+	}
+
+	/**
+	 * Set exit code for the application
+	 * @return {Undefined}
+	 */
+	setExitCode(exitCode) {
+		this._exitCode = exitCode;
+	}
+
 	// Methods -----------------------------------------------------------------
 
 	/**
 	 * Finish the task
 	 * @return {Undefined}
 	 */
-	finish(nextTask) {
+	finish(exitCode, nextTask) {
 		EventManager.emit("task-finished", [this, nextTask]);
 	}
 

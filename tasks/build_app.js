@@ -33,8 +33,9 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('core/task_manager.js'),        destDir.path('core/task_manager.js')),
 		bundle(srcDir.path('core/window_manager.js'),      destDir.path('core/window_manager.js')),
 		// -- Tasks
-		bundle(srcDir.path('core/tasks/task.js'),                 destDir.path('core/tasks/task.js')),
-		bundle(srcDir.path('core/tasks/initialize_task.js'),      destDir.path('core/tasks/initialize_task.js')),
+		bundle(srcDir.path('core/tasks/task.js'),                destDir.path('core/tasks/task.js')),
+		bundle(srcDir.path('core/tasks/authentication_task.js'), destDir.path('core/tasks/authentication_task.js')),
+		bundle(srcDir.path('core/tasks/initialize_task.js'),     destDir.path('core/tasks/initialize_task.js')),
 
 		// Locale Module
 		bundle(srcDir.path('locale/locale.js'), destDir.path('locale/locale.js')),

@@ -1,11 +1,12 @@
-const {app}           = require("electron");
-const async           = require("async");
-const process         = require("process");
-const {Config}        = require("./config");
-const {EventManager}  = require("./event_manager");
-const {Locale}        = require("../locale/locale");
-const {TaskManager}   = require("./task_manager");
-const {WindowManager} = require("./window_manager");
+const {app}            = require("electron");
+const async            = require("async");
+const process          = require("process");
+const {Config}         = require("./config");
+const {EventManager}   = require("./event_manager");
+const {InitializeTask} = require("./tasks/initialize_task");
+const {Locale}         = require("../locale/locale");
+const {TaskManager}    = require("./task_manager");
+const {WindowManager}  = require("./window_manager");
 
 // Store the instance globally
 let instance = null;
@@ -34,12 +35,13 @@ class InterCraftLauncher
 	}
 
 	/**
-	 * run the application when ready
+	 * Once ready, start the first task
 	 * @return {Undefined}
 	 */
 	run(launchInfo) {
 		this._launchInfo = launchInfo;
-		this._taskManager.start();
+		let initTask = new InitializeTask();
+		initTask.start();
 	}
 
 	/**
@@ -77,6 +79,7 @@ class InterCraftLauncher
 	 */
 	initEvents() {
 		EventManager.subscribe("electron-ready",  this.onReady, this);
+		EventManager.subscribe("taskmanager-finished", this.quit, this);
 	}
 
 	/**
