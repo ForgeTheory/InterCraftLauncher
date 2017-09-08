@@ -17,13 +17,7 @@ class InitializeTask extends Task
 	 * @return {}
 	 */
 	run() {
-		console.log("The initialization task is running");
 		this._splash = SplashWindow.create();
-
-		setTimeout(() => {
-			this._splash.close();
-			this.finish();
-		}, 2000);
 	}
 
 	/**
@@ -31,7 +25,7 @@ class InitializeTask extends Task
 	 * @return {Undefined}
 	 */
 	clean() {
-		this._splash = null;
+		
 	}
 }
 

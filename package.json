@@ -4,6 +4,7 @@
   "description": "Official launcher for the InterCraft server",
   "main": "app/main.js",
   "scripts": {
+    "debug": "electron-inspector",
     "test": "node test/all.js",
     "postinstall": "install-app-deps",
     "start": "electron ./app --enable-logging",
@@ -43,7 +44,9 @@
     "electron": "^1.6.11",
     "electron-builder": "^19.4.2",
     "electron-css-reload": "^1.0.8",
+    "electron-inspector": "^0.1.4",
     "electron-packager": "^8.7.1",
+    "electron-rebuild": "^1.6.0",
     "gulp": "^3.9.1",
     "gulp-batch": "^1.0.5",
     "gulp-clean": "^0.3.2",

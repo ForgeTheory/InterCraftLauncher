@@ -35,6 +35,27 @@ class InterCraftLauncher
 	}
 
 	/**
+	 * Add the event listeners
+	 * @return {Undefined}
+	 */
+	initEvents() {
+		EventManager.subscribe("electron-ready",  this.onReady, this);
+		EventManager.subscribe("taskmanager-finished", this.quit, this);
+	}
+
+	/**
+	 * Clean the application
+	 * @return {Undefined}
+	 */
+	clean() {
+		this._taskManager.clean();
+		this._taskManager = null;
+
+		this._windowManager.clean();
+		this._windowManager = null;
+	}
+
+	/**
 	 * Once ready, start the first task
 	 * @return {Undefined}
 	 */
@@ -42,6 +63,31 @@ class InterCraftLauncher
 		this._launchInfo = launchInfo;
 		let initTask = new InitializeTask();
 		initTask.start();
+
+		setTimeout(() => {
+			this.quit(0);
+		}, 2000);
+	}
+
+	// Members -----------------------------------------------------------------
+
+	/**
+	 * Get the command line arguments
+	 * @return {Array<String>}
+	 */
+	argv() { return this._argv; }
+
+	// Methods -----------------------------------------------------------------
+
+	/**
+	 * Exit the application
+	 * @param  {Number} exitCode
+	 * @return {Undefined}
+	 */
+	quit(exitCode = 0) {
+		this.clean();
+		app.exit(exitCode);
+		console.log("Exited with code:", exitCode);
 	}
 
 	/**
@@ -54,33 +100,7 @@ class InterCraftLauncher
 			this.run();
 	}
 
-	/**
-	 * Exit the application
-	 * @param  {Number} exitCode
-	 * @return {Undefined}
-	 */
-	quit(exitCode = 0) {
-		app.exit(exitCode);
-	}
-
-	// Getters -----------------------------------------------------------------
-
-	/**
-	 * Get the command line arguments
-	 * @return {Array<String>}
-	 */
-	argv() { return this._argv; }
-
 	// Events ------------------------------------------------------------------
-
-	/**
-	 * Add the event listeners
-	 * @return {Undefined}
-	 */
-	initEvents() {
-		EventManager.subscribe("electron-ready",  this.onReady, this);
-		EventManager.subscribe("taskmanager-finished", this.quit, this);
-	}
 
 	/**
 	 * Execute when the Electron app is ready

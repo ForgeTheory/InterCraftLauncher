@@ -14,6 +14,19 @@ class TaskManager {
 	}
 
 	/**
+	 * Clean the task manager
+	 * @return {Undefined}
+	 */
+	clean() {
+		console.log("Cleaning task manager...");
+		EventManager.unsubscribe("task-finished", this.onTaskFinished);
+		EventManager.unsubscribe("task-started",  this.onTaskStarted);
+		if (this._activeTask)
+			this._activeTask.finish();
+		this._activeTask = null;
+	}
+
+	/**
 	 * Executed when a task has finished
 	 * @param  {Task} task
 	 * @param  {Task|Undefined} nextTask
@@ -33,6 +46,7 @@ class TaskManager {
 	 * @return {Undefined}
 	 */
 	onTaskStarted(task) {
+		this._activeTask = task;
 		task.run();
 	}
 
@@ -41,6 +55,7 @@ class TaskManager {
 	 * @return {Undefined}
 	 */
 	finish(exitCode) {
+		this._activeTask = null;
 		EventManager.emit("taskmanager-finished", [exitCode]);
 	}
 }

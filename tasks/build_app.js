@@ -43,7 +43,11 @@ gulp.task('bundle', () => {
 		// Gui Module
 		// -- Windows
 		bundle(srcDir.path('gui/windows/window.js'),        destDir.path('gui/windows/window.js')),
-		bundle(srcDir.path('gui/windows/splash_window.js'), destDir.path('gui/windows/splash_window.js'))
+		bundle(srcDir.path('gui/windows/splash_window.js'), destDir.path('gui/windows/splash_window.js')),
+
+		// Utils Module
+		bundle(srcDir.path('utils/find_java.js'), destDir.path('utils/find_java.js')),
+		bundle(srcDir.path('utils/utils.js'),     destDir.path('utils/utils.js'))
 	]);
 });
 

@@ -18,9 +18,10 @@ class Window extends BrowserWindow
 	 */
 	constructor(options) {
 		super(options);
+		this._forceClose = false;
 		this.setMenu(null);
 		this.initEvents();
-		EventManager.emit("window-created", this);
+		EventManager.emit("window-created", [this]);
 	}
 
 	/**
@@ -46,7 +47,24 @@ class Window extends BrowserWindow
 		this.on("leave-full-screen",  this.onLeaveFullScreen);
 	}
 
+	// Overridable Methods -----------------------------------------------------
+
+	/**
+	 * Executed after the window has closed right before it's destroyed
+	 * @return {Undefined}
+	 */
+	clean() { }
+
 	// Methods -----------------------------------------------------------------
+
+	/**
+	 * Force close the window, ignoring all overrides
+	 * @return {Undefined}
+	 */
+	forceClose() {
+		this._forceClose = true;
+		this.close();
+	}
 
 	/**
 	 * Add an event listener
@@ -57,12 +75,6 @@ class Window extends BrowserWindow
 	on(event, callback) {
 		super.on(event, (...args) => { callback.apply(this, args); });
 	}
-
-	/**
-	 * Executed after the window has closed right before it's destroyed
-	 * @return {Undefined}
-	 */
-	clean() { console.log("Original clean"); }
 
 	// Overridable Events ------------------------------------------------------
 
@@ -79,7 +91,7 @@ class Window extends BrowserWindow
 	 * @return {Undefined}
 	 */
 	onClose(event) {
-		if (!event.defaultPrevented) {
+		if (!event.defaultPrevented || this._forceClose) {
 			this.clean();
 			EventManager.emit("window-closed", this);
 		}

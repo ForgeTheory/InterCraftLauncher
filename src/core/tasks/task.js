@@ -45,7 +45,8 @@ class Task
 	 * Finish the task
 	 * @return {Undefined}
 	 */
-	finish(exitCode, nextTask) {
+	finish(nextTask) {
+		console.log("Finishing task");
 		EventManager.emit("task-finished", [this, nextTask]);
 	}
 

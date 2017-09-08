@@ -24,6 +24,18 @@ class WindowManager
 	}
 
 	/**
+	 * Clean up the window manager
+	 * @return {Undefined}
+	 */
+	clean() {
+		console.log("Cleaning the window manager");
+		while (this._windows.length > 0)
+			this._windows[0].forceClose();
+		EventManager.unsubscribe("window-created", this.onWindowCreated);
+		EventManager.unsubscribe("window-closed",  this.onWindowClosed);
+	}
+
+	/**
 	 * Executed when a new window has been created
 	 * @return {Undefined}
 	 */

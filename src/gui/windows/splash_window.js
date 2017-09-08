@@ -1,9 +1,13 @@
-const {Window} = require("./window");
+const {EventManager} = require("../../core/event_manager");
+const {Window}       = require("./window");
 
 class SplashWindow extends Window
 {
-	static create() {
-		return super.create({
+	/**
+	 * Create a new splash window instance
+	 */
+	constructor() {
+		super({
 			width: 341,
 			height: 421,
 			// frame: false,
@@ -12,6 +16,24 @@ class SplashWindow extends Window
 			movable: false,
 			minimizable: false
 		});
+		EventManager.subscribe("splash-status-msg", this.setStatus, this);
+	}
+
+	/**
+	 * Clean up when the splash is closing
+	 * @return {Undefined}
+	 */
+	clean() {
+		EventManager.unsubscribe("splash-status-msg", this.setStatus);
+	}
+
+	/**
+	 * Set the status message of the splash
+	 * @param {String} message
+	 * @return {Undefined}
+	 */
+	setStatus(message) {
+		console.log(message);
 	}
 }
 
