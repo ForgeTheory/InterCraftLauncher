@@ -101,12 +101,6 @@ class EventManager
 				return;
 			}
 		}
-		for (var i = 0; i < this._oneTimeListeners[event].length; i++) {
-			if (this._oneTimeListeners[event][i][0] == callback) {
-				this._oneTimeListeners[event].splice(i, 1);
-				return;
-			}
-		}
 	}
 
 	/**
