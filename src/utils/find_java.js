@@ -32,7 +32,7 @@ var javaHome;
 module.exports = findJava;
 
 var isWindows = process.platform.indexOf('win') === 0;
-var JAVA_FILENAME = 'javaw' + (isWindows?'.exe':'');
+var JAVA_FILENAME = 'java' + (isWindows?'.exe':'');
 
 function findJava(options, cb){
 	if(typeof options === 'function'){
