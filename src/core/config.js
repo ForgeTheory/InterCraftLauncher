@@ -1,3 +1,4 @@
+const async    = require("async");
 const jetpack  = require("fs-jetpack");
 const jsonfile = require("jsonfile");
 const findJava = require("../utils/find_java");
@@ -13,7 +14,7 @@ class Config
 	 * @return {Undefined}
 	 */
 	static check(callback) {
-
+		callback(null);
 	}
 	/**
 	 * Generate a new configuration
@@ -21,13 +22,12 @@ class Config
 	 * @return {Undefined}
 	 */
 	static generate(callback) {
-		findJava((err, path) => {
-			console.log("Found the path", path);
+		async.parallel({
+			java: (cb) => { findJava(cb); },
+		}, (err, result) => {
+			this._config = result;
+			this.save(callback);
 		});
-		this._config = {
-
-		}
-		this.save(callback);
 	}
 	/**
 	 * Initialize the configuration
@@ -62,6 +62,7 @@ class Config
 	 * @return {Undefined}
 	 */
 	static save(callback) {
+		// return callback(true); -- Use for testing purpses
 		jsonfile.writeFile(
 			CONFIG_FILE,
 			this._config,
@@ -69,8 +70,11 @@ class Config
 				spaces: 2,
 				thows: false
 			},
-			(err) => { callback(Boolean(err)); });
+			(err) => { callback(err); }
+		);
 	}
+
+	// Generation Methods ------------------------------------------------------
 }
 
 // Export the module

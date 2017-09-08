@@ -1,4 +1,5 @@
 const async          = require("async");
+const {Config}         = require("../config");
 const {SplashWindow} = require("../../gui/windows/splash_window");
 const {Task}         = require("./task");
 
@@ -18,6 +19,12 @@ class InitializeTask extends Task
 	 */
 	run() {
 		this._splash = SplashWindow.create();
+		async.waterfall([
+			(cb) => { Config.init(cb); }
+		], () => {
+			console.log("Init task finished");
+			this.finish();
+		});
 	}
 
 	/**

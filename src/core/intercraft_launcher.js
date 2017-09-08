@@ -63,10 +63,6 @@ class InterCraftLauncher
 		this._launchInfo = launchInfo;
 		let initTask = new InitializeTask();
 		initTask.start();
-
-		setTimeout(() => {
-			this.quit(0);
-		}, 2000);
 	}
 
 	// Members -----------------------------------------------------------------
