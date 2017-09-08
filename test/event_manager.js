@@ -31,5 +31,3 @@ exports["test EventManager one time events"] = function(assert) {
 	EventManager.emit("test2", [4]);
 	assert.equal(test2Value, 1, "unsubscribe from one time listen success");
 }
-
-test.run(exports);
