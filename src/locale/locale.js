@@ -18,6 +18,8 @@ class Locale
 	 * @return {String|Undefined}
 	 */
 	static get(key) {
+		if (!instance)
+			return {};
 		var dict = JSON.parse(JSON.stringify(instance.dictionary()));
 		if (key == undefined)
 			return dict;

@@ -52,7 +52,7 @@ gulp.task('bundle', () => {
 
 gulp.task('libs', () => {
 	return gulp.src(libsDir.path('./**/*'))
-	           .pipe(gulp.dest(destDir.path()));
+	           .pipe(gulp.dest(destDir.path("resources")));
 });
 
 gulp.task('locale', () => {
@@ -68,13 +68,13 @@ gulp.task('sass', () => {
 		           console.log(details.name + ': ' + details.stats.originalSize);
 		           console.log(details.name + ': ' + details.stats.minifiedSize);
 	           }))
-	           .pipe(gulp.dest(destDir.path('css')));
+	           .pipe(gulp.dest(destDir.path('resources/css')));
 });
 
 gulp.task('imagemin', () => {
 	return gulp.src(resDir.path('images/*'))
 	           .pipe(imagemin())
-	           .pipe(gulp.dest(destDir.path('img')));
+	           .pipe(gulp.dest(destDir.path('resources/img')));
 });
 
 gulp.task('environment', () => {
@@ -84,11 +84,11 @@ gulp.task('environment', () => {
 
 gulp.task('javascript', () => {
 	return gulp.src(resDir.path('javascript/*.js'))
-	                      .pipe(gulp.dest(destDir.path('js')));
+	                      .pipe(gulp.dest(destDir.path('resources/js')));
 });
 
 gulp.task('views', () => {
-	return gulp.src(resDir.path('templates/*.htm'))
+	return gulp.src(resDir.path('views/*.ejs'))
 	           .pipe(minifyhtml({
 	                     collapseWhitespace: true,
 	                     minifyCSS: true,
@@ -97,7 +97,7 @@ gulp.task('views', () => {
 	                     removeStyleLinkTypeAttributes: true,
 	                     removeComments: true
 	             }))
-	            .pipe(gulp.dest(destDir.path('views')));
+	            .pipe(gulp.dest(destDir.path('resources/views')));
 });
 
 gulp.task('package_json', () => {
@@ -127,10 +127,10 @@ gulp.task('watch', () => {
 	watch('src/resources/javascript/*.js', batch((events, done) => {
 		gulp.start('javascript', beepOnError(done));
 	}));
-	watch('src/resources/stylesheets/*.scss', batch((events, done) => {
+	watch('src/resources/sass/*.scss', batch((events, done) => {
 		gulp.start('sass', beepOnError(done));
 	}));
-	watch('src/resources/templates/*.htm', batch((events, done) => {
+	watch('src/resources/views/*.htm', batch((events, done) => {
 		gulp.start('views', beepOnError(done));
 	}));
 	watch('src/resources/images/*', batch((events, done) => {

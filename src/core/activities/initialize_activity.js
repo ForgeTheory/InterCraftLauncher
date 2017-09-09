@@ -15,19 +15,37 @@ class InitializeActivity extends Activity
 	}
 
 	/**
-	 * What the activity will run
-	 * @return {}
+	 * Execute the activity
+	 * @return {Undefined}
 	 */
 	run() {
 		this._splash = SplashWindow.create();
-		async.waterfall([
-			(cb) => { Config.init(cb); },
-			(cb) => { Locale.init(cb); }
-		], (err) => {
-			if (err)
-				console.log("Initialization error:" + err);
-			this.finish();
+		this._splash.on("ready-to-show", () => {
+			async.waterfall([
+				(cb) => { Config.init(cb); },
+				(cb) => { Locale.init(cb); },
+				(cb) => { this.displaySplash(cb); }
+			], (err) => {
+				if (err) {
+					console.error("Initialization error:" + err);
+					return this.finish();
+				}
+				setTimeout(() => {
+					this.finish();
+				}, 3000);
+			});
 		});
+	}
+
+	/**
+	 * Display the splash screen with an initial status
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	displaySplash(callback) {
+		this._splash.setStatus(Locale.get("splash.status"));
+		this._splash.show();
+		callback();
 	}
 
 	/**
@@ -35,7 +53,8 @@ class InitializeActivity extends Activity
 	 * @return {Undefined}
 	 */
 	clean() {
-		
+		this._splash.close();
+		this._splash = null;
 	}
 }
 

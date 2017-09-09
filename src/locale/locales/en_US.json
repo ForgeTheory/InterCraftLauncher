@@ -11,5 +11,8 @@
 		},
 		"account": "Account",
 		"settings": "Settings"
+	},
+	"splash": {
+		"status": "Initializing..."
 	}
 }

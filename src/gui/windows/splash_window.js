@@ -10,11 +10,15 @@ class SplashWindow extends Window
 		super({
 			width: 341,
 			height: 421,
-			// frame: false,
+			frame: false,
 			transparent: true,
 			resizable: false,
 			movable: false,
-			minimizable: false
+			minimizable: false,
+			show: false
+		});
+		this.setView("splash", {
+			"status": "tnhoeuh..."
 		});
 		EventManager.subscribe("splash-status-msg", this.setStatus, this);
 	}
@@ -33,7 +37,7 @@ class SplashWindow extends Window
 	 * @return {Undefined}
 	 */
 	setStatus(message) {
-		console.log(message);
+		this.send("splash-status-msg", message);
 	}
 }
 

@@ -1,5 +1,12 @@
-const {BrowserWindow} = require("electron");
-const {EventManager}  = require("../../core/event_manager");
+const ejse                  = require("ejs-electron");
+const {BrowserWindow}       = require("electron");
+const {ipcSend, ipcReceive} = require("electron-simple-ipc");
+const path                  = require("path");
+const {URL}                 = require("url");
+const {EventManager}        = require("../../core/event_manager");
+const {Locale}              = require("../../locale/locale");
+
+const TEMPLATES_PATH = "../../resources/views";
 
 class Window extends BrowserWindow
 {
@@ -74,6 +81,29 @@ class Window extends BrowserWindow
 	 */
 	on(event, callback) {
 		super.on(event, (...args) => { callback.apply(this, args); });
+	}
+
+	/**
+	 * Send a message to the view
+	 * @return {Undefined}
+	 */
+	send(key, message) {
+		ipcSend(key, message);
+	}
+
+	/**
+	 * Set the view of the window
+	 * @param  {String}      view
+	 * @param  {Json Object} data
+	 * @param  {Json Object} options
+	 * @return {Undefined}
+	 */
+	setView(view, data = {}, options = {}) {
+		var urlObj = new URL("file://" + path.join(__dirname, `${TEMPLATES_PATH}/${view}.ejs`));
+		urlObj.slashes = true;
+		urlObj.searchParams.append("locale", JSON.stringify(Locale.get()));
+		ejse.data(data).options(data);
+		this.loadURL(urlObj.href);
 	}
 
 	// Overridable Events ------------------------------------------------------
@@ -151,7 +181,7 @@ class Window extends BrowserWindow
 	 * @param  {Event} event
 	 * @return {Undefined}
 	 */
-	onPageTitleUpdate(event, title) { this._window.setTitle(title); }
+	onPageTitleUpdate(event, title) { this.setTitle(title); }
 
 	/**
 	 * Executed when the window is ready to be displayed
