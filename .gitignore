@@ -12,6 +12,9 @@ locale/*.json
 app/
 dist/
 
+# Generated Data
+data/
+
 # Sass
 .sass-cache/
 
