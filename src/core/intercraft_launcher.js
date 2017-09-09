@@ -1,12 +1,12 @@
-const {app}            = require("electron");
-const async            = require("async");
-const process          = require("process");
-const {Config}         = require("./config");
-const {EventManager}   = require("./event_manager");
-const {InitializeTask} = require("./tasks/initialize_task");
-const {Locale}         = require("../locale/locale");
-const {TaskManager}    = require("./task_manager");
-const {WindowManager}  = require("./window_manager");
+const {app}             = require("electron");
+const async             = require("async");
+const process           = require("process");
+const {Config}          = require("./config");
+const {EventManager}    = require("./event_manager");
+const {InitializeActivity}  = require("./activities/initialize_activity");
+const {Locale}          = require("../locale/locale");
+const {ActivityManager} = require("./activity_manager");
+const {WindowManager}   = require("./window_manager");
 
 // Store the instance globally
 let instance = null;
@@ -28,7 +28,7 @@ class InterCraftLauncher
 		if (instance) { return instance; }
 
 		this._argv = argv;
-		this._taskManager   = new TaskManager();
+		this._activityManager   = new ActivityManager();
 		this._windowManager = new WindowManager();
 
 		return instance = this;
@@ -40,29 +40,32 @@ class InterCraftLauncher
 	 */
 	initEvents() {
 		EventManager.subscribe("electron-ready",  this.onReady, this);
-		EventManager.subscribe("taskmanager-finished", this.quit, this);
+		EventManager.subscribe("activitymanager-finished", this.quit, this);
 	}
 
 	/**
 	 * Clean the application
 	 * @return {Undefined}
 	 */
-	clean() {
-		this._taskManager.clean();
-		this._taskManager = null;
+	clean(callback) {
+		this._activityManager.clean();
+		this._activityManager = null;
 
 		this._windowManager.clean();
 		this._windowManager = null;
+
+		if (callback)
+			callback();
 	}
 
 	/**
-	 * Once ready, start the first task
+	 * Once ready, start the first activity
 	 * @return {Undefined}
 	 */
 	run(launchInfo) {
 		this._launchInfo = launchInfo;
-		let initTask = new InitializeTask();
-		initTask.start();
+		let initActivity = new InitializeActivity();
+		initActivity.start();
 	}
 
 	// Members -----------------------------------------------------------------
@@ -81,9 +84,13 @@ class InterCraftLauncher
 	 * @return {Undefined}
 	 */
 	quit(exitCode = 0) {
-		this.clean();
-		app.exit(exitCode);
-		console.log("Exited with code:", exitCode);
+		async.parallel([
+			(callback) => { this.clean(callback); },
+			(callback) => { Config.save(callback); }
+		], () => {
+			app.exit(exitCode);
+			console.log("Exited with code:", exitCode);
+		});
 	}
 
 	/**

@@ -8,6 +8,6 @@ gulp.task('clean', () => {
 	gulp.src(rootDir.path('app'))
 	    .pipe(clean());
 
-	gulp.src(rootDir.path('locale'))
+	gulp.src(rootDir.path('data'))
 		.pipe(clean());
 });

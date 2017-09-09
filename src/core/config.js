@@ -4,7 +4,7 @@ const jsonfile = require("jsonfile");
 const findJava = require("../utils/find_java");
 const utils    = require("../utils/utils");
 
-const CONFIG_FILE = "./config.json";
+const CONFIG_FILE = "./data/config.json";
 
 class Config
 {
@@ -23,9 +23,10 @@ class Config
 	 */
 	static generate(callback) {
 		async.parallel({
-			java: (cb) => { findJava(cb); },
+			java: (cb) => { findJava(cb); }
 		}, (err, result) => {
 			this._config = result;
+			console.log("The result is", this._config);
 			this.save(callback);
 		});
 	}
@@ -62,7 +63,7 @@ class Config
 	 * @return {Undefined}
 	 */
 	static save(callback) {
-		// return callback(true); -- Use for testing purpses
+		// return callback(); // -- Use for testing purpses
 		jsonfile.writeFile(
 			CONFIG_FILE,
 			this._config,
@@ -70,11 +71,32 @@ class Config
 				spaces: 2,
 				thows: false
 			},
-			(err) => { callback(err); }
+			(err) => { if (callback) callback(err); }
 		);
 	}
 
 	// Generation Methods ------------------------------------------------------
+
+	// Accessors ---------------------------------------------------------------
+
+	/**
+	 * Get the locale
+	 * @return {String}
+	 */
+	static locale() {
+		return this._config.locale || null;
+	}
+
+	// Mutators ----------------------------------------------------------------
+
+	/**
+	 * Set the locale
+	 * @param {String} locale
+	 * @return {Undefined}
+	 */
+	static setLocale(locale) {
+		this._config.locale = locale;
+	}
 }
 
 // Export the module

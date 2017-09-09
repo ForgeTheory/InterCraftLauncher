@@ -1,22 +1,22 @@
 const {EventManager} = require("../event_manager");
 
-class Task
+class Activity
 {
 	/**
-	 * Create a new Task instance
+	 * Create a new Activity instance
 	 */
 	constructor() { this._exitCode = 0;	}
 
 	// Overridable Methods -----------------------------------------------------
 
 	/**
-	 * What the task will run
+	 * What the activity will run
 	 * @return {}
 	 */
 	run() {}
 
 	/**
-	 * Clean up before task is destroyed
+	 * Clean up before activity is destroyed
 	 * @return {Undefined}
 	 */
 	clean() {}
@@ -24,7 +24,7 @@ class Task
 	// Members -----------------------------------------------------------------
 
 	/**
-	 * Get the exit code of the task
+	 * Get the exit code of the activity
 	 * @return {Integer}
 	 */
 	exitCode() {
@@ -42,22 +42,22 @@ class Task
 	// Methods -----------------------------------------------------------------
 
 	/**
-	 * Finish the task
+	 * Finish the activity
 	 * @return {Undefined}
 	 */
-	finish(nextTask) {
-		console.log("Finishing task");
-		EventManager.emit("task-finished", [this, nextTask]);
+	finish(nextActivity) {
+		console.log("Finishing activity");
+		EventManager.emit("activity-finished", [this, nextActivity]);
 	}
 
 	/**
-	 * Start the task
+	 * Start the activity
 	 * @return {}
 	 */
 	start() {
-		EventManager.emit("task-started", [this]);
+		EventManager.emit("activity-started", [this]);
 	}
 }
 
 // Export the module
-module.exports = {Task};
+module.exports = {Activity};
