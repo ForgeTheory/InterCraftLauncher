@@ -5,6 +5,7 @@ const {Locale}       = require("../../locale/locale");
 const {SplashWindow} = require("../../gui/windows/splash_window");
 const {EventManager} = require("../event_manager");
 
+
 class InitializeActivity extends Activity
 {
 	/**
@@ -32,11 +33,8 @@ class InitializeActivity extends Activity
 					return this.finish();
 				}
 				setTimeout(() => {
-					EventManager.emit("splash-status-msg", ["Secret message thing"]);
-					setTimeout(() => {
-						this.finish();
-					}, 2000);
-				}, 1000);
+					this.finish();
+				}, 5000);
 			});
 		});
 	}

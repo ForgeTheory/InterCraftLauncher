@@ -17,9 +17,7 @@ class SplashWindow extends Window
 			minimizable: false,
 			show: false
 		});
-		this.setView("splash", {
-			"status": "tnhoeuh..."
-		});
+		this.setView("splash");
 		EventManager.subscribe("splash-status-msg", this.setStatus, this);
 	}
 

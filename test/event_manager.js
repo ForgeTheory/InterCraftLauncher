@@ -15,7 +15,7 @@ exports["test EventManager subscribe/unsubscribe"] = function(assert) {
 	EventManager.unsubscribe("test1", test1);
 	EventManager.emit("test1", [4]);
 	assert.equal(test1Value, 6, "unsubscribe success");
-}
+};
 
 exports["test EventManager one time events"] = function(assert) {
 	var test2Value = 0;
@@ -30,4 +30,4 @@ exports["test EventManager one time events"] = function(assert) {
 	EventManager.unsubscribe("test2", test2);
 	EventManager.emit("test2", [4]);
 	assert.equal(test2Value, 1, "unsubscribe from one time listen success");
-}
+};

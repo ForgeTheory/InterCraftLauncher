@@ -27,14 +27,18 @@ gulp.task('bundle', () => {
 
 		// Core Module
 		// --
+		bundle(srcDir.path('core/activity_manager.js'),    destDir.path('core/activity_manager.js')),
 		bundle(srcDir.path('core/config.js'),              destDir.path('core/config.js')),
 		bundle(srcDir.path('core/intercraft_launcher.js'), destDir.path('core/intercraft_launcher.js')),
 		bundle(srcDir.path('core/event_manager.js'),       destDir.path('core/event_manager.js')),
-		bundle(srcDir.path('core/activity_manager.js'),    destDir.path('core/activity_manager.js')),
+		bundle(srcDir.path('core/network_manager.js'),     destDir.path('core/network_manager.js')),
 		bundle(srcDir.path('core/window_manager.js'),      destDir.path('core/window_manager.js')),
-		// -- Tasks
-		bundle(srcDir.path('core/activities/activity.js'),            destDir.path('core/activities/activity.js')),
-		bundle(srcDir.path('core/activities/initialize_activity.js'), destDir.path('core/activities/initialize_activity.js')),
+		// -- Activities
+		bundle(srcDir.path('core/activities/activity.js'),                destDir.path('core/activities/activity.js')),
+		bundle(srcDir.path('core/activities/authentication_activity.js'), destDir.path('core/activities/authentication_activity.js')),
+		bundle(srcDir.path('core/activities/configure_activity.js'),      destDir.path('core/activities/configure_activity.js')),
+		bundle(srcDir.path('core/activities/initialize_activity.js'),     destDir.path('core/activities/initialize_activity.js')),
+		bundle(srcDir.path('core/activities/launcher_activity.js'),       destDir.path('core/activities/launcher_activity.js')),
 
 		// Locale Module
 		bundle(srcDir.path('locale/locale.js'), destDir.path('locale/locale.js')),

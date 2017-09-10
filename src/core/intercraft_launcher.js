@@ -1,12 +1,12 @@
-const {app}             = require("electron");
-const async             = require("async");
-const process           = require("process");
-const {Config}          = require("./config");
-const {EventManager}    = require("./event_manager");
+const {app}                 = require("electron");
+const async                 = require("async");
+const process               = require("process");
+const {Config}              = require("./config");
+const {EventManager}        = require("./event_manager");
 const {InitializeActivity}  = require("./activities/initialize_activity");
-const {Locale}          = require("../locale/locale");
-const {ActivityManager} = require("./activity_manager");
-const {WindowManager}   = require("./window_manager");
+const {Locale}              = require("../locale/locale");
+const {ActivityManager}     = require("./activity_manager");
+const {WindowManager}       = require("./window_manager");
 
 // Store the instance globally
 let instance = null;
@@ -107,8 +107,8 @@ class InterCraftLauncher
 
 	/**
 	 * Execute when the Electron app is ready
-	 * @param  {} launchInfo
-	 * @return {}
+	 * @param  {Json Object} launchInfo
+	 * @return {Undefined}
 	 */
 	onReady(launchInfo) {
 		this.run(launchInfo);
