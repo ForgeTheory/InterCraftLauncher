@@ -1,9 +1,10 @@
-const async          = require("async");
-const {Activity}     = require("./activity");
-const {Config}       = require("../config");
-const {Locale}       = require("../../locale/locale");
-const {SplashWindow} = require("../../gui/windows/splash_window");
-const {EventManager} = require("../event_manager");
+const async                    = require("async");
+const {Activity}               = require("./activity");
+const {Config}                 = require("../config");
+const {AuthenticationActivity} = require("./authentication_activity");
+const {LauncherActivity}       = require("./launcher_activity");
+const {Locale}                 = require("../../locale/locale");
+const {SplashWindow}           = require("../../gui/windows/splash_window");
 
 
 class InitializeActivity extends Activity
@@ -14,6 +15,7 @@ class InitializeActivity extends Activity
 	constructor() {
 		super();
 		this._splash = null;
+		this._authenticated = false;
 	}
 
 	/**
@@ -26,17 +28,20 @@ class InitializeActivity extends Activity
 			async.waterfall([
 				(cb) => { Config.init(cb); },
 				(cb) => { Locale.init(cb); },
-				(cb) => { this.displaySplash(cb); }
-			], (err) => {
-				if (err) {
-					console.error("Initialization error:" + err);
-					return this.finish();
-				}
-				setTimeout(() => {
-					this.finish();
-				}, 5000);
-			});
+				(cb) => { this.displaySplash(cb); },
+				(cb) => { this.authenticate(cb); }
+			],
+			(err) => { this.onInitFinished(err); });
 		});
+	}
+
+	/**
+	 * Authenticate the user
+	 * @return {Undefined}
+	 */
+	authenticate(callback) {
+		this._authenticated = false;
+		callback();
 	}
 
 	/**
@@ -48,6 +53,23 @@ class InitializeActivity extends Activity
 		this._splash.setStatus(Locale.get("splash.status"));
 		this._splash.show();
 		callback();
+	}
+
+	/**
+	 * Executed after all configurations are finished
+	 * @return {Undefined}
+	 */
+	onInitFinished(err) {
+		if (err) {
+			console.error("Initialization error:" + err);
+			this.setExitCode(1);
+			this.finish();
+		} else if (this._authenticated) {
+			this.finish(LauncherActivity);
+		} else {
+
+			this.finish(new AuthenticationActivity());
+		}
 	}
 
 	/**

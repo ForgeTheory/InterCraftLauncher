@@ -65,20 +65,6 @@ class NetworkManager
 		this.request(url, "DELETE", data, options, callback);
 	}
 
-	// Other Network Utilities -------------------------------------------------
-
-	/**
-	 * REST Api GET request
-	 * @param  {String}           url
-	 * @param  {Json Object|Null} data
-	 * @param  {Json Object|Null} options
-	 * @param  {Function}         callback
-	 * @return {Undefined}
-	 */
-	static download(url, options, callback) {
-		downloadFile(url, options, callback);
-	}
-
 	// Raw Methods -------------------------------------------------------------
 
 	/**
@@ -97,6 +83,20 @@ class NetworkManager
 		got(url, options)
 		    .then(response => { callback(null, response); })
 		    .catch(err     => { callback(err,  response); });
+	}
+
+	// Other Network Utilities -------------------------------------------------
+
+	/**
+	 * REST Api GET request
+	 * @param  {String}           url
+	 * @param  {Json Object|Null} data
+	 * @param  {Json Object|Null} options
+	 * @param  {Function}         callback
+	 * @return {Undefined}
+	 */
+	static download(url, options, callback) {
+		downloadFile(url, options, callback);
 	}
 }
 

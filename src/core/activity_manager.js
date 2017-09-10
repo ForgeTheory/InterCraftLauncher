@@ -1,4 +1,4 @@
-const {EventManager} = require("./event_manager");
+const {EventManager}       = require("./event_manager");
 const {InitializeActivity} = require("./activities/initialize_activity");
 
 class ActivityManager
@@ -34,6 +34,7 @@ class ActivityManager
 	 * @return {Undefined}
 	 */
 	onActivityFinished(activity, nextActivity) {
+		console.log("Cleaning here...", activity, nextActivity);
 		activity.clean();
 		if (nextActivity)
 			nextActivity.start();

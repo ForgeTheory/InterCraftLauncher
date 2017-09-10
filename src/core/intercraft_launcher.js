@@ -39,8 +39,9 @@ class InterCraftLauncher
 	 * @return {Undefined}
 	 */
 	initEvents() {
-		EventManager.subscribe("electron-ready",  this.onReady, this);
-		EventManager.subscribe("activitymanager-finished", this.quit, this);
+		EventManager.subscribe("electron-ready",             this.onReady,         this);
+		EventManager.subscribe("activitymanager-finished",   this.quit,            this);
+		EventManager.subscribe("electron-window-all-closed", this.onWindowsClosed, this);
 	}
 
 	/**
@@ -112,6 +113,15 @@ class InterCraftLauncher
 	 */
 	onReady(launchInfo) {
 		this.run(launchInfo);
+	}
+
+	/**
+	 * Executed when all Electron windows are closed
+	 * @param  {Event} event
+	 * @return {Undefined}
+	 */
+	onWindowsClosed(event) {
+		event.preventDefault();
 	}
 }
 

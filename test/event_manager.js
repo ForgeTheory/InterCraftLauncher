@@ -31,3 +31,16 @@ exports["test EventManager one time events"] = function(assert) {
 	EventManager.emit("test2", [4]);
 	assert.equal(test2Value, 1, "unsubscribe from one time listen success");
 };
+
+exports["test EventManager more arguments"] = function(assert) {
+	var test3Value = 0;
+	var test3 = function(arg1, arg2, arg3) {
+		assert.equal(arg1, 3, "first argument success");
+		assert.equal(arg2, 6, "second argument success");
+		assert.equal(arg3, 8, "third argument success");
+	};
+
+	EventManager.subscribe("test3", test3, this);
+	EventManager.emit("test3", [3, 6, 8]);
+	EventManager.unsubscribe("test3", test3);
+};

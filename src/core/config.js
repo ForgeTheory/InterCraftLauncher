@@ -26,7 +26,6 @@ class Config
 			java: (cb) => { findJava(cb); }
 		}, (err, result) => {
 			this._config = result;
-			console.log("The result is", this._config);
 			this.save(callback);
 		});
 	}

@@ -46,7 +46,6 @@ class Activity
 	 * @return {Undefined}
 	 */
 	finish(nextActivity) {
-		console.log("Finishing activity");
 		EventManager.emit("activity-finished", [this, nextActivity]);
 	}
 

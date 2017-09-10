@@ -36,7 +36,6 @@ gulp.task('bundle', () => {
 		// -- Activities
 		bundle(srcDir.path('core/activities/activity.js'),                destDir.path('core/activities/activity.js')),
 		bundle(srcDir.path('core/activities/authentication_activity.js'), destDir.path('core/activities/authentication_activity.js')),
-		bundle(srcDir.path('core/activities/configure_activity.js'),      destDir.path('core/activities/configure_activity.js')),
 		bundle(srcDir.path('core/activities/initialize_activity.js'),     destDir.path('core/activities/initialize_activity.js')),
 		bundle(srcDir.path('core/activities/launcher_activity.js'),       destDir.path('core/activities/launcher_activity.js')),
 
