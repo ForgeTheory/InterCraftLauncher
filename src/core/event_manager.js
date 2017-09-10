@@ -74,9 +74,10 @@ class EventManager
 	addListener(event, callback, context, oneTime = false) {
 		if (this._listeners[event] == undefined) {
 			if (event.startsWith("electron-")) {
+				var self = this;
 				app.on(
 					event.slice('electron-'.length),
-					() => { this.broadcast(event, arguments) }
+					function() { self.broadcast(event, arguments); }
 				);
 			}
 			this._listeners[event] = [];
