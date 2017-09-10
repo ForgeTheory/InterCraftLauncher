@@ -1,6 +1,6 @@
 const {app} = require("electron");
 
-let instance;
+let instance = null;
 
 class EventManager
 {
@@ -68,7 +68,7 @@ class EventManager
 	 * Add an event listener
 	 * @param  {String}   event
 	 * @param  {Function} callback
-	 * @param  {Context}   context
+	 * @param  {Context}  context
 	 * @return {Undefined}
 	 */
 	addListener(event, callback, context, oneTime = false) {
@@ -88,7 +88,7 @@ class EventManager
 	 * Remove an event listener
 	 * @param  {String}   event
 	 * @param  {Function} callback
-	 * @param  {Context}   context
+	 * @param  {Context}  context
 	 * @return {Undefined}
 	 */
 	removeListener(event, callback) {

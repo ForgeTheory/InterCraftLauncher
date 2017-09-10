@@ -3,19 +3,19 @@ const locale   = require("locale");
 const osLocale = require("os-locale");
 const {Config} = require("../core/config");
 
-let instance = null;
-
 const LOCALE_PATH = "data/locales";
 const SUPPORTED_LOCALES = new locale.Locales([
 	"en_US"
 ]);
+
+let instance = null;
 
 class Locale
 {
 	/**
 	 * Get the 
 	 * @param  {String|Undefined} key
-	 * @return {String|Undefined}
+	 * @return {Json Object|String|Undefined}
 	 */
 	static get(key) {
 		if (!instance)
@@ -73,6 +73,7 @@ class Locale
 	 * Set the locale
 	 * @param {String|Null} localeName
 	 * @param {Function}    callback
+	 * @return {Undefined}
 	 */
 	setLocale(localeName, callback) {
 		var l = new locale.Locales(localeName);

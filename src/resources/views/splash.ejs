@@ -50,7 +50,7 @@
 	<script>if (window.module) module = window.module;</script>
 	<script>
 		var setStatus = function(message) { $("#status-bar").html(message); };
-		ipc.receive("splash-status-msg", setStatus);
+		ipc.subscribe("splash-status-msg", setStatus);
 	</script>
 </body>
 </html>
