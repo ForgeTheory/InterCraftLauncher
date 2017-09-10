@@ -1,24 +1,15 @@
-const ejse                  = require("ejs-electron");
-const {BrowserWindow}       = require("electron");
-const {ipcSend, ipcReceive} = require("electron-simple-ipc");
-const path                  = require("path");
-const {URL}                 = require("url");
-const {EventManager}        = require("../../core/event_manager");
-const {Locale}              = require("../../locale/locale");
+const ejse            = require("ejs-electron");
+const {BrowserWindow} = require("electron");
+const ipc             = require("electron-simple-ipc");
+const path            = require("path");
+const {URL}           = require("url");
+const {EventManager}  = require("../../core/event_manager");
+const {Locale}        = require("../../locale/locale");
 
 const TEMPLATES_PATH = "../../resources/views";
 
 class Window extends BrowserWindow
 {
-	/**
-	 * Create a new instance of the window
-	 * @param  {Json} options
-	 * @return {Undefined}
-	 */
-	static create(options) {
-		// Written in this form to fix syntax highlighting
-		return new (this)(options);
-	}
 	/**
 	 * Create a window
 	 * @param {Json} options
@@ -62,6 +53,36 @@ class Window extends BrowserWindow
 	 */
 	clean() { }
 
+	// IPC Methods -------------------------------------------------------------
+
+	/**
+	 * Start listening for an IPC event
+	 * @param  {String}   key
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	subscribe(key, callback) {
+		ipc.ipcReceive(key, (...args) => { callback(...args); });
+	}
+
+	/**
+	 * Listen once for an IPC event
+	 * @param  {String}   key
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	receive(key, callback) {
+		ipc.ipcReceiveOnce(key, (...args) => { callback(...args); });
+	}
+
+	/**
+	 * Send a message to the view
+	 * @return {Undefined}
+	 */
+	send(key, message) {
+		ipc.ipcSend(key, message);
+	}
+
 	// Methods -----------------------------------------------------------------
 
 	/**
@@ -84,14 +105,6 @@ class Window extends BrowserWindow
 	}
 
 	/**
-	 * Send a message to the view
-	 * @return {Undefined}
-	 */
-	send(key, message) {
-		ipcSend(key, message);
-	}
-
-	/**
 	 * Set the view of the window
 	 * @param  {String}      view
 	 * @param  {Json Object} data
@@ -102,11 +115,14 @@ class Window extends BrowserWindow
 		var urlObj = new URL("file://" + path.join(__dirname, `${TEMPLATES_PATH}/${view}.ejs`));
 		urlObj.slashes = true;
 		urlObj.searchParams.append("locale", JSON.stringify(Locale.get()));
+
+		data.locale = Locale.get()
 		ejse.data(data).options(data);
+		
 		this.loadURL(urlObj.href);
 	}
 
-	// Overridable Events ------------------------------------------------------
+	// Overridable Event Methods -----------------------------------------------
 
 	/**
 	 * Executed when the window loses focus

@@ -46,6 +46,7 @@ gulp.task('bundle', () => {
 		// -- Windows
 		bundle(srcDir.path('gui/windows/window.js'),        destDir.path('gui/windows/window.js')),
 		bundle(srcDir.path('gui/windows/splash_window.js'), destDir.path('gui/windows/splash_window.js')),
+		bundle(srcDir.path('gui/windows/login_window.js'),  destDir.path('gui/windows/login_window.js')),
 
 		// Utils Module
 		bundle(srcDir.path('utils/find_java.js'), destDir.path('utils/find_java.js')),
@@ -65,7 +66,7 @@ gulp.task('locale', () => {
 });
 
 gulp.task('sass', () => {
-	return gulp.src(resDir.path('stylesheets/app.scss'))
+	return gulp.src(resDir.path('sass/app.scss'))
 	           .pipe(sass())
 	           .pipe(minifycss({debug: true}, function(details) {
 		           console.log(details.name + ': ' + details.stats.originalSize);

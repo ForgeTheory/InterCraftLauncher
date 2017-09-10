@@ -8,14 +8,14 @@ class SplashWindow extends Window
 	 */
 	constructor() {
 		super({
-			width: 341,
-			height: 421,
-			frame: false,
+			width:       341,
+			height:      421,
+			frame:       false,
 			transparent: true,
-			resizable: false,
-			movable: false,
+			resizable:   false,
+			movable:     false,
 			minimizable: false,
-			show: false
+			show:        false
 		});
 		this.setView("splash");
 		EventManager.subscribe("splash-status-msg", this.setStatus, this);

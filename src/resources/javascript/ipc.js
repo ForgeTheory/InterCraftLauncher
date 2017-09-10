@@ -25,3 +25,5 @@ const ipc = {
 	 */
 	subscribe: function (key, callback) { ipcReceive(key, callback); }
 }
+
+module.exports = ipc;

@@ -23,7 +23,7 @@ class InitializeActivity extends Activity
 	 * @return {Undefined}
 	 */
 	run() {
-		this._splash = SplashWindow.create();
+		this._splash = new SplashWindow();
 		this._splash.on("ready-to-show", () => {
 			async.waterfall([
 				(cb) => { Config.init(cb); },
@@ -67,7 +67,6 @@ class InitializeActivity extends Activity
 		} else if (this._authenticated) {
 			this.finish(LauncherActivity);
 		} else {
-
 			this.finish(new AuthenticationActivity());
 		}
 	}

@@ -34,7 +34,6 @@ class ActivityManager
 	 * @return {Undefined}
 	 */
 	onActivityFinished(activity, nextActivity) {
-		console.log("Cleaning here...", activity, nextActivity);
 		activity.clean();
 		if (nextActivity)
 			nextActivity.start();

@@ -1,4 +1,5 @@
-const {Activity} = require("./activity");
+const {Activity}    = require("./activity");
+const {LoginWindow} = require("../../gui/windows/login_window");
 
 
 class AuthenticationActivity extends Activity
@@ -15,7 +16,26 @@ class AuthenticationActivity extends Activity
 	 * @return {Undefined}
 	 */
 	run() {
-		
+		console.log("Running auth activity");
+		this.init();
+	}
+
+	/**
+	 * Initialize everything
+	 * @return {Undefined}
+	 */
+	init() {
+		let win = this._loginWindow = new LoginWindow();
+		win.on("ready-to-show", () => { this._loginWindow.show(); });
+		win.on("close",         () => { this.onWindowClosed(); });
+	}
+
+	/**
+	 * Executed when the login window is closed
+	 * @return {Undefined}
+	 */
+	onWindowClosed() {
+		this.finish();
 	}
 
 	/**
@@ -23,7 +43,8 @@ class AuthenticationActivity extends Activity
 	 * @return {Undefined}
 	 */
 	clean() {
-
+		// this._loginWindow.exit();
+		this._loginWindow = null;
 	}
 }
 
