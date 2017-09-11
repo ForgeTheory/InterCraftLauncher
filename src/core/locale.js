@@ -1,7 +1,7 @@
 const jsonfile = require("jsonfile");
 const locale   = require("locale");
 const osLocale = require("os-locale");
-const {Config} = require("../core/config");
+const {Config} = require("./config");
 
 const LOCALE_PATH = "data/locales";
 const SUPPORTED_LOCALES = new locale.Locales([

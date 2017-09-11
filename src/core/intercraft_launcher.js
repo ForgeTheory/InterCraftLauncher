@@ -4,7 +4,7 @@ const process               = require("process");
 const {Config}              = require("./config");
 const {EventManager}        = require("./event_manager");
 const {InitializeActivity}  = require("./activities/initialize_activity");
-const {Locale}              = require("../locale/locale");
+const {Locale}              = require("./locale");
 const {ActivityManager}     = require("./activity_manager");
 const {WindowManager}       = require("./window_manager");
 

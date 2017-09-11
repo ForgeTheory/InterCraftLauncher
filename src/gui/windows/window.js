@@ -4,7 +4,7 @@ const ipc             = require("electron-simple-ipc");
 const path            = require("path");
 const {URL}           = require("url");
 const {EventManager}  = require("../../core/event_manager");
-const {Locale}        = require("../../locale/locale");
+const {Locale}        = require("../../core/locale");
 
 const TEMPLATES_PATH = "../../resources/views";
 

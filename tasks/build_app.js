@@ -31,6 +31,7 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('core/config.js'),              destDir.path('core/config.js')),
 		bundle(srcDir.path('core/intercraft_launcher.js'), destDir.path('core/intercraft_launcher.js')),
 		bundle(srcDir.path('core/event_manager.js'),       destDir.path('core/event_manager.js')),
+		bundle(srcDir.path('core/locale.js'),              destDir.path('core/locale.js')),
 		bundle(srcDir.path('core/network_manager.js'),     destDir.path('core/network_manager.js')),
 		bundle(srcDir.path('core/window_manager.js'),      destDir.path('core/window_manager.js')),
 		// -- Activities
@@ -38,9 +39,6 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('core/activities/authentication_activity.js'), destDir.path('core/activities/authentication_activity.js')),
 		bundle(srcDir.path('core/activities/initialize_activity.js'),     destDir.path('core/activities/initialize_activity.js')),
 		bundle(srcDir.path('core/activities/launcher_activity.js'),       destDir.path('core/activities/launcher_activity.js')),
-
-		// Locale Module
-		bundle(srcDir.path('locale/locale.js'), destDir.path('locale/locale.js')),
 
 		// Gui Module
 		// -- Windows
@@ -60,7 +58,7 @@ gulp.task('libs', () => {
 });
 
 gulp.task('locale', () => {
-	return gulp.src(srcDir.path('locale/locales/*'))
+	return gulp.src(srcDir.path('resources/locales/*'))
 	           .pipe(jsonmin())
 	           .pipe(gulp.dest(projectDir.path('data/locales')));
 });

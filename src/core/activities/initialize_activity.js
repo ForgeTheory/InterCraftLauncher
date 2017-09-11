@@ -3,7 +3,7 @@ const {Activity}               = require("./activity");
 const {Config}                 = require("../config");
 const {AuthenticationActivity} = require("./authentication_activity");
 const {LauncherActivity}       = require("./launcher_activity");
-const {Locale}                 = require("../../locale/locale");
+const {Locale}                 = require("../locale");
 const {SplashWindow}           = require("../../gui/windows/splash_window");
 
 
