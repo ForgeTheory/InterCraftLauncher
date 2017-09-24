@@ -1,4 +1,5 @@
 # Configs
+data/
 cache.json
 config.json
 sessions.json
