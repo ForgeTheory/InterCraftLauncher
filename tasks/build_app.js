@@ -23,64 +23,60 @@ const destDir    = jetpack.cwd('./app');
 
 gulp.task('bundle', () => {
 	return Promise.all([
-		bundle(srcDir.path('config.js'),          destDir.path('config.js')),
-		bundle(srcDir.path('intercraft.js'),      destDir.path('intercraft.js')),
-		bundle(srcDir.path('intercraft_auth.js'), destDir.path('intercraft_auth.js')),
-		bundle(srcDir.path('locale.js'),          destDir.path('locale.js')),
-		bundle(srcDir.path('main.js'),            destDir.path('main.js')),
+		bundle(srcDir.path('main.js'), destDir.path('main.js')),
 
-		bundle(srcDir.path('minecraft/minecraft.js'),          destDir.path('minecraft/minecraft.js')),
-		bundle(srcDir.path('minecraft/account.js'),            destDir.path('minecraft/account.js')),
-		bundle(srcDir.path('minecraft/asset.js'),              destDir.path('minecraft/asset.js')),
-		bundle(srcDir.path('minecraft/asset_index.js'),        destDir.path('minecraft/asset_index.js')),
-		bundle(srcDir.path('minecraft/authentication.js'),     destDir.path('minecraft/authentication.js')),
-		bundle(srcDir.path('minecraft/launch_task.js'),        destDir.path('minecraft/launch_task.js')),
-		bundle(srcDir.path('minecraft/launcher.js'),           destDir.path('minecraft/launcher.js')),
-		bundle(srcDir.path('minecraft/library.js'),            destDir.path('minecraft/library.js')),
-		bundle(srcDir.path('minecraft/minecraft_instance.js'), destDir.path('minecraft/minecraft_instance.js')),
-		bundle(srcDir.path('minecraft/profile.js'),            destDir.path('minecraft/profile.js')),
-		bundle(srcDir.path('minecraft/profile_manager.js'),    destDir.path('minecraft/profile_manager.js')),
-		bundle(srcDir.path('minecraft/version.js'),            destDir.path('minecraft/version.js')),
-		bundle(srcDir.path('minecraft/version_manager.js'),    destDir.path('minecraft/version_manager.js')),
+		// Core Module
+		// --
+		bundle(srcDir.path('core/activity_manager.js'),    destDir.path('core/activity_manager.js')),
+		bundle(srcDir.path('core/config.js'),              destDir.path('core/config.js')),
+		bundle(srcDir.path('core/intercraft_launcher.js'), destDir.path('core/intercraft_launcher.js')),
+		bundle(srcDir.path('core/event_manager.js'),       destDir.path('core/event_manager.js')),
+		bundle(srcDir.path('core/locale.js'),              destDir.path('core/locale.js')),
+		bundle(srcDir.path('core/network_manager.js'),     destDir.path('core/network_manager.js')),
+		bundle(srcDir.path('core/window_manager.js'),      destDir.path('core/window_manager.js')),
+		// -- Activities
+		bundle(srcDir.path('core/activities/activity.js'),                destDir.path('core/activities/activity.js')),
+		bundle(srcDir.path('core/activities/authentication_activity.js'), destDir.path('core/activities/authentication_activity.js')),
+		bundle(srcDir.path('core/activities/initialize_activity.js'),     destDir.path('core/activities/initialize_activity.js')),
+		bundle(srcDir.path('core/activities/launcher_activity.js'),       destDir.path('core/activities/launcher_activity.js')),
 
-		bundle(srcDir.path('utils/download_manager.js'), destDir.path('utils/download_manager.js')),
-		bundle(srcDir.path('utils/find_java.js'),        destDir.path('utils/find_java.js')),
-		bundle(srcDir.path('utils/utils.js'),            destDir.path('utils/utils.js')),
+		// Gui Module
+		// -- Windows
+		bundle(srcDir.path('gui/windows/window.js'),        destDir.path('gui/windows/window.js')),
+		bundle(srcDir.path('gui/windows/splash_window.js'), destDir.path('gui/windows/splash_window.js')),
+		bundle(srcDir.path('gui/windows/login_window.js'),  destDir.path('gui/windows/login_window.js')),
 
-		bundle(srcDir.path('window/control_panel.js'),  destDir.path('window/control_panel.js')),
-		bundle(srcDir.path('window/login.js'),          destDir.path('window/login.js')),
-		bundle(srcDir.path('window/splash.js'),         destDir.path('window/splash.js')),
-		bundle(srcDir.path('window/view_loader.js'),    destDir.path('window/view_loader.js')),
-		bundle(srcDir.path('window/window.js'),         destDir.path('window/window.js')),
-		bundle(srcDir.path('window/window_manager.js'), destDir.path('window/window_manager.js'))
+		// Utils Module
+		bundle(srcDir.path('utils/find_java.js'), destDir.path('utils/find_java.js')),
+		bundle(srcDir.path('utils/utils.js'),     destDir.path('utils/utils.js'))
 	]);
 });
 
 gulp.task('libs', () => {
 	return gulp.src(libsDir.path('./**/*'))
-	           .pipe(gulp.dest(destDir.path()));
+	           .pipe(gulp.dest(destDir.path("resources")));
 });
 
 gulp.task('locale', () => {
-	return gulp.src(resDir.path('locale/*'))
+	return gulp.src(srcDir.path('resources/locales/*'))
 	           .pipe(jsonmin())
-	           .pipe(gulp.dest(projectDir.path('locale')));
+	           .pipe(gulp.dest(projectDir.path('data/locales')));
 });
 
 gulp.task('sass', () => {
-	return gulp.src(resDir.path('stylesheets/app.scss'))
+	return gulp.src(resDir.path('sass/app.scss'))
 	           .pipe(sass())
 	           .pipe(minifycss({debug: true}, function(details) {
 		           console.log(details.name + ': ' + details.stats.originalSize);
 		           console.log(details.name + ': ' + details.stats.minifiedSize);
 	           }))
-	           .pipe(gulp.dest(destDir.path('css')));
+	           .pipe(gulp.dest(destDir.path('resources/css')));
 });
 
 gulp.task('imagemin', () => {
 	return gulp.src(resDir.path('images/*'))
 	           .pipe(imagemin())
-	           .pipe(gulp.dest(destDir.path('img')));
+	           .pipe(gulp.dest(destDir.path('resources/img')));
 });
 
 gulp.task('environment', () => {
@@ -90,11 +86,11 @@ gulp.task('environment', () => {
 
 gulp.task('javascript', () => {
 	return gulp.src(resDir.path('javascript/*.js'))
-	                      .pipe(gulp.dest(destDir.path('js')));
+	                      .pipe(gulp.dest(destDir.path('resources/js')));
 });
 
 gulp.task('views', () => {
-	return gulp.src(resDir.path('templates/*.htm'))
+	return gulp.src(resDir.path('views/*.ejs'))
 	           .pipe(minifyhtml({
 	                     collapseWhitespace: true,
 	                     minifyCSS: true,
@@ -103,7 +99,7 @@ gulp.task('views', () => {
 	                     removeStyleLinkTypeAttributes: true,
 	                     removeComments: true
 	             }))
-	            .pipe(gulp.dest(destDir.path('views')));
+	            .pipe(gulp.dest(destDir.path('resources/views')));
 });
 
 gulp.task('package_json', () => {
@@ -127,16 +123,16 @@ gulp.task('watch', () => {
 	watch('src/**/*.js', batch((events, done) => {
 		gulp.start('bundle', beepOnError(done));
 	}));
-	watch('src/resource/locale/*', batch((events, done) => {
+	watch('src/locale/locales/*', batch((events, done) => {
 		gulp.start('bundle', beepOnError(done));
 	}));
 	watch('src/resources/javascript/*.js', batch((events, done) => {
 		gulp.start('javascript', beepOnError(done));
 	}));
-	watch('src/resources/stylesheets/*.scss', batch((events, done) => {
+	watch('src/resources/sass/*.scss', batch((events, done) => {
 		gulp.start('sass', beepOnError(done));
 	}));
-	watch('src/resources/templates/*.htm', batch((events, done) => {
+	watch('src/resources/views/*.htm', batch((events, done) => {
 		gulp.start('views', beepOnError(done));
 	}));
 	watch('src/resources/images/*', batch((events, done) => {

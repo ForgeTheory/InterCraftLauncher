@@ -1,83 +1,52 @@
+const jetpack  = require("fs-jetpack");
+const Registry = require("winreg");
 
 /**
- * Get the operating system
- * @return {String}
- */
-exports.os = function() {
-	if (process.platform == 'win32')
-		return 'windows';
-	else if (process.platform == 'darwin')
-		return 'osx';
-	return 'linux';
-};
-
-/**
- * Insert an element into an array
- * @param  {Array}    array
- * @param  {Integer}  pos
- * @param  {Anything} value
+ * Attempt to find Minecraft's installation directory (Windows only)
  * @return {Undefined}
  */
-exports.arrayInsert = function(array, pos, value) {
-	array.splice(pos, 0, value);
-};
+function findMinecraftInstallation(callback)
+{
+	let regKey = new Registry({
+		hive: Registry.HKLM,
+		key: "\\SOFTWARE\\WOW6432Node\\Mojang\\Minecraft"
+	});
+	regKey.values((err, items) => {
+		if (err)
+			return callback(null);
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].type == "REG_SZ" && jetpack.exists(items[i].value) == "dir") {
+				if (jetpack.exists(jetpack.cwd(items[i].value).path("MinecraftLauncher.exe")))
+					return callback(jetpack.path(items[i].value));
+			}
+		}
+		callback(null);
+	});
+}
 
 /**
- * Remove an element from an array at the given index
- * @param  {Array}   array
- * @param  {Integer} index
- * @return {Array}
+ * Locate Minecraft's javaw.exe (Windows only)
+ * @param  {Function} callback
+ * @return {Undefined}
  */
-exports.arrayRemove = function(array, index) {
-	return array.slice(0, index).concat(array.slice(index+1));
-};
+function findMinecraftJava(callback, path)
+{
+	var find = (path) => {
+		var runtimePath = jetpack.cwd(path).path("runtime", "jre-x64")
+		var dirs = jetpack.list(runtimePath);
+		if (dirs && dirs.length > 0) {
+			var javaPath = jetpack.cwd(runtimePath).path(dirs[0], "bin/javaw.exe");
+			return callback(jetpack.exists(javaPath) == "file" ? javaPath : null);
+		}
+		callback(null);
+	}
+	if (path)
+		find(path);
+	else
+		findMinecraftInstallation(find)
+}
 
-/**
- * Insert a string into another string at the given position
- * @param  {String}  string
- * @param  {String}  toInsert
- * @param  {Integer} pos
- * @return {String}
- */
-exports.strInsert = function(string, toInsert, pos) {
-	return string.slice(0, pos) + toInsert + string.slice(pos, string.length);
-};
-
-/**
- * Generate a random hexadecimal string
- * @param  {Integer} length
- * @return {String}
- */
-exports.randomHexString = function(length) {
-	var chars = '0123456789abcdef';
-	var result = '';
-	for (var i = 0; i < length; i++)
-		result += chars[Math.floor(Math.random()*16)];
-	return result;
-};
-
-/**
- * Generate a partitioned hexadecimal string, inserting separators at the marked positions
- * Example: '1234-45-67-890', partitions=[4, 2, 2, 3]
- * @param  {Array} partitions
- * @return {String}
- */
-exports.randomHexStringPartitioned = function(partitions) {
-	var result = '';
-	for (var i = 0; i < partitions.length; i++)
-		result += exports.randomHexString(partitions[i]) + '-';
-	return result.slice(0, result.length - 1);
-};
-
-/**
- * Portition
- * @param  {[type]} token [description]
- * @return {[type]}       [description]
- */
-exports.partitionToken = function(token) {
-	return token.slice(0, 8) + '-' +
-	       token.slice(8, 12) + '-' +
-	       token.slice(12, 16) + '-' +
-	       token.slice(16, 20) + '-' +
-	       token.slice(20);
+module.exports = {
+	findMinecraftJava: findMinecraftJava,
+	findMinecraftInstallation, findMinecraftInstallation
 };

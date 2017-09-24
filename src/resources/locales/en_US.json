@@ -1,0 +1,28 @@
+{
+	"general": {
+		"email":    "Email",
+		"password": "Password"
+	},
+	"intercraft_login": {
+		"title":           "InterCraft Login",
+		"remember":        "Stay Signed In",
+		"forgot_password": "Forgot Password",
+		"signin":          "Sign In"
+	},
+	"sidebar": {
+		"dashboard":  "Dashboard",
+		"news":       "News",
+		"intercraft": {
+			"applications": "Applications",
+			"blog":         "Blog",
+			"gallery":      "Gallery",
+			"members":      "Members",
+			"profile":      "Profile"
+		},
+		"account":  "Account",
+		"settings": "Settings"
+	},
+	"splash": {
+		"status": "Initializing..."
+	}
+}

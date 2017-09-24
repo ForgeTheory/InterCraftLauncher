@@ -26,14 +26,15 @@ var readlink = fs.readlinkSync;
 var resolve = path.resolve;
 var lstat = fs.lstatSync;
 var WinReg = require("winreg");
+var utils = require("./utils");
 var javaHome;
 
-module.exports = findJavaHome;
+module.exports = findJava;
 
 var isWindows = process.platform.indexOf('win') === 0;
 var JAVA_FILENAME = 'java' + (isWindows?'.exe':'');
 
-function findJavaHome(options, cb){
+function findJava(options, cb){
 	if(typeof options === 'function'){
 		cb = options;
 		options = null;
@@ -48,49 +49,60 @@ function findJavaHome(options, cb){
 		javaHome = process.env.JAVA_HOME;
 	}
 
-	if(javaHome)return next(cb, null, path.join(javaHome, 'bin', JAVA_FILENAME));
+	if(javaHome) return next(cb, null, path.join(javaHome, 'bin', JAVA_FILENAME));
+
+	var finalSearch = () => {
+		which(JAVA_FILENAME, function(err, proposed){
+			if(err)return next(cb, err, null);
+
+			//resolve symlinks
+			proposed = findLinkedFile(proposed);
+
+			//get the /bin directory
+			proposed = dirname(proposed);
+
+			//on mac, java install has a utility script called java_home that does the
+			//dirty work for us
+			macUtility = resolve(proposed, 'java_home');
+			if(exists(macUtility)){
+				exec(macUtility, {cwd:proposed}, function(error, out, err){
+					if(error || err)return next(cb, error || ''+err, null);
+					javaHome = ''+out.replace(/\n$/, '');
+					next(cb, null, path.join(javaHome, 'bin', JAVA_FILENAME));
+				}) ;
+				return;
+			}
+
+			next(cb, null, path.join(proposed, JAVA_FILENAME));
+		});
+	};
 
 	//windows
 	if(process.platform.indexOf('win') === 0){
-		//java_home can be in many places
-		//JDK paths
-		possibleKeyPaths = [				
-			"SOFTWARE\\JavaSoft\\Java Development Kit"
-		];
-		//JRE paths
-		if(options.allowJre){
-			possibleKeyPaths = possibleKeyPaths.concat([
-			"SOFTWARE\\JavaSoft\\Java Runtime Environment",
-			]);
-		}
+		utils.findMinecraftJava((path) => {
+			if (path) {
+				next(cb, null, path);
+			} else {
+				//java_home can be in many places
+				//JDK paths
+				possibleKeyPaths = [				
+					"SOFTWARE\\JavaSoft\\Java Development Kit"
+				];
+				//JRE paths
+				if(options.allowJre){
+					possibleKeyPaths = possibleKeyPaths.concat([
+					"SOFTWARE\\JavaSoft\\Java Runtime Environment",
+					]);
+				}
 
-		javaHome = findInRegistry(possibleKeyPaths);
-		if(javaHome)return next(cb, null, path.join(javaHome, 'bin', JAVA_FILENAME));
-	}
+				javaHome = findInRegistry(possibleKeyPaths);
+				if(javaHome)return next(cb, null, path.join(javaHome, 'bin', JAVA_FILENAME));
 
-	which(JAVA_FILENAME, function(err, proposed){
-		if(err)return next(cb, err, null);
-
-		//resolve symlinks
-		proposed = findLinkedFile(proposed);
-
-		//get the /bin directory
-		proposed = dirname(proposed);
-
-		//on mac, java install has a utility script called java_home that does the
-		//dirty work for us
-		macUtility = resolve(proposed, 'java_home');
-		if(exists(macUtility)){
-			exec(macUtility, {cwd:proposed}, function(error, out, err){
-				if(error || err)return next(cb, error || ''+err, null);
-				javaHome = ''+out.replace(/\n$/, '');
-				next(cb, null, path.join(javaHome, 'bin', JAVA_FILENAME));
-			}) ;
-			return;
-		}
-
-		next(cb, null, path.join(proposed, JAVA_FILENAME));
-	});
+				finalSearch();
+			}
+		});
+	} else
+		finalSearch();
 }
 
 function findInRegistry(paths){
