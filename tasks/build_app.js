@@ -46,6 +46,10 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('gui/windows/splash_window.js'), destDir.path('gui/windows/splash_window.js')),
 		bundle(srcDir.path('gui/windows/login_window.js'),  destDir.path('gui/windows/login_window.js')),
 
+		// InterCraft Module
+		bundle(srcDir.path('intercraft/intercraft.js'), destDir.path('intercraft/intercraft.js')),
+		bundle(srcDir.path('intercraft/account.js'),    destDir.path('intercraft/account.js')),
+
 		// Utils Module
 		bundle(srcDir.path('utils/find_java.js'), destDir.path('utils/find_java.js')),
 		bundle(srcDir.path('utils/utils.js'),     destDir.path('utils/utils.js'))

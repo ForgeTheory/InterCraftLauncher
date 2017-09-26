@@ -2,6 +2,7 @@ const async                    = require("async");
 const {Activity}               = require("./activity");
 const {Config}                 = require("../config");
 const {AuthenticationActivity} = require("./authentication_activity");
+const {InterCraft}             = require("../../intercraft/intercraft");
 const {LauncherActivity}       = require("./launcher_activity");
 const {Locale}                 = require("../locale");
 const {SplashWindow}           = require("../../gui/windows/splash_window");
@@ -14,7 +15,7 @@ class InitializeActivity extends Activity
 	 */
 	constructor() {
 		super();
-		this._splash = null;
+		this._splash        = null;
 		this._authenticated = false;
 	}
 
@@ -29,9 +30,22 @@ class InitializeActivity extends Activity
 				(cb) => { Config.init(cb); },
 				(cb) => { Locale.init(cb); },
 				(cb) => { this.displaySplash(cb); },
+				(cb) => { this.checkServers(cb); },
 				(cb) => { this.authenticate(cb); }
 			],
 			(err) => { this.onInitFinished(err); });
+		});
+	}
+
+	/**
+	 * Check the InterCraft web services
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	checkServers(callback) {
+		this._splash.setStatus("Checking InterCraft services...");
+		InterCraft.instance().status((result) => {
+			callback(result ? undefined : "offline");
 		});
 	}
 
@@ -41,6 +55,7 @@ class InitializeActivity extends Activity
 	 */
 	authenticate(callback) {
 		this._authenticated = false;
+		this._splash.setStatus("Checking InterCraft services...");
 		callback();
 	}
 
@@ -51,8 +66,8 @@ class InitializeActivity extends Activity
 	 */
 	displaySplash(callback) {
 		this._splash.setStatus(Locale.get("splash.status"));
+		this._splash.once("show", () => { callback() });
 		this._splash.show();
-		callback();
 	}
 
 	/**
@@ -61,11 +76,15 @@ class InitializeActivity extends Activity
 	 */
 	onInitFinished(err) {
 		if (err) {
-			console.error("Initialization error:" + err);
-			this.setExitCode(1);
-			this.finish();
+			if (err == "offline") {
+				this.finish(new LauncherActivity());
+			} else {
+				console.error("Initialization error:" + err);
+				this.setExitCode(1);
+				this.finish();
+			}
 		} else if (this._authenticated) {
-			this.finish(LauncherActivity);
+			this.finish(new LauncherActivity());
 		} else {
 			this.finish(new AuthenticationActivity());
 		}
