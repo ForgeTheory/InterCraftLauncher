@@ -2,7 +2,8 @@ const test = require("test");
 
 var tests = [
 	require('./event_manager'),
-	require('./find_java')
+	require('./find_java'),
+	require('./web_services')
 ];
 
 var result = {};
