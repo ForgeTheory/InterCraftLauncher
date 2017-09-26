@@ -16,7 +16,6 @@ class InitializeActivity extends Activity
 	constructor() {
 		super();
 		this._splash        = null;
-		this._authenticated = false;
 	}
 
 	/**
@@ -30,33 +29,12 @@ class InitializeActivity extends Activity
 				(cb) => { Config.init(cb); },
 				(cb) => { Locale.init(cb); },
 				(cb) => { this.displaySplash(cb); },
+				(cb) => { this.loadAccount(cb) },
 				(cb) => { this.checkServers(cb); },
 				(cb) => { this.authenticate(cb); }
 			],
 			(err) => { this.onInitFinished(err); });
 		});
-	}
-
-	/**
-	 * Check the InterCraft web services
-	 * @param  {Function} callback
-	 * @return {Undefined}
-	 */
-	checkServers(callback) {
-		this._splash.setStatus("Checking InterCraft services...");
-		InterCraft.instance().status((result) => {
-			callback(result ? undefined : "offline");
-		});
-	}
-
-	/**
-	 * Authenticate the user
-	 * @return {Undefined}
-	 */
-	authenticate(callback) {
-		this._authenticated = false;
-		this._splash.setStatus("Checking InterCraft services...");
-		callback();
 	}
 
 	/**
@@ -71,22 +49,57 @@ class InitializeActivity extends Activity
 	}
 
 	/**
+	 * Load the stored InterCraft account
+	 * @return {callback}
+	 */
+	loadAccount(callback) {
+		console.log("Loading account");
+		this._splash.setStatus(Locale.get("splash.loading_intercraft"));
+		InterCraft.instance().load(callback);
+	}
+
+	/**
+	 * Check the InterCraft web services
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	checkServers(callback) {
+		console.log("Checking servers");
+		this._splash.setStatus(Locale.get("splash.check_intercraft_services"));
+		InterCraft.instance().status((result) => {
+			callback(result ? undefined : "offline");
+		});
+	}
+
+	/**
+	 * Authenticate the user
+	 * @return {Undefined}
+	 */
+	authenticate(callback) {
+		console.log("Authenticating session");
+		this._splash.setStatus(Locale.get("splash.authenticating"));
+		InterCraft.instance().authenticate((err) => {
+			callback(err ? "invalid_auth_token" : undefined);
+		});
+	}
+
+	/**
 	 * Executed after all configurations are finished
 	 * @return {Undefined}
 	 */
 	onInitFinished(err) {
 		if (err) {
-			if (err == "offline") {
+			if (err == "offline")
 				this.finish(new LauncherActivity());
-			} else {
+			else if (err == "invalid_auth_token")
+				this.finish(new AuthenticationActivity);
+			else {
 				console.error("Initialization error:" + err);
 				this.setExitCode(1);
 				this.finish();
 			}
-		} else if (this._authenticated) {
-			this.finish(new LauncherActivity());
 		} else {
-			this.finish(new AuthenticationActivity());
+			this.finish(new LauncherActivity());
 		}
 	}
 

@@ -77,9 +77,19 @@ class NetworkManager
 	 * @return {Undefined}
 	 */
 	static request(url, method, data, options, callback) {
-		options        = options || {}
+		if (typeof options == "function") {
+			callback = options;
+			options = {};
+		} else
+			options = options || {}
+
+		if (typeof data == "function") {
+			callback = data;
+			options.data = null;
+		} else
+			options.data = data
 		options.method = method;
-		options.body   = data;
+
 		got(url, options)
 		    .then(response => { callback(response); })
 		    .catch(err     => { callback(err); });

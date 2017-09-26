@@ -1,8 +1,11 @@
+const jetpack          = require("fs-jetpack");
+const jsonfile         = require("jsonfile");
 const {Account}        = require("./account");
 const {NetworkManager} = require('../core/network_manager');
 
-let BASE_URI = "https://intercraftmc.com/api";
-let instance = null;
+let DATA_FILE = "./data/intercraft.json";
+let BASE_URI  = "https://intercraftmc.com/api";
+let instance  = null;
 
 class InterCraft
 {
@@ -19,7 +22,7 @@ class InterCraft
 	 * Create a new instance to the InterCraft web services
 	 */
 	constructor() {
-		this._account = null;
+		this._account = new Account();
 	}
 
 	/**
@@ -28,18 +31,90 @@ class InterCraft
 	 */
 	account() { return this._account; }
 
+	/**
+	 * Load the saved InterCraft information
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	load(callback) {
+		if (jetpack.exists(DATA_FILE)) {
+			jsonfile.readFile(DATA_FILE, {throws: false}, (err, obj) => {
+				if (!err) {
+					this._account.setEmail(obj.email);
+					this._account.setToken(obj.token);
+				}
+				if (callback)
+					callback();
+			});
+		} else if (callback)
+			callback();
+	}
+
+	/**
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	save(callback) {
+		jsonfile.writeFile(
+			DATA_FILE,
+			{
+				"email": this._account.email(),
+				"token": this._account.token()
+			},
+			{throws: false, spaces: 2},
+			callback
+		);
+	}
+
 	// Web Service Methods -----------------------------------------------------
 
 	/**
-	 * Send a patch request to the InterCraft web services
-	 * @param  {String}        uri
-	 * @param  {Json Object}   data
-	 * @param  {Function}      callback
+	 * Send a GET request to the InterCraft web services
+	 * @param  {String}      uri
+	 * @param  {Json Object} data
+	 * @param  {Function}    callback
+	 * @return {Undefined}
+	 */
+	get(uri, data, callback) {
+		if (typeof data == "function") {
+			callback = data;
+			data = null;
+		}
+		NetworkManager.get(BASE_URI + uri, data, {json: true}, (response) => {
+			callback(response);
+		});
+	}
+
+	/**
+	 * Send a PATCH request to the InterCraft web services
+	 * @param  {String}      uri
+	 * @param  {Json Object} data
+	 * @param  {Function}    callback
 	 * @return {Undefined}
 	 */
 	patch(uri, data, callback) {
+		if (typeof data == "function") {
+			callback = data;
+			data = null;
+		}
 		NetworkManager.patch(BASE_URI + uri, data, {json: true}, (response) => {
 			callback(response);
+		});
+	}
+
+	/**
+	 * Validate an account's authentication token
+	 * @param  {Function} callback
+	 * @return {Undefined}
+	 */
+	authenticate(callback) {
+		let token = this._account.token() || "";
+		this.get("/authenticate", (response) => {
+			if (response.statusCode == 200) {
+				this._account.update(response.body);
+				callback(false);
+			} else
+				callback(true);
 		});
 	}
 
@@ -49,7 +124,7 @@ class InterCraft
 	 * @return {Boolean}
 	 */
 	status(callback) {
-		NetworkManager.get(`${BASE_URI}/status`, null, null, (response) => {
+		this.get("/status", (response) => {
 			callback(response.statusCode == 200);
 		});
 	}
@@ -64,10 +139,12 @@ class InterCraft
 	login(email, password, callback) {
 		this.patch("/login", {email: email, password: password}, (response) => {
 			if (response.statusCode == 200) {
-				this._account = new Account(response.body)
+				this._account(response.body);
 				callback(this._account);
-			} else
+			} else {
+				this._account.update(null);
 				callback(null);
+			}
 		});
 	}
 
@@ -84,7 +161,7 @@ class InterCraft
 			return;
 		}
 		this.patch("/logout", {"token": this._account.token()}, (response) => {
-			this._account = null;
+			this._account.update(null);
 			callback(response.statusCode == 200);
 		});
 	}
@@ -100,8 +177,8 @@ class InterCraft
 		this.patch(
 			"/password_set",
 			{
-				"token"       : this._account.token(),
-				"password"    : currentPassword,
+				"token":        this._account.token(),
+				"password":     currentPassword,
 				"new_password": newPassword
 			},
 			(response) => {
