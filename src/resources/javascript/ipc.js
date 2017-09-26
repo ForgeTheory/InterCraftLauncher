@@ -23,7 +23,14 @@ const ipc = {
 	 * @param  {Function} callback
 	 * @return {Undefined}
 	 */
-	subscribe: function (key, callback) { ipcReceive(key, callback); }
+	subscribe: function (key, callback) { ipcReceive(key, callback); },
+
+	/**
+	 * Let the main process window know that we're ready to receive events
+	 * @return {Undefined}
+	 */
+	ready: function() { ipcSend("__ipc_ready", true); }
 }
 
+// Export the module
 module.exports = ipc;

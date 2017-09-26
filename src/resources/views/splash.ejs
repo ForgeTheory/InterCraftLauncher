@@ -51,6 +51,9 @@
 	<script>
 		var setStatus = function(message) { $("#status-bar").html(message); };
 		ipc.subscribe("splash-status-msg", setStatus);
+		$(document).ready(function() {
+			ipc.ready();
+		});
 	</script>
 </body>
 </html>

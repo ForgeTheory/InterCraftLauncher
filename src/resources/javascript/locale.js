@@ -1,3 +1,4 @@
-utils = require("../js/utils.js");
-const locale = utils.urlParam("locale");
-module.exports = locale;
+const utils = require("../js/utils");
+
+// Export the module
+module.exports = utils.urlParam("locale");

@@ -54,3 +54,7 @@
 	image-rendering: pixelated;
 	image-rendering: optimize-contrast;
 }
+
+.skip-transitions, .skip-transitions * {
+	transition: all 0s linear !important;
+}

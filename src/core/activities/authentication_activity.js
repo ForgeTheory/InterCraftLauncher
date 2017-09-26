@@ -1,4 +1,5 @@
 const {Activity}    = require("./activity");
+const {InterCraft}  = require("../../intercraft/intercraft");
 const {LoginWindow} = require("../../gui/windows/login_window");
 
 
@@ -28,6 +29,7 @@ class AuthenticationActivity extends Activity
 		let win = this._loginWindow = new LoginWindow();
 		win.on("ready-to-show", () => { this._loginWindow.show(); });
 		win.on("close",         () => { this.onWindowClosed(); });
+		win.setEmail(InterCraft.instance().account().email());
 	}
 
 	/**

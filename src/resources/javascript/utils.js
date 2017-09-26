@@ -18,6 +18,24 @@ const utils = {
 				return keyeterName[1] === undefined ? true : keyeterName[1];
 			}
 		}
+	},
+
+	/**
+	 * Disable transition for the given element
+	 * @param  {Jquery Element} elem
+	 * @return {Undefined}
+	 */
+	disableTransitions: function($elem) {
+		$elem.addClass("skip-transitions");
+	},
+
+	/**
+	 * Enable transition for the given element
+	 * @param  {Jquery Element} elem
+	 * @return {Undefined}
+	 */
+	enableTransitions: function($elem) {
+		$elem.removeClass("skip-transitions");
 	}
 }
 

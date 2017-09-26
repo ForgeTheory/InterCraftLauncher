@@ -17,6 +17,8 @@ class Window extends BrowserWindow
 	constructor(options) {
 		super(options);
 		this._forceClose = false;
+		this._ipcReady = false;
+		this._ipcQueue = [];
 		this.setMenu(null);
 		this.initEvents();
 		EventManager.emit("window-created", [this]);
@@ -43,6 +45,7 @@ class Window extends BrowserWindow
 		this.on("show",               this.onShow);
 		this.on("enter-full-screen",  this.onEnterFullScreen);
 		this.on("leave-full-screen",  this.onLeaveFullScreen);
+		this.receive("__ipc_ready", this.onIpcReady);
 	}
 
 	// Overridable Methods -----------------------------------------------------
@@ -61,8 +64,11 @@ class Window extends BrowserWindow
 	 * @param  {Function} callback
 	 * @return {Undefined}
 	 */
-	subscribe(key, callback) {
-		ipc.ipcReceive(key, (...args) => { callback(...args); });
+	subscribe(key, callback, context) {
+		context = context || this;
+		ipc.ipcReceive(key, (...args) => {
+			callback.apply(context, args);
+		});
 	}
 
 	/**
@@ -71,8 +77,11 @@ class Window extends BrowserWindow
 	 * @param  {Function} callback
 	 * @return {Undefined}
 	 */
-	receive(key, callback) {
-		ipc.ipcReceiveOnce(key, (...args) => { callback(...args); });
+	receive(key, callback, context) {
+		context = context || this;
+		ipc.ipcReceiveOnce(key, (...args) => {
+			callback.apply(context, args);
+		});
 	}
 
 	/**
@@ -80,7 +89,11 @@ class Window extends BrowserWindow
 	 * @return {Undefined}
 	 */
 	send(key, message) {
-		ipc.ipcSend(key, message);
+		if (this._ipcReady) {
+			ipc.ipcSend(key, message);
+		} else {
+			this._ipcQueue.push([key, message]);
+		}
 	}
 
 	// Methods -----------------------------------------------------------------
@@ -163,6 +176,17 @@ class Window extends BrowserWindow
 	 * @return {Undefined}
 	 */
 	onHide(event) { }
+
+	/**
+	 * Executed when the IPC in the browser window is ready
+	 * @return {Undefined}
+	 */
+	onIpcReady() {
+		this._ipcReady = true;
+		for (var i = 0; i < this._ipcQueue.length; i++) {
+			this.send(this._ipcQueue[i][0], this._ipcQueue[i][1]);
+		}
+	}
 
 	/**
 	 * Executed when the window leaves full-screen

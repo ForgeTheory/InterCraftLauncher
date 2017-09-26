@@ -53,10 +53,13 @@
 	<script type="text/javascript" src="../js/mdb.min.js"></script>
 	<script>const ipc = require("../js/ipc.js");</script>
 	<script>const locale = require("../js/locale.js");</script>
+	<script>const loginWindow = require("../js/login_window.js");</script>
 	<script>if (window.module) module = window.module;</script>
 	<script>
-		console.log(ipc);
-		console.log(locale);
+		$(document).ready(function() {
+			loginWindow.init();
+			ipc.ready();
+		});
 	</script>
 </body>
 </html>

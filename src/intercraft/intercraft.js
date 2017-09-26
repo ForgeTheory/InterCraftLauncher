@@ -113,8 +113,10 @@ class InterCraft
 			if (response.statusCode == 200) {
 				this._account.update(response.body);
 				callback(false);
-			} else
+			} else {
+				this._account.update(null);
 				callback(true);
+			}
 		});
 	}
 
