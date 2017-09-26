@@ -3,6 +3,7 @@ data/
 cache.json
 config.json
 sessions.json
+test/env.json
 
 # Compiled files
 app/*.js
