@@ -81,8 +81,8 @@ class NetworkManager
 		options.method = method;
 		options.body   = data;
 		got(url, options)
-		    .then(response => { callback(null, response); })
-		    .catch(err     => { callback(err,  response); });
+		    .then(response => { callback(response); })
+		    .catch(err     => { callback(err); });
 	}
 
 	// Other Network Utilities -------------------------------------------------

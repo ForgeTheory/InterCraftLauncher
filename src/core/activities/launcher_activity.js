@@ -15,7 +15,8 @@ class LauncherActivity extends Activity
 	 * @return {Undefined}
 	 */
 	run() {
-		
+		console.log("Launcher activity");
+		this.finish();
 	}
 
 	/**
