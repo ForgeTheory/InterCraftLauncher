@@ -30,7 +30,7 @@ class LoginWindow extends Window
 	}
 
 	/**
-	 * [setEmail description]
+	 * Set the email field
 	 * @param {String} email
 	 * @return {Undefined}
 	 */
