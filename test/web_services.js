@@ -4,40 +4,45 @@ const {InterCraft} = require("../src/intercraft/intercraft");
 
 // Load the environment
 const env = require("./environment");
-let token;
 
 exports["test InterCraft status"] = function(assert, done) {
-	InterCraft.instance().status((result) => {
-		assert.equal(result, true, "InterCraft status success");
+	InterCraft.instance().status((err) => {
+		assert.equal(err, false, "InterCraft status success");
 		done();
 	});
 };
 
 exports["test InterCraft login"] = function(assert, done) {
-	InterCraft.instance().login(env.email, env.password, (account) => {
-		assert.equal(account != null, true, "InterCraft login success");
-		token = account._data.token;
+	InterCraft.instance().login(env.email, env.password, true, (err) => {
+		assert.equal(err, false, "InterCraft login success");
+		done();
+	});
+};
+
+exports["test InterCraft authenticate token"] = function(assert, done) {
+	InterCraft.instance().authenticate((err) => {
+		assert.equal(err, false, "InterCraft authenticate token success");
 		done();
 	});
 };
 
 exports["test InterCraft set password incorrect password"] = function(assert, done) {
-	InterCraft.instance().setPassword("123", env.password, (result) => {
-		assert.equal(result, false, "InterCraft failed set password success");
+	InterCraft.instance().setPassword("123", env.password, (err) => {
+		assert.equal(err, true, "InterCraft failed set password success");
 		done();
 	});
 };
 
 exports["test InterCraft set password"] = function(assert, done) {
-	InterCraft.instance().setPassword(env.password, env.password, (result) => {
-		assert.equal(result, true, "InterCraft set password success");
+	InterCraft.instance().setPassword(env.password, env.password, (err) => {
+		assert.equal(err, false, "InterCraft set password success");
 		done();
 	});
 };
 
 exports["test InterCraft logout"] = function(assert, done) {
-	InterCraft.instance().logout((result) => {
-		assert.equal(result, true, "InterCraft logout success");
+	InterCraft.instance().logout((err) => {
+		assert.equal(err, false, "InterCraft logout success");
 		done();
 	});
 };

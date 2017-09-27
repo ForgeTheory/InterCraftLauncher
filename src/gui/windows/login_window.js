@@ -16,17 +16,6 @@ class LoginWindow extends Window
 		});
 		this.openDevTools();
 		this.setView("login");
-
-		this.subscribe("login", this.login);
-	}
-
-	/**
-	 * Executed when a login attempt has been made
-	 * @param  {Json Object} credentials
-	 * @return {Undefined}
-	 */
-	login(credentials) {
-
 	}
 
 	/**

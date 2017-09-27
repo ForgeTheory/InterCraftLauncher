@@ -15,7 +15,7 @@ class InitializeActivity extends Activity
 	 */
 	constructor() {
 		super();
-		this._splash        = null;
+		this._splash = null;
 	}
 
 	/**
@@ -64,10 +64,10 @@ class InitializeActivity extends Activity
 	 * @return {Undefined}
 	 */
 	checkServers(callback) {
-		console.log("Checking servers");
+		console.log("Checking servers...");
 		this._splash.setStatus(Locale.get("splash.check_intercraft_services"));
-		InterCraft.instance().status((result) => {
-			callback(result ? undefined : "offline");
+		InterCraft.instance().status((err) => {
+			callback(err ? "offline" : undefined);
 		});
 	}
 
@@ -76,7 +76,7 @@ class InitializeActivity extends Activity
 	 * @return {Undefined}
 	 */
 	authenticate(callback) {
-		console.log("Authenticating session");
+		console.log("Authenticating session...");
 		this._splash.setStatus(Locale.get("splash.authenticating"));
 		InterCraft.instance().authenticate((err) => {
 			callback(err ? "invalid_auth_token" : undefined);

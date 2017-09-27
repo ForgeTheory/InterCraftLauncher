@@ -35,10 +35,10 @@
 								<label for="remember"><%= locale.intercraft_login.remember %></label>
 							</fieldset>
 							<div class="form-group text-center">
-								<button id="button-login" type="submit" class="btn btn-primary"><%= locale.intercraft_login.signin %></button>
+								<button id="login-submit" type="submit" class="btn btn-primary"><%= locale.intercraft_login.signin %></button>
 							</div>
 							<div class="form-group text-center ">
-								<a href="">Forgot Password</a>
+								<a href="https://intercraftmc.com" target="_blank">Forgot Password</a>
 							</div>
 						</form>
 					</div>
@@ -51,9 +51,10 @@
 	<script type="text/javascript" src="../js/tether.min.js"></script>
 	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="../js/mdb.min.js"></script>
-	<script>const ipc = require("../js/ipc.js");</script>
-	<script>const locale = require("../js/locale.js");</script>
-	<script>const loginWindow = require("../js/login_window.js");</script>
+	<script>require("../js/electron_bootstrap");</script>
+	<script>const ipc = require("../js/ipc");</script>
+	<script>const locale = require("../js/locale");</script>
+	<script>const loginWindow = require("../js/login_window");</script>
 	<script>if (window.module) module = window.module;</script>
 	<script>
 		$(document).ready(function() {

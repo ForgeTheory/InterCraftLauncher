@@ -23,7 +23,7 @@
 		"settings": "Settings"
 	},
 	"splash": {
-		"authenticating":            "Checking InterCraft services...",
+		"authenticating":            "Authenticating account...",
 		"check_intercraft_services": "Checking InterCraft services...",
 		"loading_intercraft":        "Loading InterCraft settings...",
 		"status":                    "Initializing..."

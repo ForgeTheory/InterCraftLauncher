@@ -39,9 +39,11 @@ class InterCraft
 	load(callback) {
 		if (jetpack.exists(DATA_FILE)) {
 			jsonfile.readFile(DATA_FILE, {throws: false}, (err, obj) => {
+				obj = obj || {};
 				if (!err) {
 					this._account.setEmail(obj.email);
 					this._account.setToken(obj.token);
+					this._remember = Boolean(obj.email) && Boolean(obj.token);
 				}
 				if (callback)
 					callback();
@@ -58,8 +60,8 @@ class InterCraft
 		jsonfile.writeFile(
 			DATA_FILE,
 			{
-				"email": this._account.email(),
-				"token": this._account.token()
+				"email": this._remember ? this._account.email() : "",
+				"token": this._remember ? this._account.token() : ""
 			},
 			{throws: false, spaces: 2},
 			callback
@@ -80,9 +82,7 @@ class InterCraft
 			callback = data;
 			data = null;
 		}
-		NetworkManager.get(BASE_URI + uri, data, {json: true}, (response) => {
-			callback(response);
-		});
+		NetworkManager.get(BASE_URI + uri, data, {json: true}, callback);
 	}
 
 	/**
@@ -97,9 +97,7 @@ class InterCraft
 			callback = data;
 			data = null;
 		}
-		NetworkManager.patch(BASE_URI + uri, data, {json: true}, (response) => {
-			callback(response);
-		});
+		NetworkManager.patch(BASE_URI + uri, data, {json: true}, callback);
 	}
 
 	/**
@@ -108,16 +106,24 @@ class InterCraft
 	 * @return {Undefined}
 	 */
 	authenticate(callback) {
-		let token = this._account.token() || "";
-		this.get("/authenticate", (response) => {
-			if (response.statusCode == 200) {
-				this._account.update(response.body);
-				callback(false);
-			} else {
-				this._account.update(null);
-				callback(true);
-			}
-		});
+		if (this._account.token())
+			this.get(
+				"/authenticate",
+				{token: this._account.token()},
+				(response) => {
+					if (response.statusCode == 200) {
+						this._account.update(response.body);
+						this.save();
+						callback(false);
+					} else {
+						this._account.update(null);
+						this.save();
+						callback(true);
+					}
+				}
+			);
+		else
+			callback(true);
 	}
 
 	/**
@@ -127,7 +133,7 @@ class InterCraft
 	 */
 	status(callback) {
 		this.get("/status", (response) => {
-			callback(response.statusCode == 200);
+			callback(response.statusCode != 200);
 		});
 	}
 
@@ -138,14 +144,17 @@ class InterCraft
 	 * @param  {Function} callback
 	 * @return {Undefined}
 	 */
-	login(email, password, callback) {
+	login(email, password, remember, callback) {
 		this.patch("/login", {email: email, password: password}, (response) => {
 			if (response.statusCode == 200) {
-				this._account(response.body);
-				callback(this._account);
+				this._remember = remember;
+				this._account.update(response.body);
+				this.save();
+				callback(false);
 			} else {
 				this._account.update(null);
-				callback(null);
+				this.save();
+				callback(true);
 			}
 		});
 	}
@@ -159,12 +168,13 @@ class InterCraft
 	 */
 	logout(callback) {
 		if (this._account == null) {
-			callback();
+			callback(false);
 			return;
 		}
 		this.patch("/logout", {"token": this._account.token()}, (response) => {
 			this._account.update(null);
-			callback(response.statusCode == 200);
+			this.save();
+			callback(response.statusCode != 200);
 		});
 	}
 
@@ -184,7 +194,7 @@ class InterCraft
 				"new_password": newPassword
 			},
 			(response) => {
-				callback(response.statusCode == 200);
+				callback(response.statusCode != 200);
 			}
 		);
 	}

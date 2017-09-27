@@ -85,14 +85,14 @@ class NetworkManager
 
 		if (typeof data == "function") {
 			callback = data;
-			options.data = null;
+			options.body = undefined;
 		} else
-			options.data = data
+			options.body = data
 		options.method = method;
 
 		got(url, options)
 		    .then(response => { callback(response); })
-		    .catch(err     => { callback(err); });
+		    .catch(err     => { if (err.response) callback(err.response); });
 	}
 
 	// Other Network Utilities -------------------------------------------------

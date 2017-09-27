@@ -29,7 +29,27 @@ class AuthenticationActivity extends Activity
 		let win = this._loginWindow = new LoginWindow();
 		win.on("ready-to-show", () => { this._loginWindow.show(); });
 		win.on("close",         () => { this.onWindowClosed(); });
+		win.subscribe("login", this.onLogin, this);
 		win.setEmail(InterCraft.instance().account().email());
+	}
+
+	/**
+	 * Executed when a login attempt has been made
+	 * @param  {Json Object} credentials
+	 * @return {Undefined}
+	 */
+	onLogin(credentials) {
+		InterCraft.instance().login(
+			credentials.email,
+			credentials.password,
+			credentials.remember,
+			(err) => {
+				if (err)
+					this._loginWindow.send("login_result", false);
+				else
+					this.finish();
+			}
+		);
 	}
 
 	/**

@@ -86,6 +86,8 @@ class Window extends BrowserWindow
 
 	/**
 	 * Send a message to the view
+	 * @param  {String} key
+	 * @param  {Mixed}  message
 	 * @return {Undefined}
 	 */
 	send(key, message) {
