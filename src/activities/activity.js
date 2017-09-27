@@ -5,7 +5,11 @@ class Activity
 	/**
 	 * Create a new Activity instance
 	 */
-	constructor() { this._exitCode = 0;	}
+	constructor() {
+		this._exitCode = 0;
+		this._started  = false;
+		this._finished = false;
+	}
 
 	// Overridable Methods -----------------------------------------------------
 
@@ -21,23 +25,31 @@ class Activity
 	 */
 	clean() {}
 
-	// Members -----------------------------------------------------------------
+	// Accessors and Mutators --------------------------------------------------
 
 	/**
 	 * Get the exit code of the activity
 	 * @return {Integer}
 	 */
-	exitCode() {
-		return this._exitCode;
-	}
+	exitCode() { return this._exitCode; }
+
+	/**
+	 * Check if the activity is finished
+	 * @return {[type]} [description]
+	 */
+	isFinished() { return this._finished; }
+
+	/**
+	 * Check if the activity has started
+	 * @return {Boolean}
+	 */
+	isStarted() { return this._started; }
 
 	/**
 	 * Set exit code for the application
 	 * @return {Undefined}
 	 */
-	setExitCode(exitCode) {
-		this._exitCode = exitCode;
-	}
+	setExitCode(exitCode) { this._exitCode = exitCode; }
 
 	// Methods -----------------------------------------------------------------
 
@@ -46,7 +58,10 @@ class Activity
 	 * @return {Undefined}
 	 */
 	finish(nextActivity) {
-		EventManager.emit("activity-finished", [this, nextActivity]);
+		if (!this._finished) {
+			this._finished = true;
+			EventManager.emit("activity-finished", [this, nextActivity]);
+		}
 	}
 
 	/**
@@ -54,7 +69,10 @@ class Activity
 	 * @return {}
 	 */
 	start() {
-		EventManager.emit("activity-started", [this]);
+		if (!this._started) {
+			this._started = true;
+			EventManager.emit("activity-started", [this]);
+		}
 	}
 }
 

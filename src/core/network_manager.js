@@ -89,10 +89,12 @@ class NetworkManager
 		} else
 			options.body = data
 		options.method = method;
+		options.timeout = options.timeout || 5000;
 
 		got(url, options)
 		    .then(response => { callback(response); })
-		    .catch(err     => { if (err.response) callback(err.response); });
+		    .catch(err => {	if (err.response) callback(err.response || {}); }
+		);
 	}
 
 	// Other Network Utilities -------------------------------------------------

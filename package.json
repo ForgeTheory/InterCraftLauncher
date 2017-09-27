@@ -23,7 +23,6 @@
     "async": "^2.5.0",
     "connectivity": "^1.0.0",
     "download-file": "^0.1.5",
-    "download-file-sync": "^1.0.4",
     "ejs": "^2.5.7",
     "ejs-electron": "^2.0.1",
     "electron-simple-ipc": "https://github.com/SirDavidLudwig/electron-simple-ipc",

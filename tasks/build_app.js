@@ -43,9 +43,10 @@ gulp.task('bundle', () => {
 
 		// Gui Module
 		// -- Windows
-		bundle(srcDir.path('gui/windows/window.js'),        destDir.path('gui/windows/window.js')),
-		bundle(srcDir.path('gui/windows/splash_window.js'), destDir.path('gui/windows/splash_window.js')),
-		bundle(srcDir.path('gui/windows/login_window.js'),  destDir.path('gui/windows/login_window.js')),
+		bundle(srcDir.path('gui/windows/launcher_window.js'), destDir.path('gui/windows/launcher_window.js')),
+		bundle(srcDir.path('gui/windows/login_window.js'),    destDir.path('gui/windows/login_window.js')),
+		bundle(srcDir.path('gui/windows/splash_window.js'),   destDir.path('gui/windows/splash_window.js')),
+		bundle(srcDir.path('gui/windows/window.js'),          destDir.path('gui/windows/window.js')),
 
 		// InterCraft Module
 		bundle(srcDir.path('intercraft/intercraft.js'), destDir.path('intercraft/intercraft.js')),

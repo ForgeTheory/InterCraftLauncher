@@ -89,11 +89,13 @@ class InitializeActivity extends Activity
 	 */
 	onInitFinished(err) {
 		if (err) {
-			if (err == "offline")
+			if (err == "offline") {
+				console.log("Loading in offline mode");
 				this.finish(new LauncherActivity());
-			else if (err == "invalid_auth_token")
+			} else if (err == "invalid_auth_token") {
+				console.log("Authenticating...");
 				this.finish(new AuthenticationActivity);
-			else {
+			} else {
 				console.error("Initialization error:" + err);
 				this.setExitCode(1);
 				this.finish();

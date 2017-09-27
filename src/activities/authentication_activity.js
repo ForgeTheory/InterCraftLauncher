@@ -1,6 +1,7 @@
-const {Activity}    = require("./activity");
-const {InterCraft}  = require("../intercraft/intercraft");
-const {LoginWindow} = require("../gui/windows/login_window");
+const {Activity}         = require("./activity");
+const {InterCraft}       = require("../intercraft/intercraft");
+const {LauncherActivity} = require("./launcher_activity");
+const {LoginWindow}      = require("../gui/windows/login_window");
 
 
 class AuthenticationActivity extends Activity
@@ -17,15 +18,6 @@ class AuthenticationActivity extends Activity
 	 * @return {Undefined}
 	 */
 	run() {
-		console.log("Running auth activity");
-		this.init();
-	}
-
-	/**
-	 * Initialize everything
-	 * @return {Undefined}
-	 */
-	init() {
 		let win = this._loginWindow = new LoginWindow();
 		win.on("ready-to-show", () => { this._loginWindow.show(); });
 		win.on("close",         () => { this.onWindowClosed(); });
@@ -39,6 +31,7 @@ class AuthenticationActivity extends Activity
 	 * @return {Undefined}
 	 */
 	onLogin(credentials) {
+		console.log(credentials);
 		InterCraft.instance().login(
 			credentials.email,
 			credentials.password,
@@ -47,7 +40,7 @@ class AuthenticationActivity extends Activity
 				if (err)
 					this._loginWindow.send("login_result", false);
 				else
-					this.finish();
+					this.finish(new LauncherActivity());
 			}
 		);
 	}
@@ -56,16 +49,14 @@ class AuthenticationActivity extends Activity
 	 * Executed when the login window is closed
 	 * @return {Undefined}
 	 */
-	onWindowClosed() {
-		this.finish();
-	}
+	onWindowClosed() { this.finish(); }
 
 	/**
 	 * Clean the activity
 	 * @return {Undefined}
 	 */
 	clean() {
-		// this._loginWindow.exit();
+		this._loginWindow.close();
 		this._loginWindow = null;
 	}
 }

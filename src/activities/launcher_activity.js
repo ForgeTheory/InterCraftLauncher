@@ -1,4 +1,5 @@
-const {Activity} = require("./activity");
+const {Activity}       = require("./activity");
+const {LauncherWindow} = require("../gui/windows/launcher_window");
 
 
 class LauncherActivity extends Activity
@@ -8,6 +9,7 @@ class LauncherActivity extends Activity
 	 */
 	constructor() {
 		super();
+		this._launcherWindow = null;
 	}
 
 	/**
@@ -16,6 +18,16 @@ class LauncherActivity extends Activity
 	 */
 	run() {
 		console.log("Launcher activity");
+		let win = this._launcherWindow = new LauncherWindow();
+		win.on("ready-to-show", () => { this._launcherWindow.show(); });
+		win.on("close",         () => { this.onWindowClosed(); });
+	}
+
+	/**
+	 * Executed when the launcher window closed
+	 * @return {Undefined}
+	 */
+	onWindowClosed() {
 		this.finish();
 	}
 
@@ -24,7 +36,7 @@ class LauncherActivity extends Activity
 	 * @return {Undefined}
 	 */
 	clean() {
-
+		this._launcherWindow = null;
 	}
 }
 
