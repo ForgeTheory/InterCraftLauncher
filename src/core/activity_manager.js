@@ -1,5 +1,5 @@
 const {EventManager}       = require("./event_manager");
-const {InitializeActivity} = require("./activities/initialize_activity");
+const {InitializeActivity} = require("../activities/initialize_activity");
 
 class ActivityManager
 {

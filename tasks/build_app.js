@@ -25,6 +25,12 @@ gulp.task('bundle', () => {
 	return Promise.all([
 		bundle(srcDir.path('main.js'), destDir.path('main.js')),
 
+		// Activities Module
+		bundle(srcDir.path('activities/activity.js'),                destDir.path('activities/activity.js')),
+		bundle(srcDir.path('activities/authentication_activity.js'), destDir.path('activities/authentication_activity.js')),
+		bundle(srcDir.path('activities/initialize_activity.js'),     destDir.path('activities/initialize_activity.js')),
+		bundle(srcDir.path('activities/launcher_activity.js'),       destDir.path('activities/launcher_activity.js')),
+
 		// Core Module
 		// --
 		bundle(srcDir.path('core/activity_manager.js'),    destDir.path('core/activity_manager.js')),
@@ -34,11 +40,6 @@ gulp.task('bundle', () => {
 		bundle(srcDir.path('core/locale.js'),              destDir.path('core/locale.js')),
 		bundle(srcDir.path('core/network_manager.js'),     destDir.path('core/network_manager.js')),
 		bundle(srcDir.path('core/window_manager.js'),      destDir.path('core/window_manager.js')),
-		// -- Activities
-		bundle(srcDir.path('core/activities/activity.js'),                destDir.path('core/activities/activity.js')),
-		bundle(srcDir.path('core/activities/authentication_activity.js'), destDir.path('core/activities/authentication_activity.js')),
-		bundle(srcDir.path('core/activities/initialize_activity.js'),     destDir.path('core/activities/initialize_activity.js')),
-		bundle(srcDir.path('core/activities/launcher_activity.js'),       destDir.path('core/activities/launcher_activity.js')),
 
 		// Gui Module
 		// -- Windows

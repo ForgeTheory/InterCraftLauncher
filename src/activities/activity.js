@@ -1,4 +1,4 @@
-const {EventManager} = require("../event_manager");
+const {EventManager} = require("../core/event_manager");
 
 class Activity
 {

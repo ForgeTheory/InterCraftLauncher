@@ -1,11 +1,11 @@
 const async                    = require("async");
 const {Activity}               = require("./activity");
-const {Config}                 = require("../config");
+const {Config}                 = require("../core/config");
 const {AuthenticationActivity} = require("./authentication_activity");
-const {InterCraft}             = require("../../intercraft/intercraft");
+const {InterCraft}             = require("../intercraft/intercraft");
 const {LauncherActivity}       = require("./launcher_activity");
-const {Locale}                 = require("../locale");
-const {SplashWindow}           = require("../../gui/windows/splash_window");
+const {Locale}                 = require("../core/locale");
+const {SplashWindow}           = require("../gui/windows/splash_window");
 
 
 class InitializeActivity extends Activity

@@ -1,6 +1,6 @@
 const {Activity}    = require("./activity");
-const {InterCraft}  = require("../../intercraft/intercraft");
-const {LoginWindow} = require("../../gui/windows/login_window");
+const {InterCraft}  = require("../intercraft/intercraft");
+const {LoginWindow} = require("../gui/windows/login_window");
 
 
 class AuthenticationActivity extends Activity
