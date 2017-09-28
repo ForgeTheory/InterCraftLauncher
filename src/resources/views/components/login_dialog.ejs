@@ -1,0 +1,38 @@
+<div class="modal fade" id="add-account-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<!--Header-->
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title w-100" id="myModalLabel">Minecraft Login</h4>
+			</div>
+			<!--Body-->
+			<div class="modal-body">
+				<form action="" method="post" id="add-mc-account-form">
+					<div class="form-group md-form">
+						<i class="fa fa-user prefix" style="padding-top: 8px;"></i>
+						<input type="text" id="add-mc-account-email" class="form-control">
+						<label for="add-mc-account-email" class="no-selection">Email/Username</label>
+					</div>
+					<div class="form-group md-form">
+						<i class="fa fa-lock prefix" style="padding-top: 8px;"></i>
+						<input type="password" id="add-mc-account-password" class="form-control">
+						<label for="add-mc-account-password" class="no-selection">Password</label>
+					</div>
+					<fieldset class="form-group">
+						<input type="checkbox" id="add-mc-account-remember">
+						<label for="add-mc-account-remember">Stay Signed In</label>
+					</fieldset>
+					<div class="form-group text-center">
+						<button id="add-mc-account-login-button" type="submit" class="btn btn-primary">Sign In</button>
+					</div>
+					<div class="form-group text-center ">
+						<a href="https://account.mojang.com/password?ref=launcher" target="_blank">Forgot Password</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

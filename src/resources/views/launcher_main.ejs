@@ -14,184 +14,33 @@
 <body>
 	<div class="main-container">
 		<div class="top">
-			<nav class="navbar navbar-toggleable-md navbar-light white">
-				<div class="container">
-					<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav4" aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<a class="navbar-brand" href="#">
-						<img src="../img/brand.png" width="32" height="32" class="d-inline-block align-top" alt="">
-						<strong>INTERCRAFT</strong>
-					</a>
-					<div class="collapse navbar-collapse" id="navbarNav4">
-						<ul class="navbar-nav mr-auto">
-						</ul>
-						<ul class="navbar-nav ml-auto nav-flex-icons">
-							<li class="nav-item">
-								<a class="nav-link waves-effect waves-light"><i class="mdi mdi-bell-outline"></i></a>
-							</li>
-							<li class="nav-item avatar dropdown">
-								<a class="nav-link dropdown-toggle waves-effect waves-light" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"><img src="../img/skin_face_placeholder.png" class="img-fluid z-depth-0 skin-face"></a>
-								<div class="dropdown-menu dropdown-primary dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-									<a class="dropdown-item waves-effect waves-light" href="#">Edit Profile</a>
-									<a class="dropdown-item waves-effect waves-light" href="#">Switch Profile</a>
-									<div class="dropdown-divider"></div>
-									<a class="dropdown-item waves-effect waves-light" href="#">Sign Out</a>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
+			<%- include("./components/navbar") %>
 		</div>
 		<div class="content-container">
-			<div class="sidebar">
-				<div class="profile-block">
-					<div>
-						<img src="../img/skin_face_placeholder.png" alt="" class="skin-face">
-					</div><!--
-				 --><div id="sidebar-profile-signin">
-				 		<div class="sidebar-signin">No accounts available</div><!-- 
-					 --><div class="sidebar-signin"><a href="#" class="sidebar-signin" data-toggle="modal" data-target="#add-account-modal">Add Account</a></div>
-					</div><!--
-				 --><div id="sidebar-profile-info" class="hidden">
-						<div class="sidebar-username" mcvalue="username"></div><!-- 
-					 --><div class="sidebar-email text-muted" mcvalue="email"></div>
-					</div>
-				</div>
-				<div class="play-button btn-group dropdown" data-title="No Minecraft account available" data-placement="bottom">
-					<button class="btn btn-block btn-primary" id="launcher-profile-button" disabled>InterCraft</button>
-					<button class="btn btn-block btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<span class="sr-only">Toggle Dropdown</span>
-					</button>
-					<div class="dropdown-menu" id="launcher-profile-dropdown">
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">Manage Profiles</a>
-					</div>
-				</div>
-				<nav class="sidenav">
-					<ul class="sidenav-container">
-						<li class="sidenav-item">
-							<a class="sidenav-link sidenav-tab active waves-effect" view="dashboard">
-								<span class="sidenav-icon"><i class="mdi mdi-home-outline"></i></span><!-- 
-							 --><span class="sidenav-name" locale="sidebar.dashboard">Dashboard</span>
-							</a>
-						</li>
-						<li class="sidenav-item">
-							<a class="sidenav-link sidenav-tab waves-effect" view="news">
-								<span class="sidenav-icon"><i class="mdi mdi-format-float-left"></i></span><!-- 
-							 --><span class="sidenav-name" locale="sidebar.news">News</span>
-							</a>
-						</li>
-						<li class="sidenav-item">
-							<a class="sidenav-link sidenav-dropdown-tab waves-effect">
-								<span class="sidenav-icon-img"><img src="../img/sidenav-icon.png" alt="" height="20"></span><!-- 
-							 --><span class="sidenav-name">
-							 		InterCraft
-							 		<span class="sidenav-number danger-color">3</span>
-							 	</span>
-							</a>
-							<ul class="sidenav-dropdown" style="height: 174px;">
-								<li>
-									<a class="sidenav-dropdown-link" view="intercraft_applications">
-										<span locale="sidebar.intercraft.applications">Applications</span>
-										<span class="sidenav-subnav-number success-color">3</span>
-									</a>
-								</li>
-								<li>
-									<a class="sidenav-dropdown-link" view="intercraft_blog">
-										<span locale="sidebar.intercraft.blog">Blog</span>
-									</a>
-								</li>
-								<li>
-									<a class="sidenav-dropdown-link" view="intercraft_gallery">
-										<span locale="sidebar.intercraft.gallery">Gallery</span>
-									</a>
-								</li>
-								<li>
-									<a class="sidenav-dropdown-link" view="intercraft_members">
-										<span locale="sidebar.intercraft.members">Members</span>
-									</a>
-								</li>
-								<li>
-									<a class="sidenav-dropdown-link" view="intercraft_profile">
-										<span locale="sidebar.intercraft.profile">Profile</span>
-									</a>
-								</li>
-							</ul>
-						</li>
-						<li class="sidenav-item">
-							<a class="sidenav-link sidenav-tab waves-effect" view="minecraft_account">
-								<span class="sidenav-icon"><i class="mdi mdi-account-settings-variant"></i></span><!-- 
-							 --><span class="sidenav-name" locale="sidebar.account">Account</span>
-							</a>
-						</li>
-						<li class="sidenav-item">
-							<a class="sidenav-link sidenav-tab waves-effect" view="settings">
-								<span class="sidenav-icon"><i class="mdi mdi-account-settings-variant"></i></span><!-- 
-							 --><span class="sidenav-name" locale="sidebar.settings">Settings</span>
-							</a>
-						</li>
-					</ul>
-				</nav>
-			</div><!-- 
-		 --><div class="container main-content" id="viewport">
+			<%- include("./components/sidebar") %>
+			<div class="container main-content" id="viewport">
 				<!-- Loaded views will be inserted here -->
 			</div>
 		</div>
 	</div>
-	<!-- Modal -->
-	<div class="modal fade" id="add-account-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<!--Content-->
-			<div class="modal-content">
-				<!--Header-->
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<h4 class="modal-title w-100" id="myModalLabel">Minecraft Login</h4>
-				</div>
-				<!--Body-->
-				<div class="modal-body">
-					<form action="" method="post" id="add-mc-account-form">
-						<div class="form-group md-form">
-							<i class="fa fa-user prefix" style="padding-top: 8px;"></i>
-							<input type="text" id="add-mc-account-email" class="form-control">
-							<label for="add-mc-account-email" class="no-selection">Email/Username</label>
-						</div>
-						<div class="form-group md-form">
-							<i class="fa fa-lock prefix" style="padding-top: 8px;"></i>
-							<input type="password" id="add-mc-account-password" class="form-control">
-							<label for="add-mc-account-password" class="no-selection">Password</label>
-						</div>
-						<fieldset class="form-group">
-							<input type="checkbox" id="add-mc-account-remember">
-							<label for="add-mc-account-remember">Stay Signed In</label>
-						</fieldset>
-						<div class="form-group text-center">
-							<button id="add-mc-account-login-button" type="submit" class="btn btn-primary">Sign In</button>
-						</div>
-						<div class="form-group text-center ">
-							<a href="https://account.mojang.com/password?ref=launcher" target="_blank">Forgot Password</a>
-						</div>
-					</form>
-				</div>
-			</div>
-			<!--/.Content-->
-		</div>
-	</div>
-<!-- Modal -->
-	<!-- Insert this line above script imports  -->
+	<%- include("./components/login_dialog") %>
+
 	<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 	<script>window.$ = window.jQuery = require('../js/jquery.min.js');</script> <!-- JQuery -->
 	<script type="text/javascript" src="../js/tether.min.js"></script>
 	<script type="text/javascript" src="../js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="../js/mdb.min.js"></script>
 	<script type="text/javascript" src="../js/odometer.min.js"></script>
+	<script>require("../js/electron_bootstrap");</script>
+	<script>const ipc = require("../js/ipc");</script>
+	<script>const locale = require("../js/locale");</script>
+	<script>const launcherWindow = require("../js/launcher_window");</script>
 	<script>if (window.module) module = window.module;</script>
 	<script>
-		odometerOptions = { auto: false };
+		$(document).ready(function() {
+			launcherWindow.init();
+			ipc.ready();
+		});
 	</script>
 </body>
 </html>

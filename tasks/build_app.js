@@ -96,7 +96,7 @@ gulp.task('javascript', () => {
 });
 
 gulp.task('views', () => {
-	return gulp.src(resDir.path('views/*.ejs'))
+	return gulp.src(resDir.path('views/**/*.ejs'))
 	           .pipe(minifyhtml({
 	                     collapseWhitespace: true,
 	                     minifyCSS: true,
