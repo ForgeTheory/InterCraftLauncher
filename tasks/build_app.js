@@ -51,6 +51,21 @@ gulp.task('bundle', () => {
 		// InterCraft Module
 		bundle(srcDir.path('intercraft/intercraft.js'), destDir.path('intercraft/intercraft.js')),
 		bundle(srcDir.path('intercraft/account.js'),    destDir.path('intercraft/account.js')),
+		
+		// Minecraft Module
+		bundle(srcDir.path('minecraft/launcher_profile.js'),          destDir.path('minecraft/launcher_profile.js')),
+		bundle(srcDir.path('minecraft/launcher_profile_manager.js'),  destDir.path('minecraft/launcher_profile_manager.js')),
+		bundle(srcDir.path('minecraft/launcher_settings.js'),         destDir.path('minecraft/launcher_settings.js')),
+		bundle(srcDir.path('minecraft/minecraft_account.js'),         destDir.path('minecraft/minecraft_account.js')),
+		bundle(srcDir.path('minecraft/minecraft_asset.js'),           destDir.path('minecraft/minecraft_asset.js')),
+		bundle(srcDir.path('minecraft/minecraft_asset_manager.js'),   destDir.path('minecraft/minecraft_asset_manager.js')),
+		bundle(srcDir.path('minecraft/minecraft_instance.js'),        destDir.path('minecraft/minecraft_instance.js')),
+		bundle(srcDir.path('minecraft/minecraft_library.js'),         destDir.path('minecraft/minecraft_library.js')),
+		bundle(srcDir.path('minecraft/minecraft_version.js'),         destDir.path('minecraft/minecraft_version.js')),
+		bundle(srcDir.path('minecraft/minecraft_version_manager.js'), destDir.path('minecraft/minecraft_version_manager.js')),
+
+		// Tasks Module
+		bundle(srcDir.path('tasks/minecraft_launch_task.js'), destDir.path('tasks/minecraft_launch_task.js')),
 
 		// Utils Module
 		bundle(srcDir.path('utils/find_java.js'), destDir.path('utils/find_java.js')),
