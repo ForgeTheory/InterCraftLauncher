@@ -1,3 +1,4 @@
+const ipc = require("../js/ipc");
 
 const launcherWindow = {
 
@@ -6,7 +7,16 @@ const launcherWindow = {
 	 * @return {Undefined}
 	 */
 	init: function() {
-		
+		ipc.receive("set_versions", launcherWindow.setVersions);
+	},
+
+	/**
+	 * Set the available launcher versions
+	 * @param {Json Object} versions
+	 * @return {Undefined}
+	 */
+	setVersions: function(versions) {
+
 	}
 };
 

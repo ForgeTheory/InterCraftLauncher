@@ -1,6 +1,8 @@
 const async    = require("async");
 const jetpack  = require("fs-jetpack");
 const jsonfile = require("jsonfile");
+const process  = require("process");
+const _        = require("underscore");
 const findJava = require("../utils/find_java");
 const utils    = require("../utils/utils");
 
@@ -22,10 +24,12 @@ class Config
 	 * @return {Undefined}
 	 */
 	static generate(callback) {
+		this._config = this._config || {};
 		async.parallel({
-			java: (cb) => { findJava(cb); }
+			java: (cb) => { findJava(cb); },
+			minecraft: (cb) => { this.findMinecraft(cb); }
 		}, (err, result) => {
-			this._config = result;
+			this._config = _.defaults(this._config, result);
 			this.save(callback);
 		});
 	}
@@ -36,7 +40,6 @@ class Config
 	 */
 	static init(callback) {
 		console.log("Configuration initializing...");
-		this._config = {};
 		this.load(callback);
 	}
 
@@ -48,10 +51,10 @@ class Config
 	static load(callback) {
 		jsonfile.readFile(CONFIG_FILE, {throws: false}, (err, obj) => {
 			if (err)
-				return this.generate(callback)
+				this.generate(callback)
 			else {
 				this._config = obj;
-				this.check(callback);
+				this.generate(callback); // Add any missing config properties
 			}
 		});
 	}
@@ -62,7 +65,6 @@ class Config
 	 * @return {Undefined}
 	 */
 	static save(callback) {
-		// return callback(); // -- Use for testing purpses
 		jsonfile.writeFile(
 			CONFIG_FILE,
 			this._config,
@@ -75,6 +77,23 @@ class Config
 	}
 
 	// Generation Methods ------------------------------------------------------
+
+	static findMinecraft(callback) {
+		var path;
+		if (process.platform == "win32") {
+			path = jetpack.cwd(process.env.APPDATA)
+			              .path(".minecraft");
+		}
+		else if (process.platform == "darwin") {
+			path = jetpack.cwd(process.env.HOME)
+			              .path("Library/Application Support/minecraft");
+		}
+		else {
+			path = jetpack.cwd(process.env.HOME)
+			              .path(".minecraft");
+		}
+		callback(null, path);
+	}
 
 	// Accessors ---------------------------------------------------------------
 
