@@ -1,9 +1,9 @@
 const test = require("test");
 
 var tests = [
-	require('./event_manager'),
-	require('./find_java'),
-	require('./web_services')
+	require('./tests/event_manager'),
+	require('./tests/find_java'),
+	require('./tests/web_services')
 ];
 
 var result = {};

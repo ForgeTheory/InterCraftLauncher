@@ -1,6 +1,6 @@
-const test = require("test");
+const test           = require("test");
+const {EventManager} = require("../../src/core/event_manager");
 
-const {EventManager} = require("../src/core/event_manager");
 
 exports["test EventManager subscribe/unsubscribe"] = function(assert) {
 	var test1Value = 0;

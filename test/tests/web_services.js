@@ -1,9 +1,8 @@
-const jsonfile     = require("jsonfile");
 const test         = require("test");
-const {InterCraft} = require("../src/intercraft/intercraft");
+const {InterCraft} = require("../../src/intercraft/intercraft");
 
 // Load the environment
-const env = require("./environment");
+const env = require("../environment");
 
 exports["test InterCraft status"] = function(assert, done) {
 	InterCraft.instance().status((err) => {
