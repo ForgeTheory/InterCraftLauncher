@@ -12,7 +12,7 @@ exports["test InterCraft status"] = function(assert, done) {
 };
 
 exports["test InterCraft login"] = function(assert, done) {
-	InterCraft.instance().login(env.email, env.password, true, (err) => {
+	InterCraft.instance().login(env.intercraft_email, env.intercraft_password, true, (err) => {
 		assert.equal(err, false, "InterCraft login success");
 		done();
 	});
@@ -26,14 +26,14 @@ exports["test InterCraft authenticate token"] = function(assert, done) {
 };
 
 exports["test InterCraft set password incorrect password"] = function(assert, done) {
-	InterCraft.instance().setPassword("123", env.password, (err) => {
+	InterCraft.instance().setPassword("123", env.intercraft_password, (err) => {
 		assert.equal(err, true, "InterCraft failed set password success");
 		done();
 	});
 };
 
 exports["test InterCraft set password"] = function(assert, done) {
-	InterCraft.instance().setPassword(env.password, env.password, (err) => {
+	InterCraft.instance().setPassword(env.intercraft_password, env.intercraft_password, (err) => {
 		assert.equal(err, false, "InterCraft set password success");
 		done();
 	});
