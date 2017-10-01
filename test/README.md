@@ -12,7 +12,7 @@ npm run test
 The results will be displayed at the end of the tests.
 
 ## Create a Test
-Tests are located in `test/tests`. Create your new test file in this directory, and add a require statement for your test file to the list of tests in `test/tests.js`
+This is a quick guide to writing a test. Tests are located in `test/tests`. Create your new test file in this directory and add a require statement for your test file to the list of tests in `test/tests.js`
 
 Here is an example test file to get started. This will test the `find_java` utility.
 ```javascript
@@ -29,13 +29,13 @@ const findJava = require("../../src/utils/find_java");
 exports["test Find Java"] = function(assert, done) {
 
 	// Execute the function to test.
-    // This function is asynchronous, so it takes a callback
+	// This function is asynchronous, so it takes a callback
 	findJava((err, result) => {
-    
-    	// Check the result, and display a success message
+   
+		// Check the result, and display a success message
 		assert.equal(err, null, "Java path: " + result);
         
-        // Finish the tests
+		// Finish the tests
 		done();
 	});
 };
