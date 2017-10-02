@@ -1,26 +1,32 @@
+const _        = require("underscore");
 const async    = require("async");
 const jetpack  = require("fs-jetpack");
 const test     = require("test");
 const {Config} = require("../src/core/config");
 const {Locale} = require("../src/core/locale");
 
+// List of test files to run
+const TESTS = [
+	"event_manager",
+	"find_java",
+	"launcher_profile_manager",
+	"web_services"
+];
+
+/**
+ * Start the tests
+ * @return {Undefined}
+ */
 function start() {
 	jetpack.dir("./test/artifacts");
-	var tests = [
-		require("./tests/event_manager"),
-		require("./tests/find_java"),
-		require("./tests/launcher_profile_manager"),
-		require("./tests/web_services")
-	];
 	var result = {};
-	for (t in tests) {
-		for (k in tests[t]) {
-			result[k] = tests[t][k];
-		}
+	for (var i = 0; i < TESTS.length; i++) {
+		_.extend(result, require(`./tests/${TESTS[i]}`));
 	}
 	test.run(result);
 }
 
+// Initialize core modules, and execute the tests
 async.waterfall([
 		(cb) => { Config.init(cb); },
 		(cb) => { Locale.init(cb); }
