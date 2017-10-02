@@ -12,7 +12,7 @@ npm run test
 The results will be displayed at the end of the tests.
 
 ## Create a Test
-This is a quick guide to writing a test. Tests are located in `test/tests`. Create your new test file in this directory and add a require statement for your test file to the list of tests in `test/tests.js`
+This is a quick guide to writing a test. Tests are located in `test/tests`. To create a test, simply place your test script in this directory. Your test will automatically be loaded by the autoloader.
 
 Here is an example test file to get started. This will test the `find_java` utility.
 ```javascript

@@ -5,23 +5,16 @@ const test     = require("test");
 const {Config} = require("../src/core/config");
 const {Locale} = require("../src/core/locale");
 
-// List of test files to run
-const TESTS = [
-	"event_manager",
-	"find_java",
-	"launcher_profile_manager",
-	"web_services"
-];
-
 /**
  * Start the tests
  * @return {Undefined}
  */
 function start() {
-	jetpack.dir("./test/artifacts");
+	var tests = jetpack.list("./test/tests");
+	console.log(tests);
 	var result = {};
-	for (var i = 0; i < TESTS.length; i++) {
-		_.extend(result, require(`./tests/${TESTS[i]}`));
+	for (var i = 0; i < tests.length; i++) {
+		_.extend(result, require(`./tests/${tests[i]}`));
 	}
 	test.run(result);
 }
