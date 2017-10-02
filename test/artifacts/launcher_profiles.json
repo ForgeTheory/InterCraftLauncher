@@ -1,0 +1,17 @@
+{
+  "settings": {
+    "crashAssistance": true,
+    "enableAdvanced": true,
+    "enableAnalytics": true,
+    "keepLauncherOpen": true,
+    "locale": "en_us",
+    "showGameLog": false,
+    "showMenu": true
+  },
+  "launcherVersion": {
+    "profilesFormat": 2,
+    "format": 20,
+    "name": "2.0.934"
+  },
+  "clientToken": "c0085c17-7696-ac64-d253-a8ca26c4febb"
+}

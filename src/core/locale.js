@@ -50,6 +50,13 @@ class Locale
 			});
 		}
 	}
+
+	/**
+	 * Get the locale name
+	 * @return {String}
+	 */
+	static name() {	return instance.locale(); }
+
 	/**
 	 * Create a new Locale instance
 	 */
@@ -67,6 +74,14 @@ class Locale
 	 */
 	dictionary() {
 		return this._dict;
+	}
+
+	/**
+	 * Get the locale name
+	 * @return {String}
+	 */
+	locale() {
+		return this._lang.normalized
 	}
 
 	/**

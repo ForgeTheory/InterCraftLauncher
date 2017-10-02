@@ -46,7 +46,59 @@ function findMinecraftJava(callback, path)
 		findMinecraftInstallation(find)
 }
 
+/**
+ * Generate a random hexadecimal string
+ * @param  {Integer} length
+ * @return {Undefined}
+ */
+function randomHexString(length) {
+	var chars = "0123456789abcdef";
+	var result = "";
+	for (var i = 0; i < length; i++)
+		result += chars[Math.floor(Math.random()*chars.length)];
+	return result;
+}
+
+/**
+ * Generate a random partitioned hexadecimal string
+ * @return {String}
+ */
+function randomHexStringPartitioned() {
+	var result = randomHexString(8);
+	var partitions = [4, 4, 4, 12];
+	for (var i = 0; i < partitions.length; i++)
+		result += `-${randomHexString(partitions[i])}`;
+	return result;
+}
+
+/**
+ * Determine if a string is a hexadecimal string
+ * @param  {String} string
+ * @return {Boolean}
+ */
+function isHexString(string) {
+	var re = /[0-9a-f]+/g;
+	var result = string.match(re);
+	return Boolean(result && result[0] == string);
+}
+
+/**
+ * Determine if a string is a partitioned hexadecimal string
+ * @param  {String} string
+ * @return {Boolean}
+ */
+function isHexStringPartitioned(string) {
+	var re = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/g;
+	var result = string.match(re);
+	return Boolean(result && result[0] == string);
+}
+
+// Export methods
 module.exports = {
-	findMinecraftJava: findMinecraftJava,
-	findMinecraftInstallation, findMinecraftInstallation
+	findMinecraftInstallation:  findMinecraftInstallation,
+	findMinecraftJava:          findMinecraftJava,
+	randomHexString:            randomHexString,
+	randomHexStringPartitioned: randomHexStringPartitioned,
+	isHexString:                isHexString,
+	isHexStringPartitioned:     isHexStringPartitioned
 };
