@@ -18,14 +18,14 @@ class LauncherSettings
 			showGameLog:      false,
 			showMenu:         true
 		};
-		this._data = _.defaults(settings, defaults);
+		this._data = _.defaults(settings || {}, defaults);
 	}
 
 	/**
 	 * Return the settings in Json format
 	 * @return {Json Object}
 	 */
-	toJson() {
+	json() {
 		return {
 			crashAssistance:  this._data.crashAssistance,
 			enableAdvanced:   this._data.enableAdvanced,

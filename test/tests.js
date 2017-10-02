@@ -1,9 +1,11 @@
 const async    = require("async");
+const jetpack  = require("fs-jetpack");
 const test     = require("test");
 const {Config} = require("../src/core/config");
 const {Locale} = require("../src/core/locale");
 
 function start() {
+	jetpack.dir("./test/artifacts");
 	var tests = [
 		require("./tests/event_manager"),
 		require("./tests/find_java"),

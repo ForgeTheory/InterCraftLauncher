@@ -58,7 +58,7 @@ class LauncherProfileManager
 			if (err) {
 				this.generate(null, callback);
 			} else {
-				if ((obj.launcherVersion || {}).format == 16) {
+				if ((obj.launcherVersion || {}).profilesFormat == 1) {
 					this.parseLegacy(obj, callback);
 				} else {
 					this.parse(obj, callback);
@@ -74,7 +74,7 @@ class LauncherProfileManager
 	 */
 	save(callback) {
 		var obj = {
-			settings:        this._settings.toJson(),
+			settings:        this._settings.json(),
 			launcherVersion: LAUNCHER_VERSION,
 			clientToken:     this._clientToken
 		};
@@ -104,6 +104,7 @@ class LauncherProfileManager
 	 */
 	parseLegacy(obj, callback) {
 		this._settings = new LauncherSettings(obj.settings);
+		callback();
 	}
 }
 
