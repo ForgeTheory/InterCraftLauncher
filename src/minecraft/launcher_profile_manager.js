@@ -3,8 +3,7 @@ const jsonfile           = require("jsonfile");
 const {LauncherSettings} = require("./launcher_settings");
 const utils              = require("../utils/utils");
 
-const FILE_NAME = "launcher_profiles.json";
-const OUTPUT = "launcher_profiles.json";
+const FILE_NAME        = "launcher_profiles.json";
 const LAUNCHER_VERSION = {
 	"profilesFormat": 2,
 	"format":         20,
