@@ -1,8 +1,4 @@
 # Configs
-data/
-cache.json
-config.json
-sessions.json
 test/env.json
 
 # Compiled files
@@ -15,6 +11,7 @@ app/
 dist/
 
 # Generated Data
+artifacts/
 data/
 
 # Sass
