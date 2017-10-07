@@ -107,11 +107,11 @@ function isMinecraftIdentifier(id) {
  * @param  {String} username
  * @return {Boolean}
  */
-function isValidMinecraftUsername(username) {
-	var re = /[0-9A-Za-z_]/g;
+function isValidMinecraftUsername(string) {
+	var re = /[0-9A-Za-z_]+/g;
 	var result = string.match(re);
-	return Boolean(result && result[0] == username) &&
-	       username.length >= 3 && username.length <= 16;
+	return Boolean(result && result[0] == string) &&
+	       string.length >= 3 && string.length <= 16;
 }
 
 // Export methods
@@ -121,5 +121,7 @@ module.exports = {
 	randomHexString:            randomHexString,
 	randomHexStringPartitioned: randomHexStringPartitioned,
 	isHexString:                isHexString,
-	isHexStringPartitioned:     isHexStringPartitioned
+	isHexStringPartitioned:     isHexStringPartitioned,
+	isMinecraftIdentifier:      isMinecraftIdentifier,
+	isValidMinecraftUsername:   isValidMinecraftUsername
 };

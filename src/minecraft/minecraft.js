@@ -1,5 +1,6 @@
 const jetpack                  = require("fs-jetpack");
 const jsonfile                 = require("jsonfile");
+const {AccountManager}         = require("./account_manager");
 const {LauncherSettings}       = require("./launcher_settings");
 const {LauncherProfileManager} = require("./launcher_profile_manager");
 const utils                    = require("../utils/utils");
@@ -59,9 +60,14 @@ class Minecraft
 	 */
 	save(callback) {
 		var obj = {
-			settings:        this._settings.json(),
-			launcherVersion: LAUNCHER_VERSION,
-			clientToken:     this._clientToken
+			settings:               this._settings.json(),
+			launcherVersion:        LAUNCHER_VERSION,
+			clientToken:            this._clientToken,
+			profiles:               this._profileManager.json(),
+			analyticsFailcount:     this._analyticsFail,
+			analyticsToken:         this._analyticsToken,
+			authenticationDatabase: this._accountManager.authDatabaseJson(),
+			selectedUser:           this._accountManager.selectedUserJson()
 		};
 		jsonfile.writeFile(
 			this._path,
@@ -80,10 +86,14 @@ class Minecraft
 	 * @return {Undefined}
 	 */
 	parse(obj, callback) {
-		this._settings           = new LauncherSettings(obj.settings);
-		this._profiles           = new LauncherProfileManager(obj.profiles);
-		this._analyticsFailcount = obj.analyticsFailcount || 0;
-		this._analyticsToken     = obj.analyticsToken || "";
+		this._settings       = new LauncherSettings(obj.settings);
+		this._profileManager = new LauncherProfileManager(obj.profiles);
+		this._analyticsFail  = obj.analyticsFailcount || 0;
+		this._analyticsToken = obj.analyticsToken || "";
+		this._accountManager = new AccountManager(
+			obj.authenticationDatabase,
+			obj.selectedUser
+		);
 		this.generateClientToken(obj.clientToken);
 		this.save(callback);
 	}
@@ -99,9 +109,29 @@ class Minecraft
 
 	// Accessors ---------------------------------------------------------------
 
-	accounts() { return this._accounts; }
+	/**
+	 * Get the account manager
+	 * @return {AccountManager}
+	 */
+	accountManager() { return this._accountManager; }
 
-	activeAccount() {  }
+	/**
+	 * Get the client token
+	 * @return {String} 
+	 */
+	clientToken() { return this._clientToken; }
+
+	/**
+	 * Get the profile manager
+	 * @return {ProfileManager}
+	 */
+	profileManager() { return this._profileManager; }
+
+	/**
+	 * Get the launcher settings
+	 * @return {LauncherSettings}
+	 */
+	settings() { return this._settings; }
 
 	// Mutators ----------------------------------------------------------------
 

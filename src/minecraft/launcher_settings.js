@@ -41,7 +41,7 @@ class LauncherSettings
 	 * Check if analytics are enabled
 	 * @return {Boolean}
 	 */
-	isAnalyticsEnabled() { return this._analyticsEnabled; }
+	isAnalyticsEnabled() { return this._data.analyticsEnabled; }
 
 	/**
 	 * Check if crash assistance is enabled
@@ -97,7 +97,7 @@ class LauncherSettings
 		if (enabled == undefined)
 			this._data.enableAnalytics = false;
 		else
-			this._data._enableAnalytics = Boolean(enabled);
+			this._data.enableAnalytics = Boolean(enabled);
 		return this;
 	}
 

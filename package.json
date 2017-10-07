@@ -38,6 +38,7 @@
     "string-argv": "0.0.2",
     "underscore": "^1.8.3",
     "unzip": "^0.1.11",
+    "validator": "^9.0.0",
     "winreg": "^1.2.4"
   },
   "devDependencies": {

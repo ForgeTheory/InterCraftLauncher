@@ -14,20 +14,25 @@ class AccountProfile
 		this._uuid     = uuid;
 	}
 
+	// Methods -----------------------------------------------------------------
+
 	/**
-	 * @todo query mojang to see if the profile is valid
 	 * Determine if the profile is valid
-	 * @param  {Function} callback
 	 * @return {Undefined}
 	 */
-	isValid(callback) {
-		if (utils.isMinecraftIdentifier(this._uuid)) {
-			if (utils.isValidMinecraftUsername(this.__username)) {
-				callback(true);
-				return;
-			}
+	isValid() {
+		return utils.isMinecraftIdentifier(this._uuid) &&
+		       utils.isValidMinecraftUsername(this._username);
+	}
+
+	/**
+	 * Render the profile in Json format
+	 * @return {Json Object}
+	 */
+	json() {
+		return {
+			displayName: this._username
 		}
-		callback(false);
 	}
 
 	// Accessors ---------------------------------------------------------------
@@ -68,4 +73,4 @@ class AccountProfile
 }
 
 // Export the module
-module.exports = {Profile};
+module.exports = {AccountProfile};
