@@ -59,7 +59,7 @@ class Minecraft
 	 */
 	save(callback) {
 		var obj = {
-			settings:        this._settings.toJson(),
+			settings:        this._settings.json(),
 			launcherVersion: LAUNCHER_VERSION,
 			clientToken:     this._clientToken
 		};
@@ -81,10 +81,10 @@ class Minecraft
 	 */
 	parse(obj, callback) {
 		this._settings           = new LauncherSettings(obj.settings);
-		this._profiles           = new LauncherProfileManager(config.profiles);
-		this._analyticsFailcount = config.analyticsFailcount || 0;
-		this._analyticsToken     = config.analyticsToken || "";
-		this.generateClientToken(config.clientToken);
+		this._profiles           = new LauncherProfileManager(obj.profiles);
+		this._analyticsFailcount = obj.analyticsFailcount || 0;
+		this._analyticsToken     = obj.analyticsToken || "";
+		this.generateClientToken(obj.clientToken);
 		this.save(callback);
 	}
 

@@ -9,6 +9,7 @@ class LauncherSettings
 	 * @param  {Json Object} settings
 	 */
 	constructor(settings) {
+		settings = settings || {};
 		this._data = {};
 		this.setAdvancedEnabled(settings.enableAdvanced);
 		this.setAnalyticsEnabled(settings.enableAnalytics);
@@ -76,64 +77,92 @@ class LauncherSettings
 
 	/**
 	 * Set advanced mode enabled
+	 * @param  {Boolean} enabled
 	 * @return {This}
 	 */
 	setAdvancedEnabled(enabled) {
-		this._data.enableAdvanced = Boolean(enabled);
+		if (enabled == undefined)
+			this._data.enableAdvanced = true;
+		else
+			this._data.enableAdvanced = Boolean(enabled);
 		return this;
 	}
 
 	/**
 	 * Set analytics enabled
+	 * @param  {Boolean} enabled
 	 * @return {This}
 	 */
 	setAnalyticsEnabled(enabled) {
-		this._analyticsEnabled = Boolean(enabled);
+		if (enabled == undefined)
+			this._data.enableAnalytics = false;
+		else
+			this._data._enableAnalytics = Boolean(enabled);
 		return this;
 	}
 
 	/**
 	 * Set crash assistance enabled
+	 * @param  {Boolean} enabled
 	 * @return {This}
 	 */
 	setCrashAssistance(enabled) {
-		this._data.crashAssistance = Boolean(enabled);
+		if (enabled == undefined)
+			this._data.crashAssistance = true;
+		else
+			this._data.crashAssistance = Boolean(enabled);
 		return this;
 	}
 
 	/**
 	 * Set if the launcher should be kept open upon launch
+	 * @param  {Boolean} enabled
 	 * @return {This}
 	 */
 	setKeepLauncherOpen(enabled) {
-		this._data.keepLauncherOpen = Boolean(enabled);
+		if (enabled == undefined)
+			this._data.keepLauncherOpen = true;
+		else
+			this._data.keepLauncherOpen = Boolean(enabled);
 		return this;
 	}
 
 	/**
 	 * Set the locale name
+	 * @param  {String} locale
 	 * @return {This}
 	 */
 	setLocale(locale) {
-		this._data.locale = locale;
+		if (typeof locale == "string" && locale.length > 0)
+			this._data.locale = locale;
+		else
+			this._data.locale = Locale.name().toLowerCase();
 		return this;
 	}
 	
 	/**
 	 * Set if the game log should be displayed
+	 * @param  {Boolean} enabled
 	 * @return {This}
 	 */
 	setShowGameLog(enabled) {
-		this._data.showGameLog = Boolean(enabled);
+		if (enabled == undefined)
+			this._data.showGameLog = false;
+		else
+			this._data.showGameLog = Boolean(enabled);
 		return this;
 	}
 
 	/**
 	 * Set if the menu should be shown
+	 * @param  {Boolean} enabled
 	 * @return {This}
 	 */
 	setShowMenu(enabled) {
-		this._data.showMenu = Boolean(enabled);
+		if (enabled == undefined)
+			this._data.showMenu = true;
+		else
+			this._data.showMenu = Boolean(enabled);
 		return this;
 	}
 }
