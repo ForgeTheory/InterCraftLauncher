@@ -93,6 +93,27 @@ function isHexStringPartitioned(string) {
 	return Boolean(result && result[0] == string);
 }
 
+/**
+ * Determine if a string is a valid 32 character hexadecimal string
+ * @param  {String} id
+ * @return {Boolean}
+ */
+function isMinecraftIdentifier(id) {
+	return id.length == 32 && isHexString(id);
+}
+
+/**
+ * Determine if a string is a valid Minecraft username
+ * @param  {String} username
+ * @return {Boolean}
+ */
+function isValidMinecraftUsername(username) {
+	var re = /[0-9A-Za-z_]/g;
+	var result = string.match(re);
+	return Boolean(result && result[0] == username) &&
+	       username.length >= 3 && username.length <= 16;
+}
+
 // Export methods
 module.exports = {
 	findMinecraftInstallation:  findMinecraftInstallation,

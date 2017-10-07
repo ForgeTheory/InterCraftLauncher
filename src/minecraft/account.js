@@ -1,17 +1,24 @@
+const {AccountProfile} = require("./account_profile");
 
 
-class MinecraftAccount
+class Account
 {
 	/**
 	 * Create a Minecraft account instance
-	 * @param {Json Object} data
+	 * @param {Json Object|Null} data
 	 */
 	constructor(data) {
+		data = data || {};
 		this._accessToken = data.accessToken;
 		this._accountId   = data.accountId;
 		this._email       = data.email;
-		this._username    = data.username;
-		this._uuid        = data.uuid;
+		this._profiles    = [];
+		for (var uuid in data.profiles) {
+			this._profiles.push(new AccountProfile(
+				data.profiles[uuid].displayName,
+				uuid
+			));
+		}
 	}
 
 	// Accessors ---------------------------------------------------------------
@@ -33,18 +40,6 @@ class MinecraftAccount
 	 * @return {String}
 	 */
 	email() { return this._email; }
-
-	/**
-	 * Get the username
-	 * @return {String}
-	 */
-	username() { return this._username; }
-
-	/**
-	 * Get the UUID
-	 * @return {String}
-	 */
-	uuid() { return this._uuid; }
 
 	// Mutators ----------------------------------------------------------------
 
@@ -77,27 +72,7 @@ class MinecraftAccount
 		this._email = email;
 		return this;
 	}
-
-	/**
-	 * Set the username
-	 * @param {String} username
-	 * @return {This}
-	 */
-	setUsername(username) {
-		this._username = username;
-		return this;
-	}
-
-	/**
-	 * Set the UUID
-	 * @param {String} uuid
-	 * @return {This}
-	 */
-	setUuid(uuid) {
-		this._uuid = uuid;
-		return this;
-	}	
 }
 
 // Export the module
-module.exports = {MinecraftAccount};
+module.exports = {Account};

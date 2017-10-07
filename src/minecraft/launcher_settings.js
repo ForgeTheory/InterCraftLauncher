@@ -9,32 +9,23 @@ class LauncherSettings
 	 * @param  {Json Object} settings
 	 */
 	constructor(settings) {
-		var defaults = {
-			crashAssistance:  true,
-			enableAdvanced:   true,
-			enableAnalytics:  true,
-			keepLauncherOpen: true,
-			locale:           Locale.name().toLowerCase(),
-			showGameLog:      false,
-			showMenu:         true
-		};
-		this._data = _.defaults(settings, defaults);
+		this._data = {};
+		this.setAdvancedEnabled(settings.enableAdvanced);
+		this.setAnalyticsEnabled(settings.enableAnalytics);
+		this.setCrashAssistance(settings.crashAssistance);
+		this.setKeepLauncherOpen(settings.keepLauncherOpen);
+		this.setLocale(settings.locale);
+		this.setShowGameLog(settings.showGameLog);
+		this.setShowMenu(settings.showMenu);
 	}
 
 	/**
 	 * Return the settings in Json format
 	 * @return {Json Object}
 	 */
-	toJson() {
-		return {
-			crashAssistance:  this._data.crashAssistance,
-			enableAdvanced:   this._data.enableAdvanced,
-			enableAnalytics:  this._data.enableAnalytics,
-			keepLauncherOpen: this._data.keepLauncherOpen,
-			locale:           this._data.locale,
-			showGameLog:      this._data.showGameLog,
-			showMenu:         this._data.showMenu
-		};
+	json() {
+		var result = _.extend({}, this._data);
+		return result;
 	}
 
 	// Accessors ---------------------------------------------------------------
@@ -43,19 +34,19 @@ class LauncherSettings
 	 * Check if advanced mode is enabled
 	 * @return {Boolean}
 	 */
-	advancedEnabled() { return this._data.enableAdvanced; }
+	isAdvancedEnabled() { return this._data.enableAdvanced; }
 
 	/**
 	 * Check if analytics are enabled
 	 * @return {Boolean}
 	 */
-	analyticsEnabled() { return this._analyticsEnabled; }
+	isAnalyticsEnabled() { return this._analyticsEnabled; }
 
 	/**
 	 * Check if crash assistance is enabled
 	 * @return {Boolean}
 	 */
-	crashAssistance() { return this._data.crashAssistance; }
+	isCrashAssistance() { return this._data.crashAssistance; }
 
 	/**
 	 * Check if the launcher should be kept open upon launch
@@ -88,7 +79,7 @@ class LauncherSettings
 	 * @return {This}
 	 */
 	setAdvancedEnabled(enabled) {
-		this._data.enableAdvanced = enabled;
+		this._data.enableAdvanced = Boolean(enabled);
 		return this;
 	}
 
@@ -97,7 +88,7 @@ class LauncherSettings
 	 * @return {This}
 	 */
 	setAnalyticsEnabled(enabled) {
-		this._analyticsEnabled = enabled;
+		this._analyticsEnabled = Boolean(enabled);
 		return this;
 	}
 
@@ -106,7 +97,7 @@ class LauncherSettings
 	 * @return {This}
 	 */
 	setCrashAssistance(enabled) {
-		this._data.crashAssistance = enabled;
+		this._data.crashAssistance = Boolean(enabled);
 		return this;
 	}
 
@@ -115,7 +106,7 @@ class LauncherSettings
 	 * @return {This}
 	 */
 	setKeepLauncherOpen(enabled) {
-		this._data.keepLauncherOpen = enabled;
+		this._data.keepLauncherOpen = Boolean(enabled);
 		return this;
 	}
 
@@ -133,7 +124,7 @@ class LauncherSettings
 	 * @return {This}
 	 */
 	setShowGameLog(enabled) {
-		this._data.showGameLog = enabled;
+		this._data.showGameLog = Boolean(enabled);
 		return this;
 	}
 
@@ -142,7 +133,7 @@ class LauncherSettings
 	 * @return {This}
 	 */
 	setShowMenu(enabled) {
-		this._data.showMenu = enabled;
+		this._data.showMenu = Boolean(enabled);
 		return this;
 	}
 }
