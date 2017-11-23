@@ -117,7 +117,7 @@ class Minecraft
 
 	/**
 	 * Get the client token
-	 * @return {String} 
+	 * @return {String}
 	 */
 	clientToken() { return this._clientToken; }
 
@@ -135,7 +135,7 @@ class Minecraft
 
 	// Mutators ----------------------------------------------------------------
 
-	
+
 
 }
 

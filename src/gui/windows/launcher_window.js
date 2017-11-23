@@ -20,6 +20,14 @@ class LauncherWindow extends Window
 	}
 
 	/**
+	 * Invoked when the IPC is ready to communicate
+	 * @return {Undefined}
+	 */
+	onIpcReady() {
+
+	}
+
+	/**
 	 * Clean up when the window is closing
 	 * @return {Undefined}
 	 */

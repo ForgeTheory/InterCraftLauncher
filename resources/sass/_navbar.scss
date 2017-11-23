@@ -1,0 +1,40 @@
+.navbar {
+	padding: 0;
+	padding-right: 20px;
+	z-index: 100;
+
+	& .container {
+		padding: 0;
+		padding-left: 15px;
+		min-width: 100%;
+		width: 100%;
+
+		& .navbar-brand {
+			display: block !important;
+			height: 100%;
+			padding: 10px;
+			letter-spacing: 2px;
+		}
+
+		& .navbar-brand, & .nav-item {
+			font-size: 1.4em;
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+
+		& .nav-item {
+			& img {
+				vertical-align: top;
+				width: 24px !important;
+				height: 24px !important;
+				margin: 5px 10px 0 10px;
+			}
+
+			& .nav-link {
+				color: #636c72;
+				padding-top: 3px;
+				padding-bottom: 3px;
+			}
+		}
+	}
+}

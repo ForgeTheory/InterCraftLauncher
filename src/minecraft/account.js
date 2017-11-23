@@ -26,12 +26,30 @@ class Account
 	// Methods -----------------------------------------------------------------
 
 	/**
+	 * Get the profile from the account, or return the default
+	 * @param  {String} profile
+	 * @return {Profile}
+	 */
+	defaultProfile(uuid) {
+		return this.profile(uuid) || this._profiles[0];
+	}
+
+	/**
+	 * Check if the account has the given profile UUID
+	 * @param  {String}  uuid
+	 * @return {Boolean}
+	 */
+	hasProfile(uuid) {
+		return Boolean(this.profile(uuid));
+	}
+
+	/**
 	 * Determine if an account is in a valid format
 	 * @return {Boolean}
 	 */
 	isValid() {
 		try {
-			var result = true;
+			var result = this._profiles.length > 0;
 			for (var i = 0; i < this._profiles.length; i++)
 				result = result && this._profiles[i].isValid();
 			return utils.isMinecraftIdentifier(this._accessToken) &&
@@ -58,6 +76,19 @@ class Account
 		};
 	}
 
+	/**
+	 * Get the profile from the given UUID
+	 * @param {String} uuid
+	 * @return {AccountProfile|Null}
+	 */
+	profile(uuid) {
+		if (utils.isMinecraftIdentifier(uuid))
+			for (var i = 0; i < this._profiles.length; i++)
+				if (this._profiles[i].uuid() == uuid)
+					return this._profiles[i];
+		return null;
+	}
+
 	// Accessors ---------------------------------------------------------------
 
 	/**
@@ -77,6 +108,12 @@ class Account
 	 * @return {String}
 	 */
 	email() { return this._email; }
+
+	/**
+	 * Get the list of available profiles
+	 * @return {Array<AccountProfile>}
+	 */
+	profiles() { return this._profiles; }
 
 	// Mutators ----------------------------------------------------------------
 

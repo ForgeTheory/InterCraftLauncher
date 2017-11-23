@@ -13,6 +13,7 @@ dist/
 # Generated Data
 artifacts/
 data/
+package-lock.json
 
 # Sass
 .sass-cache/

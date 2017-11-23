@@ -18,7 +18,7 @@ const projectDir = jetpack;
 const buildDir   = jetpack.cwd('./build');
 const libsDir    = jetpack.cwd('./libs');
 const srcDir     = jetpack.cwd('./src');
-const resDir     = jetpack.cwd('./src/resources');
+const resDir     = jetpack.cwd('./resources');
 const destDir    = jetpack.cwd('./app');
 
 gulp.task('bundle', () => {
@@ -51,7 +51,7 @@ gulp.task('bundle', () => {
 		// InterCraft Module
 		bundle(srcDir.path('intercraft/intercraft.js'), destDir.path('intercraft/intercraft.js')),
 		bundle(srcDir.path('intercraft/account.js'),    destDir.path('intercraft/account.js')),
-		
+
 		// Minecraft Module
 		bundle(srcDir.path('minecraft/account.js'),                  destDir.path('minecraft/account.js')),
 		bundle(srcDir.path('minecraft/account_manager.js'),          destDir.path('minecraft/account_manager.js')),
@@ -82,7 +82,7 @@ gulp.task('libs', () => {
 });
 
 gulp.task('locale', () => {
-	return gulp.src(srcDir.path('resources/locales/*'))
+	return gulp.src(resDir.path('locales/*'))
 	           .pipe(jsonmin())
 	           .pipe(gulp.dest(projectDir.path('data/locales')));
 });
@@ -147,19 +147,16 @@ gulp.task('watch', () => {
 	watch('src/**/*.js', batch((events, done) => {
 		gulp.start('bundle', beepOnError(done));
 	}));
-	watch('src/locale/locales/*', batch((events, done) => {
-		gulp.start('bundle', beepOnError(done));
-	}));
-	watch('src/resources/javascript/*.js', batch((events, done) => {
+	watch('resources/javascript/*.js', batch((events, done) => {
 		gulp.start('javascript', beepOnError(done));
 	}));
-	watch('src/resources/sass/*.scss', batch((events, done) => {
+	watch('resources/sass/*.scss', batch((events, done) => {
 		gulp.start('sass', beepOnError(done));
 	}));
-	watch('src/resources/views/*.htm', batch((events, done) => {
+	watch('resources/views/*.htm', batch((events, done) => {
 		gulp.start('views', beepOnError(done));
 	}));
-	watch('src/resources/images/*', batch((events, done) => {
+	watch('resources/images/*', batch((events, done) => {
 		gulp.start('imagemin', beepOnError(done));
 	}));
 });

@@ -7,10 +7,10 @@ These steps will get you started with setting up the development environment.
 #### Install Node.js
 It is highly recommended that you install [Node.js](https://nodejs.org/) version 6.10 or above.
 You can check your installation by running the following in a command line interface:
+
 ```
 node -v
 ```
-
 
 #### Install Gulp and Electron
 The launcher is powered by Electron, and uses Gulp to compile the source code. They can be installed by running the following commands:

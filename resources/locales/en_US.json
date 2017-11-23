@@ -1,0 +1,31 @@
+{
+	"general": {
+		"email":    "Email",
+		"password": "Password"
+	},
+	"intercraft_login": {
+		"forgot_password": "Forgot Password",
+		"remember":        "Stay Signed In",
+		"signin":          "Sign In",
+		"title":           "InterCraft Login"
+	},
+	"sidebar": {
+		"dashboard":  "Dashboard",
+		"news":       "News",
+		"intercraft": {
+			"applications": "Applications",
+			"blog":         "Blog",
+			"gallery":      "Gallery",
+			"members":      "Members",
+			"profile":      "Profile"
+		},
+		"account":  "Account",
+		"settings": "Settings"
+	},
+	"splash": {
+		"authenticating":            "Authenticating account...",
+		"check_intercraft_services": "Checking InterCraft services...",
+		"loading_intercraft":        "Loading InterCraft settings...",
+		"status":                    "Initializing..."
+	}
+}

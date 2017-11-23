@@ -31,7 +31,6 @@ class AuthenticationActivity extends Activity
 	 * @return {Undefined}
 	 */
 	onLogin(credentials) {
-		console.log(credentials);
 		InterCraft.instance().login(
 			credentials.email,
 			credentials.password,

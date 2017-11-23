@@ -9,9 +9,10 @@ class AccountProfile
 	 * @param  {String} username
 	 * @param  {String} uuid
 	 */
-	constructor(username, uuid) {
-		this._username = username;
-		this._uuid     = uuid;
+	constructor(accountId, username, uuid) {
+		this._accountId = accountId; 
+		this._username  = username;
+		this._uuid      = uuid;
 	}
 
 	// Methods -----------------------------------------------------------------
@@ -36,6 +37,12 @@ class AccountProfile
 	}
 
 	// Accessors ---------------------------------------------------------------
+
+	/**
+	 * Get the account ID the profile belongs to
+	 * @return {Undefined}
+	 */
+	accountId() { return this._accountId; }
 
 	/**
 	 * Get the profile username

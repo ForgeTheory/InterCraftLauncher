@@ -1,3 +1,5 @@
+import { log, print } from "util";
+
 const ejse            = require("ejs-electron");
 const {BrowserWindow} = require("electron");
 const ipc             = require("electron-simple-ipc");
@@ -45,7 +47,7 @@ class Window extends BrowserWindow
 		this.on("show",               this.onShow);
 		this.on("enter-full-screen",  this.onEnterFullScreen);
 		this.on("leave-full-screen",  this.onLeaveFullScreen);
-		this.receive("__ipc_ready", this.onIpcReady);
+		this.receive("__ipc_ready",   this.onIpcReady);
 	}
 
 	// Overridable Methods -----------------------------------------------------
@@ -111,7 +113,7 @@ class Window extends BrowserWindow
 
 	/**
 	 * Add an event listener
-	 * @param  {String}   event   
+	 * @param  {String}   event
 	 * @param  {Function} callback
 	 * @return {Undefined}
 	 */
@@ -133,7 +135,7 @@ class Window extends BrowserWindow
 
 		data.locale = Locale.get()
 		ejse.data(data).options(data);
-		
+
 		this.loadURL(urlObj.href);
 	}
 
